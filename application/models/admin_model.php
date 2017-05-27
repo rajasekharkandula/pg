@@ -1,0 +1,741 @@
+<?php 
+class Admin_model extends CI_Model{
+		
+	/**
+	 * @return void
+	 **/
+	
+	
+	public function __construct(){
+		parent::__construct();
+		$this->api_result = array(); 
+	}
+	
+	public function get_report($data){		
+		$type = isset($data['type']) ? $data['type'] : '';
+		
+		if($type == 'DASHBOARD'){
+			$retvalue['users_count'] = $this->db->query("SELECT COUNT(*) AS ucount FROM tbl_user WHERE created_date > (NOW() - interval 1 month)")->row()->ucount;
+			$retvalue['products_count'] = $this->db->query("SELECT COUNT(*) AS pcount FROM tbl_product WHERE created_date > (NOW() - interval 1 month)")->row()->pcount;
+			$retvalue['api_count'] = $this->db->query("SELECT COUNT(*) AS acount FROM tbl_api WHERE createdDate > (NOW() - interval 1 month)")->row()->acount;
+			$retvalue['views_count'] = 523;
+			return (object)$retvalue;
+		}
+	}
+	public function get_user($data){		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? $data['id'] : '';
+		$email = isset($data['email']) ? $data['email'] : '';
+		$user_name = isset($data['user_name']) ? $data['user_name'] : '';
+		$authID = isset($data['authID']) ? $data['authID'] : '';
+		$username = isset($data['username']) ? $data['username'] : '';
+		
+		if($type == 'EMAIL_CHECK'){
+			return $this->db->query("SELECT * FROM tbl_user WHERE email = '$email'")->row();
+		}
+		if($type == 'USERNAME_CHECK'){
+			return $this->db->query("SELECT * FROM tbl_user WHERE username = '$username'")->row();
+		}
+		if($type == 'CHECK_AUTH'){
+			return $this->db->query("SELECT * FROM tbl_user WHERE authID = '$authID' AND modifiedDate > (NOW() - interval 24 hour)")->row();
+		}
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_user WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_user WHERE role='USER' ORDER BY id DESC")->result();
+		}
+		if($type == 'DL'){
+			return $this->db->query("SELECT * FROM tbl_user WHERE role='USER' ORDER BY id DESC LIMIT 5")->result();
+		}
+	}
+	
+	function reset_password(){
+		$userID = $this->session->userdata("userID");
+		$password = $this->input->post('password');
+		$this->db->query("UPDATE tbl_user SET password = '$password' WHERE id = '$userID'" ); 
+		return true;
+	}
+	public function login($userName,$password){
+		$retvalue = array();
+		$row = $this->db->query("SELECT * FROM tbl_user WHERE (email = '$userName' OR username = '$userName') AND password = '$password'")->row();
+		if($row){
+			$this->session->set_userdata('login',true);
+			$this->session->set_userdata('userID',$row->id);
+			$this->session->set_userdata('name',$row->firstName.' '.$row->lastName);
+			$this->session->set_userdata('email',$row->email);
+			$this->session->set_userdata('phone',$row->phone);
+			$this->session->set_userdata('roleName',$row->role);
+			if($row->role == 'ADMIN')
+				$retvalue['url'] = base_url('admin');
+			else if($this->session->userdata('previous_url'))
+				$retvalue['url'] = $this->session->userdata('previous_url');
+			else
+				$retvalue['url'] = base_url();
+			
+			$retvalue['message'] = 'Logged in successfully';
+			$retvalue['status'] = true;
+		}else{
+			$retvalue['message'] = 'Invalid Username or Password';
+			$retvalue['status'] = false;
+		}
+		return $retvalue;
+	}
+	
+	public function getDashboard($data){		
+		$type="";$roleID="";$userID="";
+		if(isset($data['type']))$type=$data['type'];
+		
+		if($type == 'REQUEST'){
+			$data['total'] = $this->db->query("SELECT COUNT(*) as total FROM tbl_messages")->row()->total;
+			$data['open'] = $this->db->query("SELECT COUNT(*) as open FROM tbl_messages WHERE status = 'Open'")->row()->open;
+			$data['close'] = $this->db->query("SELECT COUNT(*) as close FROM tbl_messages WHERE status = 'Closed'")->row()->close;
+			return $data;
+		}
+		if($type == 'BLOG'){
+			$data['posts'] = $this->db->query("SELECT COUNT(*) as total FROM tbl_industries")->row()->total;
+			$data['comments'] = $this->db->query("SELECT COUNT(*) as total FROM tbl_comments")->row()->total;
+			return $data;
+		}
+		if($type == 'SUBSCRIBE'){
+			$data['total'] = $this->db->query("SELECT COUNT(*) as total FROM tbl_subscriptions")->row()->total;
+			return $data;
+		}
+	}
+	
+	function ins_upd_user(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$first_name=$this->input->post('first_name');
+		$last_name=$this->input->post('last_name');
+		$email=$this->input->post('email');
+		$phone=$this->input->post('phone');
+		$gender=$this->input->post('gender');
+		$address=$this->input->post('address');
+		$country=$this->input->post('country');
+		$city=$this->input->post('city');
+		$password=$this->input->post('password');
+		$username=$this->input->post('username');
+		$auth_id=$this->input->post('auth_id');
+		$role=$this->input->post('role') ? $this->input->post('role') : 'USER';
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		
+		if($type == "INSERT"){
+			$this->db->query("INSERT INTO tbl_user (first_name, last_name, email, password, auth_id, role, phone, gender, city, country, address, created_date, modified_date, status) VALUES ('$first_name', '$last_name', '$email', '$password', '$auth_id', '$role', '$phone', '$gender', '$city', '$country', '$address', NOW(), NOW(), '$status'); ");
+			
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_user")->row()->id;
+			$retvalue['status']= true;
+			$retvalue['message']= 'User created successfully';
+		}
+		
+		if($type == "UPDATE"){
+			
+			$user = $this->db->query("SELECT * FROM tbl_user WHERE email='$email' AND id != $id")->row();
+			if(!$user){
+				$this->db->query("UPDATE tbl_user SET first_name = '$first_name', last_name = '$last_name', email = '$email',  role = '$role', phone = '$phone', gender = '$gender', city = '$city', country = '$country', address = '$address', modified_date = NOW(), status = '$status' WHERE id = $id ");
+				$retvalue['status']= true;
+				$retvalue['message']= 'User updated successfully';
+			}else{
+				$retvalue['status']= false;
+				$retvalue['message']= 'Email already exist';
+			}
+			
+		}
+		
+		if($type == "DELETE"){
+			$this->db->query("DELETE FROM tbl_user WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'User deleted successfully';
+		}
+		return $retvalue;
+				
+		return $retvalue;
+	}
+	
+	function register(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$fname=$this->input->post('fname');
+		$lname=$this->input->post('lname');
+		$email=$this->input->post('email');
+		$phone=$this->input->post('phone');
+		$company=$this->input->post('company');
+		$country=$this->input->post('country');
+		$newsletter=(int)$this->input->post('newsletter');
+		$password=$this->input->post('password');
+		$username=$this->input->post('username');
+		$status=$this->input->post('status');
+		$qry = $this->db->query("SELECT * FROM tbl_user WHERE email = '$email'")->row();		
+		if(!$qry){
+			$this->db->query("INSERT INTO tbl_user (firstName,lastName, email, password, username, phone, role, company, country,  newsletter, createdDate, status) VALUES ('$fname', '$lname', '$email', '$password', '$username','$phone', 'USER', '$company', '$country', '$newsletter', NOW(), 'Active')");
+			$this->login($email,$password);
+			
+			$data['name'] = $fname.' '.$lname;
+			$message = $this->load->view('email/register',$data,true);
+			//$this->send_email($email,'Welcome to'.$this->config->item('project_title'),$message);
+			
+			$retvalue['status']= true;
+			$retvalue['message']= 'Registered successfully';
+		}else{
+			$retvalue['status']= false;
+			$retvalue['message']= 'Email already exist';
+		}
+				
+		return $retvalue;
+	}
+	
+	function ins_upd_product(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int) $this->input->post('id');
+		$name=$this->input->post('name');
+		$description=$this->input->post('description');
+		$slug=$this->input->post('slug');
+		$price=(float)$this->input->post('price');
+		$product_link=$this->input->post('product_link');
+		$min_age=(int)$this->input->post('min_age');
+		$max_age=(int)$this->input->post('max_age');
+		$gender=$this->input->post('gender');
+		$category=$this->input->post('category');
+		$source=$this->input->post('source') ? $this->input->post('source') : 'Manual';
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		
+		if(isset($_FILES['image'])){		
+			$image=$this->image_upload($_FILES['image'],'assets/images/products/','product');
+			if(!$image)
+				$image = $this->input->post('uploaded_img');
+		}else{
+			$image = $this->config->item('default_image');
+		}
+		
+		if($type == 'INSERT'){
+			$this->db->query("INSERT INTO tbl_product (name, description, slug, price, image, product_link, min_age, max_age, gender, category, source, created_date,modified_date,status) VALUES ('$name', '$description', '$slug', '$price', '$image', '$product_link', '$min_age', '$max_age', '$gender', '$category', '$source', NOW(), NOW(),'$status'); ");
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_product")->row()->id;
+			$retvalue['status']= true;
+			$retvalue['message']= 'Product saved successfully';
+		}
+		
+		if($type == 'UPDATE'){			
+			$this->db->query("UPDATE tbl_product SET name = '$name', description = '$description', slug = '$slug', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', gender = '$gender', category = '$category', source = '$source', modified_date = NOW(), status = '$status' WHERE id = $id ");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Product updated successfully';
+		}
+		
+		if($type == 'DELETE'){			
+			$this->db->query("DELETE FROM tbl_product WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Product deleted successfully';
+		}
+		
+		
+		if($type == 'INSERT_API_PRODUCTS'){
+			
+			$products = json_decode($this->input->post('products'));
+			$min_age = $this->input->post('min_age');
+			$max_age = $this->input->post('max_age');
+			$category = $this->input->post('category');
+			var_dump($products);exit();
+			/* foreach($products as $p){
+				$this->db->query("INSERT INTO tbl_product (name, description, slug, price, image, product_link, min_age, max_age, gender, category, source, created_date,modified_date,status) VALUES ('$name', '$description', '$slug', '$price', '$image', '$product_link', '$min_age', '$max_age', '$gender', '$category', '$source', NOW(), NOW(),'$status'); ");
+			} */
+			
+			$retvalue['status']= true;
+			$retvalue['message']= 'Product saved successfully';
+		}
+		
+		
+		return $retvalue;
+	}
+	
+	function image_upload($file,$uploaddir='assets/images/products/',$id=""){
+		$ext = end(explode(".", $file["name"]));
+		$path=$uploaddir.$id.date('ymdHis').'.'.$ext;
+		if(file_exists($path) )
+			unlink($path);
+		if(move_uploaded_file($file["tmp_name"],$path))
+			return $path;
+		else
+			return false;
+	}
+	
+	public function get_product($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		$category_id = isset($data['category_id']) ? (int)$data['category_id'] : 0;
+		$key = isset($data['key']) ? $data['key'] : '';
+		$category = isset($data['category']) ? $data['category'] : '';
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_product WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_product ORDER BY id DESC")->result();
+		}
+		
+	}
+	
+	function ins_upd_category(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$name=$this->input->post('name');
+		$sorting=(int)$this->input->post('sorting');
+		$description=$this->input->post('description');
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		$count = (int)$this->input->post('count');
+		
+		if($type == "INSERT"){
+			$this->db->query("INSERT INTO tbl_category (name, description, sorting, createdDate, updatedDate, status) VALUES ( '$name', '$description', $sorting, NOW(), NOW(), '$status')");
+			
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_category")->row()->id;
+			/* for($i=0;$i<$count;$i++){
+				$api_id = $this->input->post('api_'.$i);
+				$api_category_id = (array)$this->input->post('category_'.$i);
+				foreach($api_category_id as $acID){
+				$this->db->query("INSERT INTO tbl_category_api (category_id, api_id, api_category_id) VALUES ($id, $api_id, '$acID')");
+				}
+			} */
+			
+			$retvalue['status']= true;
+			$retvalue['message']= 'Category created successfully';
+		}
+		
+		if($type == "UPDATE"){
+			$this->db->query("UPDATE tbl_category SET name = '$name', description = '$description', sorting = $sorting, status = '$status', updatedDate = NOW() WHERE id = $id");
+			/* $this->db->query("DELETE FROM tbl_category_api WHERE category_id = $id");
+			for($i=0;$i<$count;$i++){
+				$api_id = $this->input->post('api_'.$i);
+				$api_category_id = (array)$this->input->post('category_'.$i);
+				foreach($api_category_id as $acID){
+				$this->db->query("INSERT INTO tbl_category_api (category_id, api_id, api_category_id) VALUES ($id, $api_id, '$acID')");
+				}
+			} */
+			
+			$retvalue['status']= true;
+			$retvalue['message']= 'Category updated successfully';
+		}
+		
+		if($type == "DELETE"){
+			$this->db->query("DELETE FROM tbl_category WHERE id = $id");
+			//$this->db->query("DELETE FROM tbl_category_api WHERE category_id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Category deleted successfully';
+		}
+		return $retvalue;
+	}
+	
+	public function get_category($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? $data['id'] : 0;
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_category WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_category")->result();
+		}
+		if($type == 'AL'){
+			
+			$categories = array();
+			
+			$api = $this->db->query("SELECT * FROM tbl_api")->result();
+			foreach($api as $a){
+				
+				$url = $a->categoryUrl;
+								
+				/* $cSession = curl_init(); 
+				
+				curl_setopt($cSession,CURLOPT_URL,$url);
+				curl_setopt($cSession,CURLOPT_RETURNTRANSFER,true);
+				curl_setopt($cSession,CURLOPT_HEADER, false); 
+				
+				$result=curl_exec($cSession);
+				
+				curl_close($cSession);
+				
+				$result = json_encode($result);
+				if(!$result) */
+				$result = file_get_contents($url);
+				$result = json_decode($result);
+				$category = array();
+				$category['api_id'] = $a->id;
+				$category['api'] = $a->name;
+				$category['categories']['api_categoryies'] = $result->categories;
+				$qry = $this->db->query("SELECT * FROM tbl_category_api WHERE api_id = ".$a->id." AND category_id = $id")->result(); 
+				$sc=array();
+				foreach($qry as $q){
+					$sc[] = $q->api_category_id;
+				}
+				$category['categories']['selected_categories'] = $sc;
+				$categories[] = $category;
+			}
+			//var_dump($sc);exit();
+			return $categories;
+		}
+		
+	}
+	function ins_upd_api(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$name=(string)$this->input->post('name');
+		$key=(string)$this->input->post('key');
+		$productUrl=(string)$this->input->post('productUrl');
+		$categoryUrl=(string)$this->input->post('categoryUrl');
+		$desc=$this->input->post('desc');
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		$count = (int)$this->input->post('count');
+		if($type == "INSERT"){
+			$this->db->query("INSERT INTO tbl_api (name, apiKey, productUrl, categoryUrl, createdDate, status) VALUES ('$name', '$key', '$productUrl', '$categoryUrl', NOW(), '$status')");
+			
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_api")->row()->id;
+			for($i=0;$i<$count;$i++){
+				$name = $this->input->post('name_'.$i);
+				$url = $this->input->post('url_'.$i);
+				$this->db->query("INSERT INTO tbl_api_url (apiID, name, apiUrl) VALUES ($id, '$name', '$url')");
+			}
+			$retvalue['status']= true;
+			$retvalue['message']= 'Api created successfully';
+		}
+		
+		if($type == "UPDATE"){
+			$this->db->query("UPDATE tbl_api SET name = '$name', apiKey = '$key', productUrl = '$productUrl', categoryUrl = '$categoryUrl', status = '$status' WHERE id = $id");
+			$this->db->query("DELETE FROM tbl_api_url WHERE apiID = $id");
+			for($i=0;$i<$count;$i++){
+				$name = $this->input->post('name_'.$i);
+				$url = $this->input->post('url_'.$i);
+				$this->db->query("INSERT INTO tbl_api_url (apiID, name, apiUrl) VALUES ($id, '$name', '$url')");
+			}
+			
+			$retvalue['status']= true;
+			$retvalue['message']= 'Api updated successfully';
+		}
+		
+		if($type == "DELETE"){
+			$this->db->query("DELETE FROM tbl_api WHERE id = $id");
+			$this->db->query("DELETE FROM tbl_api_url WHERE apiID = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Api deleted successfully';
+		}
+		return $retvalue;
+	}
+	
+	public function get_api($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_api WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_api ORDER BY id DESC")->result();
+		}
+		if($type == 'URL_S'){
+			return $this->db->query("SELECT * FROM tbl_api_url WHERE apiID = $id")->result();
+		}		
+	}
+	
+	function get_product_from_api(){
+		$products = array();
+		$api = $this->input->post('api');
+		$url = $this->input->post('url');
+		$result = file_get_contents($url);
+		$result = json_decode($result);
+		if(isset($result->products)){
+			if(count($result->products) > 0){
+				foreach($result->products as $p){
+					$product = array();
+					$product['id'] = $p->sku;
+					$product['name'] = $p->name;
+					$product['price'] = $p->salePrice;
+					if(@file_get_contents($p->thumbnailImage))
+						$product['image'] = $p->thumbnailImage;
+					else
+						$product['image'] = base_url($this->config->item('default_image')); 
+					$product['url'] = $p->url;
+					$products[] = (object)$product;
+				}
+				
+			}
+		}
+		//var_dump($products);exit();
+		return $products;
+	}
+	
+	function ins_upd_slide(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$title=(string)$this->input->post('title');
+		$slideType=(string)$this->input->post('slideType');
+		$slideUrl=(string)$this->input->post('slideUrl');
+		$description=(string)$this->input->post('description');
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		
+		if(isset($_FILES['image'])){		
+			$image=$this->image_upload($_FILES['image'],'assets/images/slides/','slide');
+			if(!$image)
+				$image = $this->input->post('uploaded_img');
+		}else{
+			$image = $this->config->item('default_image');
+		}
+		
+		if($type == "INSERT"){
+			$this->db->query("INSERT INTO tbl_slide (image, title, description,slideType, slideUrl, created_date, updated_date, status) VALUES ('$image', '$title', '$description', '$slideType', '$slideUrl', NOW(), NOW(), '$status')");
+			
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_slide")->row()->id;
+			$retvalue['status']= true;
+			$retvalue['message']= 'Slide created successfully';
+		}
+		
+		if($type == "UPDATE"){
+			$this->db->query("UPDATE tbl_slide SET title = '$title', description = '$description', slideType = '$slideType', slideUrl = '$slideUrl', image = '$image', updated_date = NOW(), status = '$status' WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Slide updated successfully';
+		}
+		
+		if($type == "DELETE"){
+			$this->db->query("DELETE FROM tbl_slide WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Slide deleted successfully';
+		}
+		return $retvalue;
+	}
+	
+	public function get_slide($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_slide WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_slide ORDER BY id DESC")->result();
+		}	
+	}
+	
+	function ins_upd_navigation(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$name=(string)$this->input->post('name');
+		$slug=(string)$this->input->post('slug');
+		$description=(string)$this->input->post('description');
+		$parent_id=(int)$this->input->post('parent_id');
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		
+		if($type == "INSERT"){
+			$this->db->query("INSERT INTO tbl_navigation (name, slug, parent_id, created_date, modified_date, status) VALUES ('$name', '$slug', '$parent_id', NOW(), NOW(), '$status')");
+			
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_navigation")->row()->id;
+			$retvalue['status']= true;
+			$retvalue['message']= 'Navigation created successfully';
+		}
+		
+		if($type == "UPDATE"){
+			$this->db->query("UPDATE tbl_navigation SET name = '$name', slug = '$slug', parent_id = '$parent_id', modified_date = NOW(), status = '$status' WHERE id = $id ");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Navigation updated successfully';
+		}
+		
+		if($type == "DELETE"){
+			$this->db->query("DELETE FROM tbl_navigation WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Navigation deleted successfully';
+		}
+		return $retvalue;
+	}
+	
+	public function get_navigation($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_navigation WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_navigation ORDER BY id DESC")->result();
+		}
+		if($type == 'P'){
+			return $this->db->query("SELECT * FROM tbl_navigation WHERE parent_id = 0")->result();
+		}	
+	}
+	function ins_upd_filter(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$name=(string)$this->input->post('name');
+		$key=(string)$this->input->post('key');
+		$min_value=(int)$this->input->post('min_value');
+		$max_value=(int)$this->input->post('max_value');
+		$description=(string)$this->input->post('description');
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		$count = $this->input->post("count");
+		
+		if($type == "INSERT"){
+			$this->db->query("INSERT INTO tbl_filter (name,filterKey,min_value,max_value, created_date, modified_date, status) VALUES ('$name','$key','$min_value','$max_value', NOW(), NOW(), '$status')");
+			
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_filter")->row()->id;
+			/* for($i=1;$i<=$count;$i++){
+				$name = $this->input->post('name_'.$i);
+				$this->db->query("INSERT INTO tbl_filter_keys (filter_id, name, status) VALUES ($id, '$name', '$status')");
+			} */
+			$retvalue['status']= true;
+			$retvalue['message']= 'Filter created successfully';
+		}
+		
+		if($type == "UPDATE"){
+			
+			$this->db->query("UPDATE tbl_filter SET name = '$name', filterKey = '$key',min_value = '$min_value',max_value = '$max_value', modified_date = NOW(), status = '$status' WHERE id = $id ");
+			
+			/* $this->db->query("UPDATE tbl_filter_keys SET status = 'Delete' WHERE filter_id = $id");
+			for($i=1;$i<=$count;$i++){
+				$name = $this->input->post('name_'.$i);
+				$keyID = (int)$this->input->post('key_id_'.$i);
+				$key = $this->db->query("SELECT * FROM tbl_filter_keys WHERE id = $keyID")->row();
+				if(!$key)
+					$this->db->query("INSERT INTO tbl_filter_keys (filter_id, name) VALUES ($id, '$name')");
+				else
+					$this->db->query("UPDATE tbl_filter_keys SET status = 'Active' WHERE filter_id = $id");
+			}
+			$this->db->query("DELETE FROM tbl_filter_keys WHERE status = 'Delete' AND filter_id = $id"); */
+			
+			$retvalue['status']= true;
+			$retvalue['message']= 'Filter updated successfully';
+		}
+		
+		if($type == "DELETE"){
+			$this->db->query("DELETE FROM tbl_filter WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Filter deleted successfully';
+		}
+		return $retvalue;
+	}
+	
+	public function get_filter($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_filter WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_filter ORDER BY id DESC")->result();
+		}
+		if($type == 'P'){
+			return $this->db->query("SELECT * FROM tbl_filter WHERE parent_id = 0")->result();
+		}
+		if($type == 'FK'){
+			return $this->db->query("SELECT * FROM tbl_filter_keys WHERE filter_id = '$id'")->result();
+		}	
+	}
+	function ins_upd_page(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$name=(string)$this->input->post('name');
+		$slug=(string)$this->input->post('slug');
+		$content=(string)$this->input->post('content');
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		
+		if($type == "INSERT"){
+			$this->db->query("INSERT INTO tbl_page (name, slug, content, created_date, modified_date, status) VALUES ('$name', '$slug', '$content', NOW(), NOW(), '$status')");
+			
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_page")->row()->id;
+			$retvalue['status']= true;
+			$retvalue['message']= 'Page created successfully';
+		}
+		
+		if($type == "UPDATE"){
+			$this->db->query("UPDATE tbl_page SET name = '$name', slug = '$slug', content = '$content', modified_date = NOW(), status = '$status' WHERE id = $id ");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Page updated successfully';
+		}
+		
+		if($type == "DELETE"){
+			$this->db->query("DELETE FROM tbl_page WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Navigation deleted successfully';
+		}
+		return $retvalue;
+	}
+	
+	public function get_page($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_page WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_page ORDER BY id DESC")->result();
+		}
+		
+	}
+	function validate_url(){
+		$url = $this->input->post("apiUrl");
+		$result = file_get_contents($url);
+		$result = json_decode($result,true);
+		$this->api_result = $result;
+		var_dump($result['products'][0]);
+		//var_dump($this->api_result);
+		$result = $this->array_depth($result);
+		
+		var_dump($result);
+	}
+	function array_depth($array,$test = array(),$depth1 = array())
+	{
+		foreach ($array as $key=>$value)
+		{
+			$temp = array();
+			$temp['key'] = $key;
+			$temp['depth'] = $depth1;
+			array_push($test,$temp);
+			
+			if (is_array($value))
+			{
+				array_push($depth1,$key);
+				$test = $this->array_depth($value,$test,$depth1);				
+			}
+			
+		}
+		//$depth1 = array();
+		return $test;
+	}
+	function key_get_parents($subject, $array){
+	  foreach ($array as $key => $value)
+	  {
+		if (is_array($value))
+		{
+		  if (in_array($subject, array_keys($value)))
+			return array($key);
+		  else
+		  {
+			$chain = $this->key_get_parents($subject, $value);
+			if (!is_null($chain))
+			  return array_merge(array($key), $chain);
+		  }
+		}
+	  }
+	  return null;
+	}
+	
+}
+
+?>
