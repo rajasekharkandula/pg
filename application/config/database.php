@@ -48,9 +48,9 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'root';
-$db['default']['password'] = '';
+$db['default']['hostname'] = '166.62.10.65';
+$db['default']['username'] = 'edujana';
+$db['default']['password'] = 'Edujana@23';
 $db['default']['database'] = 'painlessgift';
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
