@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    
-<!-- Mirrored from eazzy.me/html/bella-men/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 15 May 2017 09:59:50 GMT -->
+
 <head>
         <meta charset="utf-8">
         <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
@@ -10,8 +9,7 @@
         <title>Painlessgift</title>
 
         <!-- Favicon -->
-         <!-- Favicon -->
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo base_url(); ?>assets/ico/logo.png">
+         <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo base_url(); ?>assets/ico/logo.png">
         <link rel="shortcut icon" href="<?php echo base_url(); ?>assets/ico/logo.ico">
 
         <!-- CSS Global -->
@@ -28,86 +26,44 @@
         <link href="<?php echo base_url(); ?>assets/css/theme-green-1.css" rel="stylesheet" id="theme-config-link">
 
         <!-- Head Libs -->
-        <script src="<?php echo base_url(); ?>assets/plugins/modernizr.custom.js"></script>
-
+        <script src="<?php echo base_url(); ?>assets/js/modernizr.custom.js"></script>
 
         <!--[if lt IE 9]>
         <script src="assets/plugins/iesupport/html5shiv.js"></script>
         <script src="assets/plugins/iesupport/respond.min.js"></script>
         <![endif]-->
+		<style>
+		
+		</style>
     </head>
     <body id="home" class="wide header-style-1">
-       
-            <!-- /HEADER -->
+       <!-- HEADER -->
 			<?php echo $header;?>
-            <!-- /HEADER -->
-
+		<!-- HEADER -->
             <!-- CONTENT AREA -->
             <div class="content-area">
+				<div class="middle-container">
+					<div class="container middle-content">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="page-title">
+								Contact Us
+								</div>
+								<div class="page-body">
+								Have a gift idea? &nbsp;Email us at giftideas@painlessgift.com&nbsp;<br><br>Please be sure to&nbsp;include:<br>
+								<ul>
+									<li>Hyperlink (site address)&nbsp;for the gift&nbsp;</li>
+								
+									<li>The person you would recommend this gift for&nbsp;</li>
+								<li>If you would like, your name and contact information&nbsp;</li>
+								</ul>
+								<br>For general inquiries please email info@painlessgift.com<br><br>
+								</div>
+							</div>
+						</div>
 
-                <!-- PAGE -->
-                <section class="page-section color">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <h3 class="block-title"><span>Login</span></h3>
-                                <form class="form-login" id="login-form">
-                                    <div class="row">
-                                        <div class="col-md-12 hello-text-wrap">
-                                            <span class="hello-text text-thin">Hello, welcome to your account</span>
-                                        </div>
-                                        <div class="col-md-12 col-lg-6">
-                                            <a class="btn btn-theme btn-block btn-icon-left facebook" href="#"><i class="fa fa-facebook"></i>Sign in with Facebook</a>
-                                        </div>
-                                        <div class="col-md-12 col-lg-6">
-                                            <a class="btn btn-theme btn-block btn-icon-left mail" href="<?php echo base_url();?>home/signup"><i class="glyphicon glyphicon-envelope"></i>Sign in with Email</a>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group"><input class="form-control" type="text" id="email" placeholder="User name or email"></div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group"><input class="form-control" type="password" id="password" placeholder="Your password"></div>
-                                        </div>
-                                        <div class="col-md-12 col-lg-6">
-                                            <div class="checkbox">
-                                                <label><input type="checkbox"> Remember me</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-lg-6 text-right-lg">
-                                            <a class="forgot-password" href="#">forgot password?</a>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <button type="button" class="btn btn-theme btn-block btn-theme-dark" id="signin" >Login</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="col-sm-6">
-                                <h3 class="block-title"><span>Create New Account</span></h3>
-                                <form action="#" class="create-account" >
-                                    <div class="row">
-                                        <div class="col-md-12 hello-text-wrap">
-                                            <span class="hello-text text-thin">Create Your Account on Bellashop</span>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <h3 class="block-title">Signup Today and You'll be able to</h3>
-                                            <ul class="list-check">
-                                                <li>See Ready Hot Deals</li>
-                                                <li>Love List</li>
-                                                <li>Sign up to receive exclusive news and private sales</li>
-                                                <li>Quick Buy Stuffs</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <a class="btn btn-block btn-theme btn-theme-dark btn-create" href="#">Create Account</a>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <!-- /PAGE -->
+						</div>
+					</div>
             </div>
             <!-- /CONTENT AREA -->
 
@@ -209,11 +165,12 @@
         <!-- /WRAPPER -->
 
         <!-- JS Global -->
-       <script src="<?php echo base_url(); ?>assets/js/jquery-1.9.1.min.js"></script>
+        <script src="<?php echo base_url(); ?>assets/js/jquery-1.11.1.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/js/bootstrap.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/js/bootstrap-select.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/js/superfish.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/js/jquery.prettyPhoto.js"></script>
+        <script src="<?php echo base_url(); ?>assets/js/owl.carousel.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/js/jquery.sticky.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/js/jquery.easing.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/js/jquery.smoothscroll.min.js"></script>
@@ -224,53 +181,10 @@
 
         <!--[if (gte IE 9)|!(IE)]><!-->
         <script src="<?php echo base_url(); ?>assets/plugins/jquery.cookie.js"></script>
-       <!--  <script src="assets/js/theme-config.js"></script> -->
+        <!--<script src="assets/js/theme-config.js"></script>-->
         <!--<![endif]-->
-		<script>
-		$(document).ready(function(){
-			$("#signin").click(function(e){
-				e.preventDefault();
-				//alert("ok");
-				var email_regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-				var email = $("#email").val();
-				//alert(email);exit();
-				var password = $("#password").val();
-				var error=0;
-				if(email == ''){
-					error++;
-					$("#email").parent().append('<div style="color:blue;">This field is required</div>');
-				}
-				if(!email_regex.test($("#email").val()) && $("#email").val() != ''){
-					error++;
-					$("#email").parent().append('<div style="color:blue;">Invalid Email.</div>');
-				}
-				if(password == ''){
-					error++;
-					$("#password").parent().append('<div style="color:blue;">This field is rquired</div>');
-				}
-							
-				if(error == 0){
-					//var formdata = new FormData($("#login-form")[0]);
-					$.ajax({
-						url:'loginCheck',
-						type:'POST',
-						dataType:'JSON',
-						data:{'email':email,'password':password}
-					}).success(function(data){
-						if(data.message == 'Success'){
-							alert("Login Successfully");
-							window.location='<?php echo base_url();?>';
-						}else{
-						$('#email').parent().append('<div class="error_message"> '+data['message']+' </div>');
-					}
-					});
-				}
-				
-			});
-		});
-	</script>
 
     </body>
 
-<!-- Mirrored from eazzy.me/html/bella-men/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 15 May 2017 09:59:50 GMT -->
+<!-- Mirrored from eazzy.me/html/bella-men/index-style-1.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 15 May 2017 10:01:55 GMT -->
 </html>

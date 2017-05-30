@@ -33,8 +33,7 @@
         <script src="assets/plugins/iesupport/respond.min.js"></script>
         <![endif]-->
 		<style>
-		.hgt{height:360px !important;}
-		.top-rate{height:220px !important;}
+		
 		</style>
     </head>
     <body id="home" class="wide header-style-1">
@@ -48,7 +47,7 @@
                 <section class="page-section no-padding slider">
                     <div class="container full-width">
 
-                        <div class="main-slider">
+                        <div class="main-slider hgt-300">
                             <div class="owl-carousel" id="main-slider">
 
                                 <!-- Slides -->
@@ -57,9 +56,9 @@
                                     <div class="caption">
                                         <div class="container">
                                             <div class="div-table">
-                                                <div class="div-cell">
+                                                <div class="div-cell text-center">
                                                     <div class="caption-content">
-                                                        <h2 class="caption-title">LOOKING FOR GREAT GIFT IDEAS?</h2><br>
+                                                        <h2 class="caption-title line-hgt">LOOKING FOR GREAT GIFT IDEAS?</h2><br>
 														<a class="signup-email" href="<?php echo base_url();?>home/signup"><i class="glyphicon glyphicon-envelope"></i><span>Sign Up with Email</span></a>
 														<a class="signin-facebook" href="/users/auth/facebook"><i class="fa fa-facebook"></i><span>Sign In with Facebook</span></a>
                                                         <h3 class="caption-subtitle">LET US HELP!</h3>
@@ -124,7 +123,7 @@
                             <div class="tab-pane fade" id="tab-1">
                                 <div class="row">
 								<?php foreach($sellers as $s) { ?>
-                                    <div class="col-md-3 col-sm-6">
+                                    <div class="col-md-3 col-sm-6 col-xs-6">
 									
                                         <div class="thumbnail">
                                             <div class="media">
@@ -148,7 +147,7 @@
                             <div class="tab-pane fade active in" id="tab-2">
                                 <div class="row">
 								<?php foreach($newest as $n) { ?>
-                                    <div class="col-md-3 col-sm-6">
+                                    <div class="col-md-3 col-sm-6 col-xs-6">
                                         <div class="thumbnail">
                                             <div class="media">
                                                 <a class="media-link" data-gal="prettyPhoto" href="<?php echo base_url($s->image); ?>">
@@ -170,7 +169,7 @@
                             <div class="tab-pane fade" id="tab-3">
                                 <div class="row">
 								<?php foreach($featured as $f) { ?>
-                                    <div class="col-md-3 col-sm-6">
+                                    <div class="col-md-3 col-sm-6 col-xs-6">
                                         <div class="thumbnail">
                                             <div class="media">
                                                <a class="media-link" data-gal="prettyPhoto" href="<?php echo base_url($s->image); ?>">

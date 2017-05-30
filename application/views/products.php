@@ -64,13 +64,13 @@
                         <div class="row">
                             <!-- SIDEBAR -->
                             <aside class="col-md-3 sidebar" id="sidebar">
-                                <!-- widget search -->
+                                <!-- widget search 
                                 <div class="widget">
                                     <div class="widget-search">
                                         <input class="form-control" type="text" placeholder="Search">
                                         <button><i class="fa fa-search"></i></button>
                                     </div>
-                                </div>
+                                </div>-->
                                 <!-- /widget search -->
                                 <!-- widget shop categories -->
                                 <div class="widget shop-categories">
@@ -118,10 +118,14 @@
                                                 <a class="media-link products-border" href="#">
                                                     <img src="<?php echo base_url($fhp->image); ?>" alt="" class="product-hgt"/>
                                                 </a>
-												<a class="btn-like like btn-like-not-loggedin cboxElement" href="#login-modal">
+												<a  href="<?php if($this->session->userdata("logged_in") != true) { ?> <?php echo base_url('home/login'); } ?>" class="btn-like like btn-like-not-loggedin cboxElement" pid="<?php echo $fhp->id;?>" href="<?php if($this->session->userdata("logged_in") == false) { ?> <?php echo base_url('home/login'); } ?>">
+													<?php if($fhp->liked){ ?>
+													<i class="fa fa-heart-o"></i>
+													<?php }else{ ?>
 													<i class="fa fa-heart"></i>
+													<?php } ?>
 												</a>
-												<a class="btn-profile cboxElement" href="#login-modal">
+												<a class="btn-profile cboxElement" <?php if($this->session->userdata("logged_in") == false) { ?> href="<?php echo base_url('home/login');?>" <?php } else { ?> data-toggle="modal" data-target="#new_gift" <?php } ?> product-id="<?php echo $fhp->id;?>">
 													<i class="fa fa-gift"></i>
 												</a>
                                             </div>
@@ -141,12 +145,11 @@
                     </div>
                 </section>
                 <!-- /PAGE WITH SIDEBAR -->
-
-               
-
             </div>
             <!-- /CONTENT AREA -->
-
+			<!-- Gift Modal -->
+			 <div id="test_modal"></div>
+			  <!--Gift Modal -->
             <!-- FOOTER -->
             <footer class="footer">
                 <div class="footer-widgets">
@@ -263,7 +266,192 @@
         <!--[if (gte IE 9)|!(IE)]><!-->
         <script src="<?php echo base_url(); ?>assets/plugins/jquery.cookie.js"></script>
         <!--<![endif]-->
-
+<script>
+	$(".btn-profile").on("click", function(){
+		var id = $(this).attr("product-id");
+		$('#new_gift').modal('show');
+		$.ajax({
+			url :'<?php echo base_url('home/getGiftDet')?>',
+			type :'POST',
+			dataType :'JSON',
+			data :{"id":id}
+		}).done(function(data){
+			
+			html='';
+			if(data['product']){
+				//alert("ok");
+				html+= '<div class="modal" id="new_gift" role="dialog">'+
+				'<div class="modal-dialog">'+
+				
+				  <!-- Modal content-->
+				  '<div class="modal-content">'+
+					'<div class="modal-body" style="padding-top:0px;">'+
+					  '<div class="col-sm-12 form-group" style="margin-top: 23px;">'+
+					  '<button type="button" id="cboxClose" data-dismiss="modal">close</button>'+
+					  '<div class="row">'+
+						'<div class="product-bg col-md-6 col-sm-6">'+
+							'<div class="product-container">'+
+								'<img src="<?php echo base_url();?>'+data.product.image+'">'+
+								'<hr>'+
+								'<div class="product-details">'+
+									'<h4>'
+									+data.product.name+
+									'</h4>'+
+									'<hr>'+
+									'<p>'+
+									'<span>'+
+									'Price:'+
+									'</span>'+
+									'$'+data.product.price+
+									'</p>'+
+									'<p>'+
+									'<span>'+
+									'Category:'+
+									'</span>'
+									+data.product.category+
+									'</p>'+
+								'</div>'+
+							'</div>'+
+						'</div>'+
+						'<div class="col-sm-6 pick-profile">'+
+							'<h3>'+
+							'Pick a Profile'+
+							'</h3>'+
+							'<hr>';
+						for(var i=0; i<data['profiles'].length;i++){
+						html+='<div class="profile-item ce ';
+						if(data['profiles'][i]['selected'] > 0){
+							html+=' profileitem ';
+						}
+						html+='p-10" id="'+data['profiles'][i]['id']+'" product-id="'+data.product.id+'" style="margin-top: 10px;">'+
+							data['profiles'][i]['name']+
+							'<a href="#" class="remove" id="'+data['profiles'][i]['id']+'" product-id="'+data.product.id+'"><i class="fa fa-times pname-close p-name"></i></a>'+'</div>';
+						}	
+						html+='</div>'+
+					  '</div>'+
+						'</div>'+
+					'</div>'+
+					'<div class="modal-footer" style="border:0px;"></div>'+
+				  '</div>'+
+				  
+				'</div>'+
+			  '</div>';
+			 
+				$("#test_modal").html(html);
+				$('#new_gift').modal('show');
+				
+			}
+		});
+	});
+	$(document).on("click", "a.remove", function(e){
+		e.stopPropagation();var obj= $(this);
+		var id = $(this).attr("id");
+		var pid = $(this).attr("product-id");
+		$.ajax({
+			url :'<?php echo base_url('home/removeProfileProduct')?>',
+			type :'POST',
+			dataType :'JSON',
+			data :{"profileID":id,"productID":pid}
+		}).done(function(data){
+			alert("Product Removed Successfully.");
+			obj.parent().removeClass("profileitem");
+		});
+	});
+	$(document).on("click",".profile-item", function(e){
+		e.preventDefault();
+		var obj = $(this);
+		var id = $(this).attr("id");
+		var pid = $(this).attr("product-id");
+		if(obj.hasClass("ce")){
+			obj.removeClass("ce");
+			$.ajax({
+				url :'<?php echo base_url('home/insCustomProfileProducts')?>',
+				type :'POST',
+				dataType :'JSON',
+				data :{"profileID":id,"productID":pid}
+			}).done(function(data){
+				obj.addClass("ce");
+				obj.addClass("profileitem");
+				alert("Product Added Successfully.");
+			});
+		}
+	});
+	$(".btn-like").on("click", function(){
+		var obj = $(this);
+		var pid = $(this).attr("pid");
+		$.ajax({
+			url : '<?php echo base_url();?>home/insertLikedProducts',
+			type : "POST",
+			dataType : "JSON",
+			data : {"product_id":pid}
+		}).done(function(data){
+			if(data == 1)
+				obj.html('<i class="fa fa-heart-o"></i>');
+			else
+				obj.html('<i class="fa fa-heart"></i>');
+		});
+	});
+	$('.header-search').keypress(function(event){
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		if(keycode == '13'){
+			var searchkey = $("#search").val(); 
+			$.ajax({
+				url : '<?php base_url();?>home/searchProducts',
+				type : 'POST',
+				dataType : 'JSON',
+				data : {"searchkey":searchkey}
+			}).done(function(data){
+				html='';
+				if(data){
+					alert(data);
+				 html+='<div class="row products grid">';
+					 for(var i=0; i<=data['search'].length; i++){
+						html+='<div class="col-md-4 col-sm-6">'+
+							'<div class="thumbnail no-border no-padding">'+
+								'<div class="media">'+
+									'<a class="media-link products-border" href="#">'+
+										'<img src="'+data['search'][i]['image']+'" alt="" class="product-hgt"/>'+
+									'</a>';
+									html+='<a  href="';
+									<?php if($this->session->userdata("logged_in") != true) { ?>
+									<?php echo base_url('home/login'); } ?>  
+									html+='" class="btn-like like btn-like-not-loggedin cboxElement" pid="'+data['search'][i]['id']+'" href="';
+									<?php if($this->session->userdata("logged_in") == false) { ?>
+										<?php echo base_url('home/login'); } ?> 
+									html+='">';
+									if(data['search'][i]['liked']){ 
+										html+='<i class="fa fa-heart-o"></i>';
+									}else{
+										html+='<i class="fa fa-heart"></i>';
+									 }
+									html+='</a>'+
+									'<a class="btn-profile cboxElement"';
+										 <?php if($this->session->userdata("logged_in") == false) { ?>
+									html+='href="';
+									<?php echo base_url('home/login');?>
+									html+='"';
+									<?php } else { ?>
+									html+=' data-toggle="modal" data-target="#new_gift"';
+									<?php } ?> 
+									html+='product-id="'+data['search'][i]['id']+'">'+
+										'<i class="fa fa-gift"></i>'+
+									'</a>'+
+								'</div>'+
+								'<div class="caption text-center">'+
+									'<h4 class="caption-title">'+data['search'][i]['name']+'</h4>'+
+									 '<div class="price"><ins>$'+data['search'][i]['price']+'</div>'+
+								'</div>'+
+							'</div>'+
+						'</div>';
+					 }
+					html+='</div>';
+					$("#content").html(html);
+			}
+			});
+		}
+	});
+	
+</script>
     </body>
 
 <!-- Mirrored from eazzy.me/html/bella-men/category.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 15 May 2017 10:01:34 GMT -->

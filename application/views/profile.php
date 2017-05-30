@@ -21,6 +21,7 @@
         <link href="<?php echo base_url(); ?>assets/css/owl.carousel.min.css" rel="stylesheet">
         <link href="<?php echo base_url(); ?>assets/css/owl.theme.default.min.css" rel="stylesheet">
         <link href="<?php echo base_url(); ?>assets/css/animate.min.css" rel="stylesheet">
+        <link href="<?php echo base_url(); ?>assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 
         <!-- Theme CSS -->
         <link href="<?php echo base_url(); ?>assets/css/theme.css" rel="stylesheet">
@@ -46,7 +47,7 @@
                     <div class="wrap container">
                         <div class="row">
                             <!--start main contain of page-->
-                            <div class="col-lg-9 col-md-9 col-sm-8 tab-content">
+                            <div class="col-lg-9 col-md-9 col-sm-8 tab-content mt-0">
 								<div class="tab-pane fade active in" id="tab-1">
 									<div class="information-title">Your Account Information</div>
 									<div class="details-wrap">
@@ -103,7 +104,7 @@
 											<div class="row">
 												<?php foreach($gifts as $g) { ?>
 													<div class="col-md-3 media">
-														<a href="<?php if(isset($g->link)) echo $g->link;?>" class="" target="_blank"><img src="<?php echo base_url();?><?php if(isset($g->image)) echo $g->image;?>" class="gift-img "></a>
+														<a href="<?php if(isset($g->link)) echo $g->link;?>" class="" target="_blank"><img src="<?php if(isset($g->image)) echo $g->image;?>" class="gift-img "></a>
 														<a class="btn-profile cboxElement gift-like" href="#login-modal">
 															<i class="fa fa-gift"></i>
 														</a>
@@ -123,12 +124,28 @@
 												&nbsp;&nbsp;
 												<?php if(isset($p->reason)) echo "Reason for Gift:&nbsp;". $p->reason;?>
 												&nbsp;&nbsp;
-												<?php if(isset($p->birth_month,$p->birth_day,$p->birth_year)) echo "Date for Gift:&nbsp;".$p->birth_month.",&nbsp;".$p->birth_day.",&nbsp;".$p->birth_year;?>
+												<?php if(isset($p->date_for_gift)) echo "Date for Gift:&nbsp;".$p->date_for_gift;?>
 												&nbsp;&nbsp;
 												<?php if(isset($p->relation)) echo "Relation To You:&nbsp;". $p->relation;?>
 												</span>
+													<div class="row" style="margin-top:0px;">
+													<?php foreach($profileGifts as $pg) { if($pg->custom_profile_id == $p->id){ ?>
+														<div class="col-md-3 media">
+															<a href="<?php if(isset($pg->link)) echo $pg->link;?>" class="" target="_blank"><img src="<?php if(isset($pg->image)) echo $pg->image;?>" class="gift-img "></a>
+															<a class="btn-profile cboxElement gift-like" href="#login-modal">
+																<i class="fa fa-gift"></i>
+															</a>
+															<div class="title">
+																<a target="_blank" href="ZXC" style="font-size: 14px;"><?php if(isset($pg->name)) echo $pg->name;?></a>
+															</div>
+															<div class="price" style="font-size: 14px;">
+																$<?php if(isset($pg->price)) echo $pg->price;?>
+															</div>
+														</div>
+													<?php } } ?>
+													</div>
 												  <div>
-													<a class="update-profile btn btn-primary cboxElement" href="#edit_custom_profile_0" data-toggle="modal" data-target="#new_profile" id=<?php echo $p->id;?>>Edit</a>
+													<a class="update-profile btn btn-primary cboxElement" id=<?php echo $p->id;?>>Edit</a>
 													<button class="remove-profile btn btn-danger" remove_url="/accounts/39/custom_profiles/15/remove_all_product" id=<?php echo $p->id;?>>Remove</button>
 												  </div>
 											  </div>
@@ -167,7 +184,7 @@
 				  <div class="modal-content">
 					<div class="modal-body" style="padding-top:0px;">
 					  <div class="col-sm-12 form-group" style="margin-top: 23px;">
-					  <button type="button" id="cboxClose" data-dismiss="modal">close</button>
+					  <button type="button" id="cboxClose" data-dismiss="modal" style="top:-15px;">close</button>
 					  <form id="giftinfo">
 						  <div class="form-group">
 							<label style="font-weight: bold;" for="gift_name">Gift Name:</label>
@@ -196,14 +213,14 @@
 			  </div>
 			  <!--Gift Modal -->
 			  <!-- Profile Modal -->
-			  <div class="modal fade" id="new_profile"  data-easein="shrinkIn" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="padding-top: 60px;">
+			  <div class="modal fade" id="new_profile" role="dialog" style="padding-top: 60px;">
 				<div class="modal-dialog">
 				
 				  <!-- Modal content-->
 				  <div class="modal-content">
 					<div class="modal-body" style="padding-top:0px;">
-					 <div class="col-sm-12 form-group" style="margin-top: 23px;">
-						 <button type="button" id="cboxClose" data-dismiss="modal">close</button>
+					  <div class="col-sm-12 form-group" style="margin-top: 23px;">
+					  <button type="button" id="cboxClose" data-dismiss="modal" style="top:-15px;">close</button>
 						 <form id="create_profile">
 						  <div class="form-group">
 							<label style="font-weight: bold;" for="custom_profile_name">Profile Name:</label>
@@ -218,159 +235,9 @@
 							  <option value="valentines_day">Valentines Day</option>
 							</select>
 						  </div>
-
-						  <div class="form-group birthday">
-							<label style="font-weight: bold; display: block;" for="custom_profile_birth_month">Date for Gift:</label>
-							<div class="row">
-								<div class="col-md-4">
-								<select name="birth_month" id="birth_month" class="form-control">
-								  <option value="0">Month</option>
-									<option value="January">January</option>
-									<option value="February">February</option>
-									<option value="March">March</option>
-									<option value="April">April</option>
-									<option value="May">May</option>
-									<option value="June">June</option>
-									<option value="July">July</option>
-									<option value="August">August</option>
-									<option value="September">September</option>
-									<option value="October">October</option>
-									<option value="November">November</option>
-									<option value="December">December</option>
-								</select>
-								</div>
-								<div class="col-md-4">
-								<select name="birth_day" id="birth_day" class="form-control">
-								  <option value="0">Day</option>
-									<option value="1">01</option>
-									<option value="2">02</option>
-									<option value="3">03</option>
-									<option value="4">04</option>
-									<option value="5">05</option>
-									<option value="6">06</option>
-									<option value="7">07</option>
-									<option value="8">08</option>
-									<option value="9">09</option>
-									<option value="10">10</option>
-									<option value="11">11</option>
-									<option value="12">12</option>
-									<option value="13">13</option>
-									<option value="14">14</option>
-									<option value="15">15</option>
-									<option value="16">16</option>
-									<option value="17">17</option>
-									<option value="18">18</option>
-									<option value="19">19</option>
-									<option value="20">20</option>
-									<option value="21">21</option>
-									<option value="22">22</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
-									<option value="25">25</option>
-									<option value="26">26</option>
-									<option value="27">27</option>
-									<option value="28">28</option>
-									<option value="29">29</option>
-									<option value="30">30</option>
-									<option value="31">31</option>
-								</select>
-								</div>
-								<div class="col-md-4">
-									<select name="birth_year" id="birth_year" class="form-control">
-									  <option value="0">Year</option>
-										<option value="2016">2016</option>
-										<option value="2015">2015</option>
-										<option value="2014">2014</option>
-										<option value="2013">2013</option>
-										<option value="2012">2012</option>
-										<option value="2011">2011</option>
-										<option value="2010">2010</option>
-										<option value="2009">2009</option>
-										<option value="2008">2008</option>
-										<option value="2007">2007</option>
-										<option value="2006">2006</option>
-										<option value="2005">2005</option>
-										<option value="2004">2004</option>
-										<option value="2003">2003</option>
-										<option value="2002">2002</option>
-										<option value="2001">2001</option>
-										<option value="2000">2000</option>
-										<option value="1999">1999</option>
-										<option value="1998">1998</option>
-										<option value="1997">1997</option>
-										<option value="1996">1996</option>
-										<option value="1995">1995</option>
-										<option value="1994">1994</option>
-										<option value="1993">1993</option>
-										<option value="1992">1992</option>
-										<option value="1991">1991</option>
-										<option value="1990">1990</option>
-										<option value="1989">1989</option>
-										<option value="1988">1988</option>
-										<option value="1987">1987</option>
-										<option value="1986">1986</option>
-										<option value="1985">1985</option>
-										<option value="1984">1984</option>
-										<option value="1983">1983</option>
-										<option value="1982">1982</option>
-										<option value="1981">1981</option>
-										<option value="1980">1980</option>
-										<option value="1979">1979</option>
-										<option value="1978">1978</option>
-										<option value="1977">1977</option>
-										<option value="1976">1976</option>
-										<option value="1975">1975</option>
-										<option value="1974">1974</option>
-										<option value="1973">1973</option>
-										<option value="1972">1972</option>
-										<option value="1971">1971</option>
-										<option value="1970">1970</option>
-										<option value="1969">1969</option>
-										<option value="1968">1968</option>
-										<option value="1967">1967</option>
-										<option value="1966">1966</option>
-										<option value="1965">1965</option>
-										<option value="1964">1964</option>
-										<option value="1963">1963</option>
-										<option value="1962">1962</option>
-										<option value="1961">1961</option>
-										<option value="1960">1960</option>
-										<option value="1959">1959</option>
-										<option value="1958">1958</option>
-										<option value="1957">1957</option>
-										<option value="1956">1956</option>
-										<option value="1955">1955</option>
-										<option value="1954">1954</option>
-										<option value="1953">1953</option>
-										<option value="1952">1952</option>
-										<option value="1951">1951</option>
-										<option value="1950">1950</option>
-										<option value="1949">1949</option>
-										<option value="1948">1948</option>
-										<option value="1947">1947</option>
-										<option value="1946">1946</option>
-										<option value="1945">1945</option>
-										<option value="1944">1944</option>
-										<option value="1943">1943</option>
-										<option value="1942">1942</option>
-										<option value="1941">1941</option>
-										<option value="1940">1940</option>
-										<option value="1939">1939</option>
-										<option value="1938">1938</option>
-										<option value="1937">1937</option>
-										<option value="1936">1936</option>
-										<option value="1935">1935</option>
-										<option value="1934">1934</option>
-										<option value="1933">1933</option>
-										<option value="1932">1932</option>
-										<option value="1931">1931</option>
-										<option value="1930">1930</option>
-										<option value="1929">1929</option>
-										<option value="1928">1928</option>
-										<option value="1927">1927</option>
-									</select>
-								</div>
-							</div>
+						  <div class="form-group">
+							<label style="font-weight: bold;" for="custom_profile_name">Date For Gift:</label>
+							<input class="col-md-3 form-control" placeholder="Profile Name" type="date"  name="datetime" id="datetimepicker">
 						  </div>
 						  <div class="form-group">
 							<label style="font-weight: bold;" for="custom_profile_relation">Relation To You:</label>
@@ -503,6 +370,7 @@
         <script src="<?php echo base_url(); ?>assets/js/jquery.easing.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/js/jquery.smoothscroll.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/js/smooth-scrollbar.min.js"></script>
+        <script src="<?php echo base_url(); ?>assets/js/bootstrap-datetimepicker.min.js"></script>
 
         <!-- JS Page Level -->
         <script src="<?php echo base_url(); ?>assets/js/theme.js"></script>
@@ -512,6 +380,7 @@
        <!--  <script src="assets/js/theme-config.js"></script> -->
         <!--<![endif]-->
 		<script>
+		 
 			$(document).ready(function(){
 				$("#update").click(function(e){
 					e.preventDefault();
@@ -600,18 +469,11 @@
 					error++;
 					$("#reason").parent().append('<div style="color:blue;">This field is rquired</div>');
 				}
-				if($("#birth_month").val() == '' || $("#birth_month").val() == 0){
+				if($("#datetimepicker").val() == '' || $("#birth_month").val() == 0){
 					error++;
-					$("#birth_month").parent().append('<div style="color:blue;">This field is rquired</div>');
+					$("#datetimepicker").parent().append('<div style="color:blue;">This field is rquired</div>');
 				}
-				if($("#birth_day").val() == '' || $("#birth_day").val() == 0){
-					error++;
-					$("#birth_day").parent().append('<div style="color:blue;">This field is rquired</div>');
-				}
-				if($("#birth_year").val() == '' || $("#birth_year").val() == 0){
-					error++;
-					$("#birth_year").parent().append('<div style="color:blue;">This field is rquired</div>');
-				}
+				
 				if($("#relation").val() == ''){
 					error++;
 					$("#relation").parent().append('<div style="color:blue;">This field is rquired</div>');
@@ -642,7 +504,76 @@
 				dataType :'JSON',
 				data :{"id":id}
 			}).done(function(data){
-				
+				html='';
+				if(data){
+					html+= '<div class="modal-dialog">'+
+								  '<div class="modal-content">'+
+									'<div class="modal-body" style="padding-top:0px;">'+
+									  '<div class="col-sm-12 form-group" style="margin-top: 23px;">'+
+									  '<button type="button" id="cboxClose" data-dismiss="modal" style="top:-15px;">close</button>'+
+									 '<form id="edit_profile">'+
+									  '<div class="form-group">'+
+										'<label style="font-weight: bold;" for="custom_profile_name">Profile Name:</label>'+
+										'<input class="form-control" placeholder="Profile Name" type="text" name="name" id="name" value="'+data.name+'">'+
+									  '</div>'+
+									  '<div class="form-group">'+
+										'<label style="font-weight: bold;" for="custom_profile_reason">Reason for Gift:</label>'+
+										'<select class="form-control" name="reason" id="reason" style="width: 160px;">';
+										  html+='<option value="birthday" ';
+										  if(data.reason == "birthday") { html+='selected';}
+										  html+='>Birthday</option>';
+										 html+='<option value="anniversary"';
+										 if(data.reason == "anniversary") { html+='selected';}
+										 html+='>Anniversary</option>';
+										  html+='<option value="valentines_day"';
+										  if(data.reason == "valentines_day") { html+='selected';}
+										  html+='>Valentines Day</option>';
+										html+='</select>'+
+									  '</div>'+
+									 '<div class="form-group">'+
+										'<label style="font-weight: bold;" for="custom_profile_name">Date For Gift:</label>'+
+										'<input class="col-md-3 form-control" placeholder="Date For Gift" type="date"  name="datetime" id="datetimepicker" value="'+data.date_for_gift+'">'+
+									  '</div>'+
+									'<div class="form-group">'+
+										'<label style="font-weight: bold;" for="custom_profile_relation">Relation To You:</label>'+
+										'<select class="form-control" name="relation" id="relation" style="width: 160px;">'+
+											'<option value="friend">Friend</option>';
+												html+='<option value="significant"';
+												if(data.relation == "significant"){html+='selected';}
+												html+='>Significant Other</option>';
+												html+='<option value="mom"';
+												if(data.relation == "mom"){html+='selected';}
+												html+='>Mom</option>';
+												html+='<option value="dad"';
+												if(data.relation == "dad"){html+='selected';}
+												html+='>Dad</option>';
+												html+='<option value="brother"';
+												if(data.relation == "brother"){html+='selected';}
+												html+='>Brother</option>';
+												html+='<option value="sister"';
+												if(data.relation == "sister"){html+='selected';}
+												html+='>Sister</option>';
+												html+='<option value="niece"';
+												if(data.relation == "niece"){html+='selected';}
+												html+='>Daughter/Niece</option>';
+												html+='<option value="nephew"';
+												if(data.relation == "nephew"){html+='selected';}
+												html+='>Son/Nephew</option>';
+												html+='<option value="other"';
+												if(data.relation == "other"){html+='selected';}
+												html+='>Other</option>';
+										html+='</select>'+
+									  '</div>'+
+									  '<input type="button" name="commit" value="Update" class="btn btn-primary" id="editProfile" pid="'+data.id+'" style="margin-bottom: 3px;">'+
+									  '</form>'+
+									'</div>'+
+								'</div>'+
+								'<div class="modal-footer" style="border:0px;"></div>'+
+							  '</div>'+
+							  '</div>';
+						  $("#new_profile").html(html);
+						  $('#new_profile').modal('show');
+				}
 			});
 		});
 		$(".remove-profile").on("click", function(e){
@@ -658,6 +589,26 @@
 					window.location.reload();
 			});
 		});
+		$(document).on("click", "#editProfile", function(e){
+			e.preventDefault();
+			var formdata = new FormData($("#edit_profile")[0]);
+			var id = $(this).attr("pid");
+			$.ajax({
+				url :'<?php echo base_url();?>home/editProfile/'+id,
+				type :'POST',
+				dataType :'JSON',
+				data :formdata,
+				cache : false,
+				contentType : false,
+				processData : false
+			}).done(function(data){
+				alert("profile Updated Successfully.");
+				window.location.reload();
+			});
+		});
+		/* $(document).ready(function(){
+			$( "#datetimepicker" ).datetimepicker();
+		  }); */
 		</script>
 
     </body>

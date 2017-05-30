@@ -35,7 +35,7 @@ class Home extends CI_Controller{
 		$data['sellers'] = $this->home_model->getTopSellers();
 		$data['newest'] = $this->home_model->getNewProducts();
 		$data['featured'] = $this->home_model->getFeaturedProducts();
-		$this->load->view('home',$data);
+		$this->load->view('index',$data);
 	}
 	function signup()
 	{
@@ -50,19 +50,15 @@ class Home extends CI_Controller{
 		$data['account'] = $this->home_model->getMyAccountDet();
 		$data['gifts'] = $this->home_model->getGifts();
 		$data['profile'] = $this->home_model->getProfileDet();
+		$data['profileGifts'] = $this->home_model->getProfileGifts();
 		//var_dump($data['gifts']);exit();
 		$this->load->view('profile',$data);
 	}
-	function updateProfile()
+	function contact()
 	{
 		$data['menu'] = $this->home_model->getMenu();
 		$data['header'] = $this->load->view('header',$data,true);
-		$data['account'] = $this->home_model->getMyAccountDet();
-		$data['gifts'] = $this->home_model->getGifts();
-		$data['profile'] = $this->home_model->getProfileDet();
-		$data['updateprofile'] = $this->home_model->updateProfile();
-		//var_dump($data['updateprofile']);exit();
-		$this->load->view('profile',$data);
+		$this->load->view('contact',$data);
 	}
 	function products($categorySlug = "")
 	{
@@ -70,6 +66,7 @@ class Home extends CI_Controller{
 		 $data['categories'] = $this->home_model->getCategories();
 		 $data['filters'] = $this->home_model->getFilters();
 		 $data['filterKey'] = $this->home_model->getFilterKey();
+		 $data['profile'] = $this->home_model->getProfileDet();
 		 if($categorySlug == "")
 		 $categorySlug = isset($_GET['slug']) ? $_GET['slug'] : NULL;
 		 $filterIDs = isset($_GET['fid']) ? $_GET['fid'] : NULL;
@@ -115,10 +112,37 @@ class Home extends CI_Controller{
 	{
 		echo json_encode($this->home_model->insProfile());
 	}
+	function updateProfile()
+	{
+		echo json_encode($this->home_model->updateProfile());
+	}
+	function editProfile($id="")
+	{
+		echo json_encode($this->home_model->editProfile($id));
+	}
 	function removeProfile()
 	{
 		echo json_encode($this->home_model->removeProfile());
 	}
-	
+	function getGiftDet()
+	{
+		echo json_encode($this->home_model->getGiftDet());
+	}
+	function insCustomProfileProducts()
+	{
+		echo json_encode($this->home_model->insCustomProfileProducts());
+	}
+	function removeProfileProduct()
+	{
+		echo json_encode($this->home_model->removeProfileProduct());
+	}
+	function insertLikedProducts()
+	{
+		echo json_encode($this->home_model->insertLikedProducts());
+	}
+	function searchProducts()
+	{
+		echo json_encode($this->home_model->searchProducts());
+	}
 }
 ?>

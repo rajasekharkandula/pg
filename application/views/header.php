@@ -62,8 +62,16 @@
 				<?php } else { ?>
 				<li class="icon-user"><a href="<?php echo base_url(); ?>home/login"><img src="<?php echo base_url(); ?>assets/img/icon-1.png" alt=""/> <span>Login</span></a></li>
 				<?php } ?>
+				<?php if($this->session->userdata("logged_in") == true) { ?>
 					<li class="icon-user text-right"><a href="<?php echo base_url(); ?>home/logout"><img src="<?php echo base_url(); ?>assets/img/icon-1.png" alt=""/> <span>Logout</span></a></li>
-					<li class="icon-form"><a href="<?php echo base_url(); ?>home/signup"><img src="<?php echo base_url(); ?>assets/img/icon-2.png" alt=""/> <span>Not a Member? <span class="colored">Sign Up</span></span></a></li>
+				<?php } else { ?>
+					<li class="icon-user text-right hide"><a href="<?php echo base_url(); ?>home/logout"><img src="<?php echo base_url(); ?>assets/img/icon-1.png" alt=""/> <span>Logout</span></a></li>
+				<?php } ?>
+					<?php if($this->session->userdata("logged_in") == true) { ?>
+						<li class="icon-form hide"><a href="<?php echo base_url(); ?>home/signup"><img src="<?php echo base_url(); ?>assets/img/icon-2.png" alt=""/> <span>Not a Member? <span class="colored">Sign Up</span></span></a></li>
+					<?php } else { ?>
+						<li class="icon-form"><a href="<?php echo base_url(); ?>home/signup"><img src="<?php echo base_url(); ?>assets/img/icon-2.png" alt=""/> <span>Not a Member? <span class="colored">Sign Up</span></span></a></li>
+					<?php } ?>
 				</ul>
 			</div>
 		</div>
@@ -82,22 +90,27 @@
 
                         <!-- Header search -->
                         <div class="header-search">
-                            <input class="form-control" type="text" placeholder="What are you looking?"/>
-                            <button><i class="fa fa-search"></i></button>
+                            <input class="form-control" type="text" placeholder="What are you looking?" id="search"/>
+							<div class="dropdown">
+								<i onclick="myFunction()" class="fa fa-search dropbtn" id="puser"></i> 
+								  <div id="myDropdown" class="dropdown-content">
+									<span value="products">Products</span>
+									<span value="users">Users</span>
+								  </div>
+							</div>
+                            <!--<button><i class="fa fa-search"></i></button>-->
                         </div>
                         <!-- /Header search -->
 
-                        <!-- Header shopping cart 
+                        <!-- Header shopping cart  -->
                         <div class="header-cart">
                             <div class="cart-wrapper">
-                                <a href="wishlist.html" class="btn btn-theme-transparent hidden-xs hidden-sm"><i class="fa fa-heart"></i></a>
-                                <a href="compare-products.html" class="btn btn-theme-transparent hidden-xs hidden-sm"><i class="fa fa-exchange"></i></a>
-                                <a href="#" class="btn btn-theme-transparent" data-toggle="modal" data-target="#popup-cart"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs"> 0 item(s) - $0.00 </span> <i class="fa fa-angle-down"></i></a>
-                                <!-- Mobile menu toggle button 
+                                
+                                <!-- Mobile menu toggle button  -->
                                 <a href="#" class="menu-toggle btn btn-theme-transparent"><i class="fa fa-bars"></i></a>
-                                <!-- /Mobile menu toggle button 
+                                <!-- /Mobile menu toggle button  -->
                             </div>
-                        </div>-->
+                        </div>
                         <!-- Header shopping cart -->
 
                     </div>
@@ -123,12 +136,36 @@
 									</li>
 								<?php } } ?>
                                 <li><a href="category.html">STORIES & ADVICE</a></li>
-                                <li><a href="contact.html">CONTACT US</a></li>
+                                <li><a href="<?php echo base_url();?>home/contact">CONTACT US</a></li>
                             </ul>
 							
                         </nav>
                         <!-- /Navigation -->
                     </div>
                 </div>
-            </header>
-            <!-- /HEADER -->
+				<script>
+				/* When the user clicks on the button, 
+				toggle between hiding and showing the dropdown content */
+				function myFunction() {
+					document.getElementById("myDropdown").classList.toggle("show");
+				}
+
+				// Close the dropdown if the user clicks outside of it
+				window.onclick = function(event) {
+				  if (!event.target.matches('.dropbtn')) {
+
+					var dropdowns = document.getElementsByClassName("dropdown-content");
+					var i;
+					for (i = 0; i < dropdowns.length; i++) {
+					  var openDropdown = dropdowns[i];
+					  if (openDropdown.classList.contains('show')) {
+						openDropdown.classList.remove('show');
+					  }
+					}
+				  }
+				}
+				
+				
+				</script>
+</header>
+<!-- /HEADER -->
