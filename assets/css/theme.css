@@ -3637,6 +3637,7 @@ input[type=checkbox] {
 .thumbnail .media {
   overflow: hidden;
   position: relative;
+
 }
 .thumbnail .media img {
   max-width: 100%;
@@ -3725,6 +3726,7 @@ input[type=checkbox] {
   position: relative;
   overflow: hidden;
   text-align: center;
+  height:250px;
 }
 .thumbnail .products-border{
 	border-left: 10px solid #ccc;
@@ -7044,6 +7046,7 @@ input[type=checkbox] {
   font-weight: normal;
   margin-top: 0;
 }
+
 @media (min-width: 768px) and (max-width: 991px) {
   .details-box .order-status .btn-theme {
     display: block;

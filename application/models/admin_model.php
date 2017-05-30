@@ -8,7 +8,7 @@ class Admin_model extends CI_Model{
 	
 	public function __construct(){
 		parent::__construct();
-		$this->api_result = array(); 
+		
 	}
 	
 	public function get_report($data){		
@@ -234,13 +234,30 @@ class Admin_model extends CI_Model{
 		if($type == 'INSERT_API_PRODUCTS'){
 			
 			$products = json_decode($this->input->post('products'));
-			$min_age = $this->input->post('min_age');
-			$max_age = $this->input->post('max_age');
-			$category = $this->input->post('category');
-			var_dump($products);exit();
-			/* foreach($products as $p){
-				$this->db->query("INSERT INTO tbl_product (name, description, slug, price, image, product_link, min_age, max_age, gender, category, source, created_date,modified_date,status) VALUES ('$name', '$description', '$slug', '$price', '$image', '$product_link', '$min_age', '$max_age', '$gender', '$category', '$source', NOW(), NOW(),'$status'); ");
-			} */
+			foreach($products as $p){
+				$product = json_decode($p[4]);
+				$name = $product->name;
+				$id = $product->id;
+				$price = $product->price;
+				$image = $product->image;
+				$product_link = $product->url;
+				$min_age = $p[2];
+				$max_age = $p[3];
+				$category = $p[0];
+				$navigation = (array)$p[1];
+				
+				$product = $this->db->query("SELECT * FROM tbl_product WHERE id = $id")->row();
+				if($product){
+					$this->db->query("UPDATE tbl_product SET name = '$name', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', category = '$category', source = 'BEST BUY', modified_date = NOW(), status = 'Active' WHERE id = $id ");
+				}else{
+					$this->db->query("INSERT INTO tbl_product (id,name, price, image, product_link, min_age, max_age, category, source, created_date,modified_date,status) VALUES ($id,'$name', '$price', '$image', '$product_link', '$min_age', '$max_age', '$category', 'BEST BUY', NOW(), NOW(),'Active'); ");
+				}
+				$this->db->query("DELETE FROM tbl_navigation_products WHERE product_id = $id");
+				foreach($navigation as $n){
+					$this->db->query("INSERT INTO tbl_navigation_products(navigation_id,product_id) VALUES($n,$id)");
+				}
+				
+			}
 			
 			$retvalue['status']= true;
 			$retvalue['message']= 'Product saved successfully';
@@ -256,7 +273,7 @@ class Admin_model extends CI_Model{
 		if(file_exists($path) )
 			unlink($path);
 		if(move_uploaded_file($file["tmp_name"],$path))
-			return $path;
+			return base_url($path);
 		else
 			return false;
 	}
@@ -386,14 +403,21 @@ class Admin_model extends CI_Model{
 		$type=$this->input->post('type');
 		$id=(int)$this->input->post('id');
 		$name=(string)$this->input->post('name');
-		$key=(string)$this->input->post('key');
+		$apiKey=(string)$this->input->post('key');
 		$productUrl=(string)$this->input->post('productUrl');
 		$categoryUrl=(string)$this->input->post('categoryUrl');
+		$testUrl=(string)$this->input->post('testURL');
+		$rootPath=(string)$this->input->post('rootPath');
+		$id_depth=(string)$this->input->post('id_depth');
+		$name_depth=(string)$this->input->post('name_depth');
+		$image_depth=(string)$this->input->post('image_depth');
+		$url_depth=(string)$this->input->post('url_depth');
+		$price_depth=(string)$this->input->post('price_depth');
 		$desc=$this->input->post('desc');
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		$count = (int)$this->input->post('count');
 		if($type == "INSERT"){
-			$this->db->query("INSERT INTO tbl_api (name, apiKey, productUrl, categoryUrl, createdDate, status) VALUES ('$name', '$key', '$productUrl', '$categoryUrl', NOW(), '$status')");
+			$this->db->query("INSERT INTO tbl_api (name, apiKey, categoryUrl, productUrl, testUrl, rootPath, id_depth, name_depth, image_depth, url_depth, price_depth, createdDate, status) VALUES ('$name', '$apiKey', '$categoryUrl', '$productUrl', '$testUrl', '$rootPath', '$id_depth', '$name_depth', '$image_depth', '$url_depth', '$price_depth', NOW(), '$status'); ");
 			
 			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_api")->row()->id;
 			for($i=0;$i<$count;$i++){
@@ -406,7 +430,7 @@ class Admin_model extends CI_Model{
 		}
 		
 		if($type == "UPDATE"){
-			$this->db->query("UPDATE tbl_api SET name = '$name', apiKey = '$key', productUrl = '$productUrl', categoryUrl = '$categoryUrl', status = '$status' WHERE id = $id");
+			$this->db->query("UPDATE tbl_api SET name = '$name', apiKey = '$apiKey', categoryUrl = '$categoryUrl', productUrl = '$productUrl', testUrl = '$testUrl', rootPath = '$rootPath', id_depth = '$id_depth', name_depth = '$name_depth', image_depth = '$image_depth', url_depth = '$url_depth', price_depth = '$price_depth', status = '$status' WHERE id = $id ");
 			$this->db->query("DELETE FROM tbl_api_url WHERE apiID = $id");
 			for($i=0;$i<$count;$i++){
 				$name = $this->input->post('name_'.$i);
@@ -456,8 +480,8 @@ class Admin_model extends CI_Model{
 					$product['id'] = $p->sku;
 					$product['name'] = $p->name;
 					$product['price'] = $p->salePrice;
-					if(@file_get_contents($p->thumbnailImage))
-						$product['image'] = $p->thumbnailImage;
+					if(@file_get_contents($p->image))
+						$product['image'] = $p->image;
 					else
 						$product['image'] = base_url($this->config->item('default_image')); 
 					$product['url'] = $p->url;
@@ -688,54 +712,199 @@ class Admin_model extends CI_Model{
 		}
 		
 	}
-	function validate_url(){
-		$url = $this->input->post("apiUrl");
-		$result = file_get_contents($url);
-		$result = json_decode($result,true);
-		$this->api_result = $result;
-		var_dump($result['products'][0]);
-		//var_dump($this->api_result);
-		$result = $this->array_depth($result);
+	function get_products_url(){
+		$url = $this->input->post("url");
+		$apiID = $this->input->post("apiID");
+		$retvalue['status']=false;
+		$api = $this->db->query("SELECT * FROM tbl_api WHERE id = $apiID")->row();
+		if($api){
+			$rootPath = $api->rootPath;
+			$id_depth = $api->id_depth;
+			$name_depth = $api->name_depth;
+			$image_depth = $api->image_depth;
+			$url_depth = $api->url_depth;
+			$price_depth = $api->price_depth;
 		
-		var_dump($result);
-	}
-	function array_depth($array,$test = array(),$depth1 = array())
-	{
-		foreach ($array as $key=>$value)
-		{
-			$temp = array();
-			$temp['key'] = $key;
-			$temp['depth'] = $depth1;
-			array_push($test,$temp);
+			if (filter_var($url, FILTER_VALIDATE_URL) === false) {
 			
-			if (is_array($value))
-			{
-				array_push($depth1,$key);
-				$test = $this->array_depth($value,$test,$depth1);				
+				$retvalue['message']="Test URL is not a valid URL";
+				$retvalue['type']='URL';
+				return $retvalue;
 			}
 			
+			$result = file_get_contents($url);
+			$result = json_decode($result,true);
+			if(count($result) > 0){
+				$products = array();
+				$keys = explode("/",$rootPath);
+				$result = $this->get_array_value($result,$keys);
+				if($result){
+					if(is_array($result)){
+						foreach($result as $r){
+							$product = array();
+							
+							//Id
+							$keys = explode("/",$id_depth);
+							if(is_array($r))
+								$product['id'] = $this->get_array_value($r,$keys);
+							else
+								$product['id'] = $r;
+							
+							//Names
+							$keys = explode("/",$name_depth);
+							if(is_array($r))
+								$product['name'] = $this->get_array_value($r,$keys);
+							else
+								$product['name'] = $r;
+							
+							//Image
+							$keys = explode("/",$image_depth);
+							if(is_array($r))
+								$product['image'] = $this->get_array_value($r,$keys);
+							else
+								$product['image'] = $r;
+							
+							//Product URL
+							$keys = explode("/",$url_depth);
+							if(is_array($r))
+								$product['url'] = $this->get_array_value($r,$keys);
+							else
+								$product['url'] = $r;
+							
+							//Price
+							$keys = explode("/",$price_depth);
+							if(is_array($r))
+								$product['price'] = $this->get_array_value($r,$keys);
+							else
+								$product['price'] = $r;
+							
+							array_push($products,(object)$product);
+						}
+						$retvalue['products'] = $products;
+						$retvalue['status']=true;
+					}else{
+						$retvalue['message']=$rootPath.' is not an array';
+						$retvalue['type']='Root Path';
+					}
+				}else{
+					$retvalue['message']='Inavlid Loop'.$rootPath;
+					$retvalue['type']='Root Path';
+				}
+			}else{
+				$retvalue['message']='No Data Found';
+				$retvalue['type']='URL';
+			}
+		}else{
+			$retvalue['message']='Invalid Api Configuration';
+			$retvalue['type']='URL';
 		}
-		//$depth1 = array();
-		return $test;
-	}
-	function key_get_parents($subject, $array){
-	  foreach ($array as $key => $value)
-	  {
-		if (is_array($value))
-		{
-		  if (in_array($subject, array_keys($value)))
-			return array($key);
-		  else
-		  {
-			$chain = $this->key_get_parents($subject, $value);
-			if (!is_null($chain))
-			  return array_merge(array($key), $chain);
-		  }
-		}
-	  }
-	  return null;
+		
+		return $retvalue;
+		
 	}
 	
+	function validate_url(){
+		$url = $this->input->post("testURL");
+		$rootPath = $this->input->post("rootPath");
+		$id_depth = $this->input->post("id_depth");
+		$name_depth = $this->input->post("name_depth");
+		$image_depth = $this->input->post("image_depth");
+		$url_depth = $this->input->post("url_depth");
+		$price_depth = $this->input->post("price_depth");
+		
+		if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+		
+			$retvalue['message']="Test URL is not a valid URL";
+			$retvalue['type']='URL';
+			return $retvalue;
+		}
+		$product = array();
+		$result = file_get_contents($url);
+		$result = json_decode($result,true);
+		if(count($result) > 0){
+			$products = array();
+			$keys = explode("/",$rootPath);
+			$result = $this->get_array_value($result,$keys);
+			if($result){
+				if(is_array($result)){
+					foreach($result as $r){
+						
+						//Id
+						$keys = explode("/",$id_depth);
+						
+						if(is_array($r))
+							$product['id'] = $this->get_array_value($r,$keys);
+						else
+							$product['id'] = $r;
+						
+						//Names
+						$keys = explode("/",$name_depth);
+						if(is_array($r))
+							$product['name'] = $this->get_array_value($r,$keys);
+						else
+							$product['name'] = $r;
+						
+						//Image
+						$keys = explode("/",$image_depth);
+						if(is_array($r))
+							$product['image'] = $this->get_array_value($r,$keys);
+						else
+							$product['image'] = $r;
+						
+						//Product URL
+						$keys = explode("/",$url_depth);
+						if(is_array($r))
+							$product['url'] = $this->get_array_value($r,$keys);
+						else
+							$product['url'] = $r;
+						
+						//Price
+						$keys = explode("/",$price_depth);
+						if(is_array($r))
+							$product['price'] = $this->get_array_value($r,$keys);
+						else
+							$product['price'] = $r;
+					}
+				}else{
+					$retvalue['message']=$rootPath.' is not an array';
+					$retvalue['type']='Root Path';
+				}
+			}else{
+				$retvalue['message']='Inavlid Loop'.$rootPath;
+				$retvalue['type']='Root Path';
+			}
+		}else{
+			$retvalue['message']='No Data Found';
+			$retvalue['type']='URL';
+		}
+		$retvalue['product'] = $product;
+		return $retvalue;
+		
+	}
+	function get_array_value(array $array, array $indexes)
+	{
+		if (count($array) == 0 || count($indexes) == 0) {
+			return false;
+		}
+
+		$index = array_shift($indexes);
+		if(!array_key_exists($index, $array)){
+			return false;
+		}
+
+		$value = $array[$index];
+		if (count($indexes) == 0) {
+			return $value;
+		}
+
+		if(!is_array($value)) {
+			return false;
+		}
+
+		return $this->get_array_value($value, $indexes);
+	}
+	
+		
 }
 
 ?>

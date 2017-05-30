@@ -33,8 +33,11 @@
         <script src="assets/plugins/iesupport/respond.min.js"></script>
         <![endif]-->
 		<style>
-		.hgt{height:360px !important;}
+		.hgt{width: auto !important;
+    height: 250px !important;}
 		.top-rate{height:220px !important;}
+		.thumbnail.sm .media{height:150px;}
+		.thumbnail.sm img{height:150px !important;}
 		</style>
     </head>
     <body id="home" class="wide header-style-1">
@@ -86,7 +89,7 @@
                             <div class="col-md-6">
                                 <div class="thumbnail thumbnail-banner size-1x3">
                                     <div class="media">
-                                        <a class="media-link" href="#">
+                                        <a class="media-link" href="<?php echo base_url('home/products/'.$b->slideUrl); ?>">
                                             <div class="img-bg" style="background-image: url('<?php echo base_url($b->image); ?>')"></div>
                                             <div class="caption">
                                                 <div class="caption-wrapper div-table">
@@ -123,19 +126,18 @@
                             <!-- tab 1 -->
                             <div class="tab-pane fade" id="tab-1">
                                 <div class="row">
-								<?php foreach($sellers as $s) { ?>
+								<?php foreach($sellers as $r) { ?>
                                     <div class="col-md-3 col-sm-6">
 									
                                         <div class="thumbnail">
                                             <div class="media">
-                                                <a class="media-link" data-gal="prettyPhoto" href="<?php echo base_url($s->image); ?>">
-                                                    <img src="<?php echo base_url($s->image); ?>" alt="" class="hgt"/>
-                                                    <span class="icon-view"><strong><i class="fa fa-eye"></i></strong></span>
+                                                <a href="<?php echo $r->product_link; ?>" target="_blank">
+                                                    <img src="<?php echo $r->image; ?>" alt="" class="hgt"/>
                                                 </a>
                                             </div>
                                             <div class="caption text-center">
-                                                <h4 class="caption-title"><a href="product-details.html"><?php echo $s->name;?></a></h4>
-                                               <div class="price"><ins>$<?php echo $s->price;?></ins></div>
+                                                <h4 class="caption-title"><a href="<?php echo $r->product_link; ?>" target="_blank"><?php echo $r->name;?></a></h4>
+                                               <div class="price"><ins>$<?php echo $r->price;?></ins></div>
                                             </div>
                                         </div>
 										
@@ -147,18 +149,17 @@
                             <!-- tab 2 -->
                             <div class="tab-pane fade active in" id="tab-2">
                                 <div class="row">
-								<?php foreach($newest as $n) { ?>
+								<?php foreach($newest as $r) { ?>
                                     <div class="col-md-3 col-sm-6">
                                         <div class="thumbnail">
                                             <div class="media">
-                                                <a class="media-link" data-gal="prettyPhoto" href="<?php echo base_url($s->image); ?>">
-                                                    <img src="<?php echo base_url($s->image); ?>" alt="" class="hgt"/>
-                                                    <span class="icon-view"><strong><i class="fa fa-eye"></i></strong></span>
+                                                <a href="<?php echo $r->product_link; ?>" target="_blank">
+                                                    <img src="<?php echo $r->image; ?>" alt="" class="hgt"/>
                                                 </a>
                                             </div>
                                             <div class="caption text-center">
-                                                <h4 class="caption-title"><a href="product-details.html"><?php echo $s->name;?></a></h4>
-                                               <div class="price"><ins>$<?php echo $s->price;?></ins></div>
+                                                <h4 class="caption-title"><a href="<?php echo $r->product_link; ?>" target="_blank"><?php echo $r->name;?></a></h4>
+                                               <div class="price"><ins>$<?php echo $r->price;?></ins></div>
                                             </div>
                                         </div>
                                     </div>
@@ -169,18 +170,17 @@
                             <!-- tab 3 -->
                             <div class="tab-pane fade" id="tab-3">
                                 <div class="row">
-								<?php foreach($featured as $f) { ?>
+								<?php foreach($featured as $r) { ?>
                                     <div class="col-md-3 col-sm-6">
                                         <div class="thumbnail">
                                             <div class="media">
-                                               <a class="media-link" data-gal="prettyPhoto" href="<?php echo base_url($s->image); ?>">
-                                                    <img src="<?php echo base_url($s->image); ?>" alt="" class="hgt"/>
-                                                    <span class="icon-view"><strong><i class="fa fa-eye"></i></strong></span>
+                                                <a href="<?php echo $r->product_link; ?>" target="_blank">
+                                                    <img src="<?php echo $r->image; ?>" alt="" class="hgt"/>
                                                 </a>
                                             </div>
                                             <div class="caption text-center">
-                                                <h4 class="caption-title"><a href="product-details.html"><?php echo $f->name;?></a></h4>
-                                               <div class="price"><ins>$<?php echo $f->price;?></ins></div>
+                                                <h4 class="caption-title"><a href="<?php echo $r->product_link; ?>" target="_blank"><?php echo $r->name;?></a></h4>
+                                               <div class="price"><ins>$<?php echo $r->price;?></ins></div>
                                             </div>
                                         </div>
                                     </div>
@@ -211,19 +211,18 @@
                         <h2 class="section-title"><span>Top Rated Products</span></h2>
                         <div class="top-products-carousel">
                             <div class="owl-carousel" id="top-products-carousel">
-							<?php foreach($products as $p) { ?>
-                                <div class="thumbnail">
-                                    <div class="media">
-                                        <a class="media-link" data-gal="prettyPhoto" href="<?php echo base_url($p->image); ?>">
-                                            <img src="<?php echo base_url($p->image); ?>" class="top-rate" alt=""/>
-                                            <span class="icon-view"><strong><i class="fa fa-eye"></i></strong></span>
-                                        </a>
-                                    </div>
-                                    <div class="caption text-center">
-                                        <h4 class="caption-title"><a href="product-details.html"><?php echo $p->name;?></a></h4>
-                                       <div class="price"><ins>$<?php echo $p->price;?>.00</ins></div>
-                                    </div>
-                                </div>
+							<?php foreach($products as $r) { ?>
+                                 <div class="thumbnail sm">
+									<div class="media">
+										<a href="<?php echo $r->product_link; ?>" target="_blank">
+											<img src="<?php echo $r->image; ?>" alt="" class="hgt"/>
+										</a>
+									</div>
+									<div class="caption text-center">
+										<h4 class="caption-title"><a href="<?php echo $r->product_link; ?>" target="_blank"><?php echo $r->name;?></a></h4>
+									   <div class="price"><ins>$<?php echo $r->price;?></ins></div>
+									</div>
+								</div>
 								<?php } ?>
                                </div>
                             </div>

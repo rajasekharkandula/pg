@@ -34,10 +34,9 @@
 			  </li>
 			  <li class="parent <?php if($page == 'CATALOG')echo ' active';?>"><a href="#"><i class="icon mdi mdi-view-list-alt"></i><span>Catalog</span></a>
 				<ul class="sub-menu">
-				  <li><a href="<?php echo base_url('admin/categories'); ?>">Categories</a>
-				  </li>
-				  <li><a href="<?php echo base_url('admin/products'); ?>">Products</a>
-				  </li>
+				  <li><a href="<?php echo base_url('admin/categories'); ?>">Categories</a></li>
+				  <li><a href="<?php echo base_url('admin/products'); ?>">Products</a></li>
+				  <li><a href="<?php echo base_url('admin/user_products'); ?>">User Products</a></li>
 				</ul>
 			  </li>
 			  <li <?php if($page == 'API')echo 'class="active"';?>><a href="<?php echo base_url('admin/api'); ?>"><i class="icon mdi mdi-globe"></i><span>API</span></a>
