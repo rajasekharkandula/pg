@@ -33,8 +33,9 @@
         <script src="assets/plugins/iesupport/respond.min.js"></script>
         <![endif]-->
 		<style>
+
 		.hgt{width: auto !important;
-		 height: 250px !important;}
+    height: 250px !important;}
 		.top-rate{height:220px !important;}
 		.thumbnail.sm .media{height:150px;}
 		.thumbnail.sm img{height:150px !important;}
@@ -126,10 +127,14 @@
                             <!-- tab 1 -->
                             <div class="tab-pane fade" id="tab-1">
                                 <div class="row">
+
 								<?php foreach($sellers as $s) { ?>
                                     <div class="col-md-3 col-sm-6 col-xs-6">
+
 								<?php foreach($sellers as $r) { ?>
                                     <div class="col-md-3 col-sm-6">
+
+									
                                         <div class="thumbnail">
                                             <div class="media">
                                                 <a href="<?php echo $r->product_link; ?>" target="_blank">
@@ -145,15 +150,19 @@
                                     </div>
 								<?php } ?>
                                 </div>
+								<?php } ?>
                             </div>
 
                             <!-- tab 2 -->
                             <div class="tab-pane fade active in" id="tab-2">
                                 <div class="row">
+
 								<?php foreach($newest as $n) { ?>
                                     <div class="col-md-3 col-sm-6 col-xs-6">
+
 								<?php foreach($newest as $r) { ?>
                                     <div class="col-md-3 col-sm-6">
+
                                         <div class="thumbnail">
                                             <div class="media">
                                                 <a href="<?php echo $r->product_link; ?>" target="_blank">
@@ -168,15 +177,19 @@
                                     </div>
 								<?php } ?>
                                 </div>
+								<?php } ?>
                             </div>
 
                             <!-- tab 3 -->
                             <div class="tab-pane fade" id="tab-3">
                                 <div class="row">
+
 								<?php foreach($featured as $f) { ?>
                                     <div class="col-md-3 col-sm-6 col-xs-6">
+
 								<?php foreach($featured as $r) { ?>
                                     <div class="col-md-3 col-sm-6">
+
                                         <div class="thumbnail">
                                             <div class="media">
                                                 <a href="<?php echo $r->product_link; ?>" target="_blank">
@@ -191,6 +204,7 @@
                                     </div>
 									<?php }?>
                                   </div>
+								  <?php }?>
                             </div>
                         </div>
 
@@ -401,7 +415,7 @@
                         <div class="row">
 
                             <div class="col-sm-6">
-                                <div class="copyright">Copyright 2014 BELLA SHOP   |   All Rights Reserved   |   Designed By Jthemes</div>
+                                <div class="copyright">Copyright 2014 Painlessgift   |   All Rights Reserved   |   Designed By Axinovate Technologies LLP</div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="payments">
