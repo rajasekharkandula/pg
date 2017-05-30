@@ -62,6 +62,7 @@ class Admin extends CI_Controller {
 		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
 		$data['product'] = $this->admin_model->get_product(array('type'=>'S','id'=>$id));
+		$data['categories'] = $this->admin_model->get_category(array('type'=>'L'));
 		//var_dump($data['api_categories']);exit();
 		$this->load->view('admin/product',$data);
 	}
@@ -228,8 +229,9 @@ class Admin extends CI_Controller {
 		echo json_encode($this->admin_model->ins_upd_product());
 	}
 	function get_product_from_api(){
-		$data['products'] = $this->admin_model->get_product_from_api();
+		$data['products'] = $this->admin_model->get_products_url();
 		$data['categories'] = $this->admin_model->get_category(array('type'=>'L'));
+		$data['navigations'] = $this->admin_model->get_navigation(array('type'=>'L'));
 		//var_dump($data['products']);exit();
 		echo $this->load->view("admin/api_product_template",$data,true);
 	}
@@ -244,6 +246,9 @@ class Admin extends CI_Controller {
 		var_dump($this->input->post('products'));
 	}
 	function validate_url(){
+		echo json_encode($this->admin_model->validate_url());
+	}
+	function test_api(){
 		echo json_encode($this->admin_model->validate_url());
 	}
 }

@@ -16,7 +16,7 @@ class Home extends CI_Controller{
 		$data['sellers'] = $this->home_model->getTopSellers();
 		$data['newest'] = $this->home_model->getNewProducts();
 		$data['featured'] = $this->home_model->getFeaturedProducts();
-		//var_dump($data['menu']);exit();
+		//var_dump($data['newest']);exit();
 		$this->load->view('index',$data);
 	}
 	function login()
@@ -60,7 +60,7 @@ class Home extends CI_Controller{
 		$data['header'] = $this->load->view('header',$data,true);
 		$this->load->view('contact',$data);
 	}
-	function products($categorySlug = "")
+	function products($navigationSlug = "")
 	{
 		 $data['menu'] = $this->home_model->getMenu();
 		 $data['categories'] = $this->home_model->getCategories();
@@ -69,17 +69,19 @@ class Home extends CI_Controller{
 		 $data['profile'] = $this->home_model->getProfileDet();
 		 if($categorySlug == "")
 		 $categorySlug = isset($_GET['slug']) ? $_GET['slug'] : NULL;
+		 if($navigationSlug == "")
+		 $navigationSlug = isset($_GET['slug']) ? $_GET['slug'] : NULL;
 		 $filterIDs = isset($_GET['fid']) ? $_GET['fid'] : NULL;
 		 $search = array(
 			'type'=>'SEARCH',
-			'categorySlug' => $categorySlug,
+			'navigationSlug' => $navigationSlug,
 			'filterIDs' => $filterIDs
 		 );
-		 $data['categorySlug'] = $categorySlug;
+		 $data['navigationSlug'] = $navigationSlug;
 		 $data['filterIDs'] = $filterIDs;
 		 $data['products'] = $this->home_model->getProducts($search);
 		 
-		 $data['categoryName'] = $this->home_model->getCategoriesBySlug($categorySlug);
+		 $data['navigation'] = $this->home_model->getNavigationBySlug($navigationSlug);
 		 
 		 $data['header'] = $this->load->view('header',$data,true);
 		 //var_dump($data['products']);exit();

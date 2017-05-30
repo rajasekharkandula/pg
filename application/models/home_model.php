@@ -92,25 +92,25 @@ class Home_model extends CI_Model{
 	 }
 	 function getTopRated()
 	 {
-		 $query = $this->db->query("select id,name,price,image from tbl_product")->result();
+		 $query = $this->db->query("select * from tbl_product")->result();
 		 mysqli_next_result($this->db->conn_id);
 		 return $query;
 	 }
 	 function getTopSellers()
 	 {
-		 $query = $this->db->query("select id,name,price,image from tbl_product")->result();
+		 $query = $this->db->query("select * from tbl_product LIMIT 4")->result();
 		 mysqli_next_result($this->db->conn_id);
 		 return $query;
 	 } 
 	 function getNewProducts()
 	 {
-		 $query = $this->db->query("select id,name,price,image from tbl_product order by name asc limit 4")->result();
+		 $query = $this->db->query("select * from tbl_product order by name asc limit 4")->result();
 		 mysqli_next_result($this->db->conn_id);
 		 return $query;
 	 }
 	 function getFeaturedProducts()
 	 {
-		 $query = $this->db->query("select id,name,price,image from tbl_product")->result();
+		 $query = $this->db->query("select * from tbl_product LIMIT 4")->result();
 		 mysqli_next_result($this->db->conn_id);
 		 return $query;
 	 } 
@@ -135,22 +135,29 @@ class Home_model extends CI_Model{
 	 function getProducts($data)
 	 {
 		 $type = isset($data['type']) ? $data['type'] : '';
-		 $categorySlug = isset($data['categorySlug']) ? $data['categorySlug'] : '';
+		 $navigationSlug = isset($data['navigationSlug']) ? $data['navigationSlug'] : '';
 		 $filterIDs = isset($data['filterIDs']) ? $data['filterIDs'] : '';
 		 $userID = $this->session->userdata("userID");
 		if($type == 'SEARCH'){
 			$str = "SELECT *,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$userID' AND product_id = p.id) AS liked FROM tbl_product p WHERE p.status = 'Active' ";
 			/* if($categorySlug != NULL && $categorySlug !=''){
 				$str.=" AND id IN (SELECT cp.product_id FROM categories_products cp INNER JOIN categories c ON c.id = cp.category_id WHERE c.slug = '$categorySlug') ";
+			$str = "SELECT * FROM tbl_product WHERE status = 'Active' ";
+			if($navigationSlug != NULL && $navigationSlug !=''){
+				$query = $this->db->query("SELECT id FROM tbl_navigation n WHERE n.slug = '$navigationSlug' OR n.parent_id IN (SELECT id FROM tbl_navigation WHERE slug = '$navigationSlug')")->result();
+				$ids = array();
+				foreach($query as $r)array_push($ids,$r->id);
+				$ids = implode(",",$ids);
+				$str.=" AND id IN (SELECT product_id FROM tbl_navigation_products WHERE navigation_id IN ($ids)) ";
 			}
-			if($filterIDs != NULL && $filterIDs !=''){
+			/* if($filterIDs != NULL && $filterIDs !=''){
 				$str.=" AND id IN (SELECT product_id FROM tbl_filter_products WHERE filter_id IN ($filterIDs))";
 			} */
 			return $this->db->query($str)->result();
 		}
 		 
 	 }
-	 function getCategoriesBySlug($slug)
+	 function getNavigationBySlug($slug)
 	 {
 		 $query = $this->db->query("select name from tbl_navigation where slug='$slug'")->row();
 		 mysqli_next_result($this->db->conn_id);

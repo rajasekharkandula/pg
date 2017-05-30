@@ -120,30 +120,56 @@
 			  $("#max_age_"+id).attr("disabled",true);
 		  }
 	  });
-	  $("#submit_btn").on("click",function(){
-		var error=1;$(".text-danger").remove();
+	  $(document).on("click","#submit_btn",function(){
+		var error=0;$(".text-danger").remove();
+		//alert("ok");
 		$(".select_product").each(function(){
-			if($(this).is(":checked")){
-				alert('ok');
-				//error++;
-				//$(this).parent().append('<div class="text-danger">This field is required</div>');
+			var obj = $(this);
+			if(obj.is(":checked")){
+				var id = obj.data("id");
+				if($("#category_"+id).val() == '' || $("#category_"+id).val() == null){
+					error++;
+					$("#category_"+id).parent().append('<div class="text-danger">This field is required</div>');
+				}
+				if($("#navigation_"+id).val() == '' || $("#navigation_"+id).val() == null){
+					error++;
+					$("#navigation_"+id).parent().append('<div class="text-danger">This field is required</div>');
+				}
+				if($("#min_age_"+id).val() == ''){
+					error++;
+					$("#min_age_"+id).parent().append('<div class="text-danger">This field is required</div>');
+				}
+				if($("#max_age_"+id).val() == ''){
+					error++;
+					$("#max_age_"+id).parent().append('<div class="text-danger">This field is required</div>');
+				}
 			}
 		});
-		var products = [];
-		$("#products_list .select_product").each(function(){
-		  if($(this).is(":checked"))
-			products.push($(this).val());
+		var products = [];var ic = 0;
+		$(".select_product").each(function(){
+		  if($(this).is(":checked")){
+			var id = $(this).data("id");
+			var product = [];
+			product[0] = $("#category_"+id).val();
+			product[1] = $("#navigation_"+id).val();
+			product[2] = $("#min_age_"+id).val();
+			product[3] = $("#max_age_"+id).val();
+			product[4] = $(this).val();
+			products[ic] = product;
+			ic++;
+		  }
 		});
 		if(products.length == 0){
 			error++;
 			$.notify({ message: 'Please select atleast one product.' },{type: 'danger'}); 
 		}
+		//alert(error);
 		if(error == 0){
-			//$("#submit_btn").attr("disabled",true);
-			
+			$("#submit_btn").attr("disabled",true);
+			$("#submit_btn").html("Please waite...");
 			var formData = new FormData($("#product_form")[0]);
 			formData.append('type','INSERT_API_PRODUCTS');
-			formData.append('products',products);
+			formData.append('products',JSON.stringify(products));
 			$.ajax({
 				url:'<?php echo base_url('admin/ins_upd_product');?>',
 				type:'POST',

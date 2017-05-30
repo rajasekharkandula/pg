@@ -31,16 +31,49 @@
                     </div>
 					
 					<div class="form-group">
-                      <label class="col-sm-3">API Test Url <span>*</span>
-						<br>(Product List URL)
-					  </label>
+                      <label class="col-sm-3">Test URL <span>*</span></label>
                       <div class="col-sm-6">
-                        <input req="true" type="text" class="form-control" id="testURL">
+                        <input req="true" type="text" class="form-control" id="testUrl" name="testURL" value="<?php if(isset($api->testUrl))echo $api->testUrl; ?>">
                       </div>
-					  <div class="4">
-						<button class="btn btn-sm" type="button" id="fetch">Fetch</button>
+					</div>
+					
+					<div class="form-group">
+                      <label class="col-sm-3">JSON Root Path <span>*</span></label>
+                      <div class="col-sm-6">
+                        <input req="true" type="text" class="form-control" id="rootPath" name="rootPath" value="<?php if(isset($api->rootPath))echo $api->rootPath; ?>">
                       </div>
-                    </div>
+					</div>
+					
+					<div class="form-group">
+                      <label class="col-sm-3">ID<span>*</span></label>
+                      <div class="col-sm-6">
+                        <input req="true" type="text" class="form-control" placeholder="JSON Product ID depth" id="id_depth" name="id_depth" value="<?php if(isset($api->id_depth))echo $api->id_depth; ?>">
+                      </div>
+					</div>
+					<div class="form-group">
+                      <label class="col-sm-3">Name<span>*</span></label>
+                      <div class="col-sm-6">
+                        <input req="true" type="text" class="form-control" placeholder="JSON Product Name Depth" name="name_depth" id="name_depth" value="<?php if(isset($api->name_depth))echo $api->name_depth; ?>">
+                      </div>					  
+					</div>
+					<div class="form-group">
+                      <label class="col-sm-3">Image<span>*</span></label>
+                      <div class="col-sm-6">
+                        <input req="true" type="text" class="form-control" placeholder="JSON Product Image Depth" name="image_depth" id="image_depth" value="<?php if(isset($api->image_depth))echo $api->image_depth; ?>">
+                      </div>
+					</div>
+					<div class="form-group">
+                      <label class="col-sm-3">Product URL<span>*</span></label>
+                      <div class="col-sm-6">
+                        <input req="true" type="text" class="form-control" placeholder="JSON Product URL Depth" name="url_depth" id="url_depth" value="<?php if(isset($api->url_depth))echo $api->url_depth; ?>">
+                      </div>
+					</div>
+					<div class="form-group">
+                      <label class="col-sm-3">Price<span>*</span></label>
+                      <div class="col-sm-6">
+                        <input req="true" type="text" class="form-control" placeholder="JSON Product Price Depth" name="price_depth" id="price_depth" value="<?php if(isset($api->price_depth))echo $api->price_depth; ?>">
+                      </div>
+					</div>
 					
 					<div class="url_div" id="url_div">
 						<?php $i=0;foreach($api_url as $u){ ?>
@@ -91,16 +124,108 @@
 		App.init();
       	App.dataTables();
       });
-	  $("#fetch").on("click",function(){
-		var apiUrl = $("#testURL").val();
-		$.ajax({
-			url:'<?php echo base_url('admin/validate_url');?>',
-			type:'POST',
-			data:{'apiUrl':apiUrl},
-			dataType:'JSON'
-		}).success(function(data){
-			
+	  $("#submit_btn").on("click",function(){
+		
+		var error=0;$(".text-danger").remove();
+		$("#api_form input").each(function(){
+			if($(this).attr("req") == "true" && $(this).val().trim() == ""){
+				error++;
+				$(this).parent().append('<div class="text-danger">This field is required</div>');
+			}
 		});
+		
+		var testURL = $("#testUrl").val();
+		var rootPath = $("#rootPath").val();
+		var id_depth = $("#id_depth").val();
+		var name_depth = $("#name_depth").val();
+		var image_depth = $("#image_depth").val();
+		var url_depth = $("#url_depth").val();
+		var price_depth = $("#price_depth").val();
+		if(error == 0){
+			$("#submit_btn").attr("disabled",true);
+			$("#submit_btn").html("Please wait...");
+			$.ajax({
+				url:'<?php echo base_url('admin/validate_url');?>',
+				type:'POST',
+				data:{'testURL':testURL,'rootPath':rootPath,'id_depth':id_depth,'name_depth':name_depth,'image_depth':image_depth,'url_depth':url_depth,'price_depth':price_depth},
+				dataType:'JSON'
+			}).success(function(data){
+				$("input").removeClass("has-error");
+				$("input").removeClass("has-success");
+				if(data.product.id == 'undefined' || data.product.id == false){
+					$("#id_depth").addClass("has-error");
+					error++;
+					$("#id_depth").parent().append('<div class="text-danger">Invalid</div>');
+				}
+				else
+					$("#id_depth").addClass("has-success");
+				
+				if(data.product.name == 'undefined' || data.product.name == false){
+					$("#name_depth").addClass("has-error");
+					error++;
+					$("#name_depth").parent().append('<div class="text-danger">Invalid</div>');
+				}
+				else
+					$("#name_depth").addClass("has-success");
+				
+				if(data.product.image == 'undefined' || data.product.image == false){
+					$("#image_depth").addClass("has-error");
+					error++;
+					$("#image_depth").parent().append('<div class="text-danger">Invalid</div>');
+				}
+				else
+					$("#image_depth").addClass("has-success");
+				
+				if(data.product.url == 'undefined' || data.product.url == false){
+					$("#url_depth").addClass("has-error");
+					error++;
+					$("#url_depth").parent().append('<div class="text-danger">Invalid</div>');
+				}
+				else
+					$("#url_depth").addClass("has-success");
+				
+				if(data.product.price == 'undefined' || data.product.price == false){
+					$("#price_depth").addClass("has-error");
+					error++;
+					$("#price_depth").parent().append('<div class="text-danger">Invalid</div>');
+				}
+				else
+					$("#price_depth").addClass("has-success");
+				
+				if(error == 0){
+					$("#submit_btn").attr("disabled",true);
+					var formData = new FormData($("#api_form")[0]);
+					<?php if(isset($api->id)){ ?>
+					formData.append('type','UPDATE');
+					formData.append('id','<?php echo $api->id;?>');
+					<?php }else{ ?>
+					formData.append('type','INSERT');
+					<?php } ?>
+					formData.append('count',$("#url_div .url").length);
+					$.ajax({
+						url:'<?php echo base_url('admin/ins_upd_api');?>',
+						type:'POST',
+						data:formData,
+						dataType:'JSON',
+						cache: false,
+						contentType: false,
+						processData: false
+					}).success(function(data){
+						
+						if(data.status){
+							$.notify({ message: data.message },{type: 'success'});
+							setTimeout(function(){window.location = '<?php echo base_url(); ?>admin/api';},2000);
+						}else{
+							$.notify({ message: data.message },{type: 'danger'});
+						}
+					});
+				}else{
+					$("#submit_btn").removeAttr("disabled");
+					$("#submit_btn").html("Submit");
+				}
+				
+			});
+		}
 	  });
 	  $("#add_url").on("click",function(){
 		  var count = $("#url_div .url").length;
@@ -127,43 +252,7 @@
 		  var count = $(this).data("count");
 		  $("#urlbox_"+count).remove();
 	  });
-	  $("#submit_btn").on("click",function(){
-		var error=0;$(".text-danger").remove();
-		$("#api_form input").each(function(){
-			if($(this).attr("req") == "true" && $(this).val().trim() == ""){
-				error++;
-				$(this).parent().append('<div class="text-danger">This field is required</div>');
-			}
-		});
-		if(error == 0){
-			$("#submit_btn").attr("disabled",true);
-			var formData = new FormData($("#api_form")[0]);
-			<?php if(isset($api->id)){ ?>
-			formData.append('type','UPDATE');
-			formData.append('id','<?php echo $api->id;?>');
-			<?php }else{ ?>
-			formData.append('type','INSERT');
-			<?php } ?>
-			formData.append('count',$("#url_div .url").length);
-			$.ajax({
-				url:'<?php echo base_url('admin/ins_upd_api');?>',
-				type:'POST',
-				data:formData,
-				dataType:'JSON',
-				cache: false,
-				contentType: false,
-				processData: false
-			}).success(function(data){
-				
-				if(data.status){
-					$.notify({ message: data.message },{type: 'success'});
-					setTimeout(function(){window.location = '<?php echo base_url(); ?>admin/api';},2000);
-				}else{
-					$.notify({ message: data.message },{type: 'danger'});
-				}
-			});
-		}
-	  });
+	 
 	  
     </script>
 	

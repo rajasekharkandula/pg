@@ -40,7 +40,7 @@
 					  <tr>
                         <td><?php echo $i; ?></td>
                         <td><?php echo $p->name; ?></td>
-                        <td><img src="<?php echo base_url($p->image); ?>" width="40px" height="40px"></td>
+                        <td><img src="<?php echo $p->image; ?>" width="40px" height="40px"></td>
                         <td><?php echo $this->config->item('currency').$p->price; ?></td>
                         <td><?php echo $p->source; ?></td>
                         <td>

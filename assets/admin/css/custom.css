@@ -120,3 +120,9 @@ img.preview{width:300px;height:200px;}
 .api_products td img{
 	height:50px;
 }
+.has-error{
+	border:1px solid red;
+}
+.has-success{
+	border:1px solid green;
+}

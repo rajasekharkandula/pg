@@ -52,7 +52,7 @@
                 <section class="page-section breadcrumbs">
                     <div class="container">
                         <div class="page-header">
-                            <h1><?php if(isset($categoryName->name))echo $categoryName->name;?></h1>
+                            <h1><?php if(isset($navigation->name))echo $navigation->name;?></h1>
                         </div>
                     </div>
                 </section>
@@ -87,8 +87,8 @@
 														?>
 														<li>
 															<?php $url = base_url('home/products'); 
-															if($categorySlug != '' && $categorySlug != NULL)
-																$url.='/'.$categorySlug;
+															if($navigationSlug != '' && $navigationSlug != NULL)
+																$url.='/'.$navigationSlug;
 															if($filterIDs != '' && $filterIDs != NULL)
 																$url.='?fid='.$filterIDs.','.$c->id;
 															else
@@ -115,8 +115,8 @@
                                     <div class="col-md-4 col-sm-6">
                                         <div class="thumbnail no-border no-padding">
                                             <div class="media">
-                                                <a class="media-link products-border" href="#">
-                                                    <img src="<?php echo base_url($fhp->image); ?>" alt="" class="product-hgt"/>
+                                                <a class="media-link products-border" href="<?php echo $fhp->product_link; ?>" target="_blank">
+                                                    <img src="<?php echo $fhp->image; ?>" alt="" class="product-hgt"/>
                                                 </a>
 												<a  href="<?php if($this->session->userdata("logged_in") != true) { ?> <?php echo base_url('home/login'); } ?>" class="btn-like like btn-like-not-loggedin cboxElement" pid="<?php echo $fhp->id;?>" href="<?php if($this->session->userdata("logged_in") == false) { ?> <?php echo base_url('home/login'); } ?>">
 													<?php if($fhp->liked){ ?>

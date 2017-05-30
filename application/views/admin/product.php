@@ -24,6 +24,17 @@
                         <input req="true" type="text" class="form-control" name="name" value="<?php if(isset($product->name))echo $product->name; ?>">
                       </div>
                     </div>
+					<div class="form-group">
+                      <label class="col-sm-3">Category <span>*</span></label>
+                      <div class="col-sm-6">
+                        <select class="select2" name="category" data-placeholder="Select">
+							<option></option>
+							<?php foreach($categories as $c){ ?>
+							<option value="<?php echo $c->id; ?>" <?php if(isset($product->category))if($product->category == $c->id) echo 'selected'; ?>><?php echo $c->name; ?></option>
+							<?php } ?>
+						</select>
+					  </div>
+                    </div>
                     
 					<div class="form-group">
                       <label class="col-sm-3">Description <span>*</span></label>
@@ -45,7 +56,7 @@
 						<input type="file" name="image" id="image" onchange="return Upload('image',200,200)">
 						<input type="hidden" name="uploaded_img" id="uploaded_img" value="<?php if(isset($product->image))echo $product->image;?>">
 						<?php if(isset($product->image)){?>
-						<img class="preview" src="<?php echo base_url($product->image);?>">
+						<img class="preview" src="<?php echo $product->image;?>">
 						<?php } ?>
                       </div>
                     </div>
