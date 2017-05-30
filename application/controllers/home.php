@@ -67,7 +67,7 @@ class Home extends CI_Controller{
 		 $data['filters'] = $this->home_model->getFilters();
 		 $data['filterKey'] = $this->home_model->getFilterKey();
 		 $data['profile'] = $this->home_model->getProfileDet();
-		 if($categorySlug == "")
+		 //if($categorySlug == "")
 		 $categorySlug = isset($_GET['slug']) ? $_GET['slug'] : NULL;
 		 if($navigationSlug == "")
 		 $navigationSlug = isset($_GET['slug']) ? $_GET['slug'] : NULL;

@@ -281,7 +281,7 @@
 			if(data['product']){
 				//alert("ok");
 				html+= '<div class="modal" id="new_gift" role="dialog">'+
-				'<div class="modal-dialog">'+
+				'<div class="modal-dialog" style="padding-top:30px;">'+
 				
 				  <!-- Modal content-->
 				  '<div class="modal-content">'+
@@ -291,7 +291,7 @@
 					  '<div class="row">'+
 						'<div class="product-bg col-md-6 col-sm-6">'+
 							'<div class="product-container">'+
-								'<img src="<?php echo base_url();?>'+data.product.image+'">'+
+								'<img src="'+data.product.image+'">'+
 								'<hr>'+
 								'<div class="product-details">'+
 									'<h4>'
