@@ -126,3 +126,7 @@ img.preview{width:300px;height:200px;}
 .has-success{
 	border:1px solid green;
 }
+.select2{
+	width:100%;
+	display:table;
+}

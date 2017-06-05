@@ -51,6 +51,8 @@
 			  </li>
 			  <li <?php if($page == 'CMS')echo 'class="active"';?>><a href="<?php echo base_url('admin/pages'); ?>"><i class="icon mdi mdi-window-restore"></i><span>CMS</span></a>
 			  </li>
+			  <li <?php if($page == 'HOME')echo 'class="active"';?>><a href="<?php echo base_url('admin/sections'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Home Page Sections</span></a>
+			  </li>
 			</ul>
 		  </div>
 		</div>

@@ -547,6 +547,64 @@ class Admin_model extends CI_Model{
 			return $this->db->query("SELECT * FROM tbl_slide ORDER BY id DESC")->result();
 		}	
 	}
+	function ins_upd_section(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$name=(string)$this->input->post('name');
+		$order=(int)$this->input->post('order');
+		$description=(string)$this->input->post('description');
+		$products=(array)$this->input->post('products');
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		
+		
+		if($type == "INSERT"){
+			$this->db->query("INSERT INTO tbl_section (name, sortingOrder, description, createdDate, status) VALUES ('$name', '$order', '$description', NOW(), '$status')");
+			
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_section")->row()->id;
+			$this->db->query("DELETE FROM tbl_section_products WHERE section_id = $id");
+			foreach($products as $p){
+				$this->db->query("INSERT INTO tbl_section_products (section_id, product_id) VALUES ($id, $p)");
+			}
+			$retvalue['status']= true;
+			$retvalue['message']= 'Section created successfully';
+		}
+		
+		if($type == "UPDATE"){
+			$this->db->query("UPDATE tbl_section SET name = '$name', sortingOrder = '$order', description = '$description', status = '$status' WHERE id = $id");
+			$this->db->query("DELETE FROM tbl_section_products WHERE section_id=$id");
+			foreach($products as $p){
+				$this->db->query("INSERT INTO tbl_section_products (section_id, product_id) VALUES ($id, $p)");
+			}
+			$retvalue['status']= true;
+			$retvalue['message']= 'Section updated successfully';
+		}
+		
+		if($type == "DELETE"){
+			$this->db->query("DELETE FROM tbl_section WHERE id = $id");
+			$this->db->query("DELETE FROM tbl_section_products WHERE section_id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Section deleted successfully';
+		}
+		return $retvalue;
+	}
+	
+	public function get_section($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_section WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_section ORDER BY id DESC")->result();
+		}
+		if($type == 'PRODUCTS'){
+			return $this->db->query("SELECT * FROM tbl_section_products WHERE section_id = $id")->result();
+		}	
+	}
 	
 	function ins_upd_navigation(){
 		$retvalue['status']= false;$retvalue['message']= 'Please try again later';

@@ -8,51 +8,121 @@ class Home extends CI_Controller{
 	}
 	function index(){
 	
-		$data['menu'] = $this->home_model->getMenu();
-		 $data['header'] = $this->load->view('header',$data,true);
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		
 		$data['slides'] = $this->home_model->getSlides();
 		$data['banners'] = $this->home_model->getBanners();
-		$data['products'] = $this->home_model->getTopRated();
-		$data['sellers'] = $this->home_model->getTopSellers();
-		$data['newest'] = $this->home_model->getNewProducts();
-		$data['featured'] = $this->home_model->getFeaturedProducts();
-		//var_dump($data['newest']);exit();
+		$data['sections'] = $this->home_model->getSections();
 		$this->load->view('index',$data);
 	}
-	function login()
-	{
-		$data['menu'] = $this->home_model->getMenu();
-		$data['header'] = $this->load->view('header',$data,true);
+	function signin(){
+		if($this->session->userdata('logged_in') == true)redirect('home');
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
 		$this->load->view('login',$data);
+	}
+	function signup(){
+		if($this->session->userdata('logged_in') == true)redirect('home');
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		$this->load->view('register',$data);
+	}
+	function login(){
+		echo json_encode($this->home_model->login());
+	}
+	function register(){
+		echo json_encode($this->home_model->register());
 	}
 	function logout(){
 		$this->session->sess_destroy();
-		$data['menu'] = $this->home_model->getMenu();
-		$data['header'] = $this->load->view('header',$data,true);
-		$data['slides'] = $this->home_model->getSlides();
-		$data['banners'] = $this->home_model->getBanners();
-		$data['products'] = $this->home_model->getTopRated();
-		$data['sellers'] = $this->home_model->getTopSellers();
-		$data['newest'] = $this->home_model->getNewProducts();
-		$data['featured'] = $this->home_model->getFeaturedProducts();
-		$this->load->view('index',$data);
+		redirect('home');
 	}
-	function signup()
-	{
-		$data['menu'] = $this->home_model->getMenu();
-		$data['header'] = $this->load->view('header',$data,true);
-		$this->load->view('signup',$data);
-	}
-	function profile()
-	{
-		$data['menu'] = $this->home_model->getMenu();
-		$data['header'] = $this->load->view('header',$data,true);
-		$data['account'] = $this->home_model->getMyAccountDet();
-		$data['gifts'] = $this->home_model->getGifts();
-		$data['profile'] = $this->home_model->getProfileDet();
-		$data['profileGifts'] = $this->home_model->getProfileGifts();
-		//var_dump($data['gifts']);exit();
+	function profile(){
+		if($this->session->userdata('logged_in') == false)redirect('home/signin');
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		$data['user'] = $this->home_model->get_user(array('type'=>'S','userID'=>$this->session->userdata('userID')));
+		//var_dump($data['user']);exit();
 		$this->load->view('profile',$data);
+	}
+	function update_user(){
+		echo json_encode($this->home_model->update_user());
+	}
+	function reset_password(){
+		if($this->session->userdata('logged_in') == false)redirect('home/signin');
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		$this->load->view('reset_password',$data);
+	}
+	function change_password(){
+		echo json_encode($this->home_model->change_password());
+	}
+	function likes(){
+		if($this->session->userdata('logged_in') == false)redirect('home/signin');
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		$data['products'] = $this->home_model->get_likes(array('type'=>'L','userID'=>$this->session->userdata('userID')));
+		//var_dump($data['user']);exit();
+		$this->load->view('likes',$data);
+	}
+	function profiles(){
+		if($this->session->userdata('logged_in') == false)redirect('home/signin');
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		$data['profiles'] = $this->home_model->get_profile(array('type'=>'L','userID'=>$this->session->userdata('userID')));
+		$data['products'] = $this->home_model->get_profile(array('type'=>'PRODUCTS','userID'=>$this->session->userdata('userID')));
+		//var_dump($data['profiles']);exit();
+		$this->load->view('profiles',$data);
+	}
+	function get_profile(){
+		$data = array(
+			'type'=>$this->input->post('type'),
+			'id'=>$this->input->post('id'),
+			'userID'=>$this->input->post('userID')
+		);
+		echo json_encode($this->home_model->get_profile($data));
+	}
+	function get_product(){
+		$data = array(
+			'type'=>$this->input->post('type'),
+			'id'=>$this->input->post('id'),
+			'userID'=>$this->input->post('userID')
+		);
+		echo json_encode($this->home_model->get_product($data));
+	}
+	function get_gift_modal(){
+		$data = array(
+			'type'=>$this->input->post('type'),
+			'id'=>$this->input->post('id'),
+			'userID'=>$this->input->post('userID')
+		);
+		$data = $this->home_model->get_product($data);
+		//var_dump($data);exit();
+		echo $this->load->view('gift_template',$data);;
+	}
+	function ins_upd_profile(){
+		echo json_encode($this->home_model->ins_upd_profile());
+	}
+	function ins_upd_like(){
+		echo json_encode($this->home_model->ins_upd_like());
+	}
+	function ins_upd_gift(){
+		echo json_encode($this->home_model->ins_upd_gift());
 	}
 	function contact()
 	{
@@ -62,30 +132,73 @@ class Home extends CI_Controller{
 	}
 	function products($navigationSlug = "")
 	{
-		 $data['menu'] = $this->home_model->getMenu();
-		 $data['categories'] = $this->home_model->getCategories();
-		 $data['filters'] = $this->home_model->getFilters();
-		 $data['filterKey'] = $this->home_model->getFilterKey();
-		 $data['profile'] = $this->home_model->getProfileDet();
-		 if($categorySlug == "")
-		 $categorySlug = isset($_GET['slug']) ? $_GET['slug'] : NULL;
-		 if($navigationSlug == "")
-		 $navigationSlug = isset($_GET['slug']) ? $_GET['slug'] : NULL;
-		 $filterIDs = isset($_GET['fid']) ? $_GET['fid'] : NULL;
-		 $search = array(
+		
+		$navigationSlug = isset($_GET['slug']) ? $_GET['slug'] : NULL;
+		$age = isset($_GET['age']) ? $_GET['age'] : NULL;
+		$price = isset($_GET['price']) ? $_GET['price'] : NULL;
+		$category = isset($_GET['category']) ? $_GET['category'] : NULL;
+		$key = isset($_GET['key']) ? $_GET['key'] : NULL;
+		$search = array(
 			'type'=>'SEARCH',
 			'navigationSlug' => $navigationSlug,
-			'filterIDs' => $filterIDs
-		 );
-		 $data['navigationSlug'] = $navigationSlug;
-		 $data['filterIDs'] = $filterIDs;
-		 $data['products'] = $this->home_model->getProducts($search);
-		 
-		 $data['navigation'] = $this->home_model->getNavigationBySlug($navigationSlug);
-		 
-		 $data['header'] = $this->load->view('header',$data,true);
-		 //var_dump($data['products']);exit();
-		 $this->load->view('products',$data);
+			'age' => $age,
+			'price' => $price,
+			'category' => $category,
+			'key' => $key
+		);
+		$data['navigationSlug'] = $navigationSlug;
+		$data['age'] = $age;
+		$data['price'] = $price;
+		$data['category'] = $category;
+		$pageData['search_key'] = $data['key'] = $key;
+		$pageData['search_type'] = 'product';
+		
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		
+		$data['categories'] = $this->home_model->getCategories();
+		$data['filters'] = $this->home_model->getFilters();
+		$data['filterKey'] = $this->home_model->getFilterKey();
+		$data['products'] = $this->home_model->getProducts($search);
+		$data['navigation'] = $this->home_model->getNavigationBySlug($navigationSlug);
+		//var_dump($data['products']);exit();
+		$this->load->view('products',$data);
+	}
+	function users()
+	{
+		$key = isset($_GET['key']) ? $_GET['key'] : NULL;
+		$pageData['search_key'] = $data['key'] = $key;
+		$pageData['search_type'] = 'user';
+		
+		
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+				
+		$data['users'] = $this->home_model->get_profile(array('type'=>'USERS','key'=>$key));
+		//var_dump($data['users']);exit();
+		$this->load->view('users',$data);
+	}
+	function user_profile($id=0)
+	{
+		$user = $this->home_model->get_user(array("type"=>'S','userID'=>$id));
+		if($user){
+			$pageData['data'] = $this->home_model->getHeader();
+			$data['head'] = $this->load->view('templates/head',$pageData,true);
+			$data['header'] = $this->load->view('templates/header',$pageData,true);
+			$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+			$data['liked'] = $this->home_model->get_likes(array('type'=>'L','userID'=>$id));
+			$data['profiles'] = $this->home_model->get_profile(array('type'=>'L','userID'=>$id));
+			$data['products'] = $this->home_model->get_profile(array('type'=>'PRODUCTS','userID'=>$id));
+			$data['user'] = $user;
+			//var_dump($data['users']);exit();
+			$this->load->view('user_profile',$data);
+		}else{
+			echo 'Invalid URL';
+		}
 	}
 	function createUser()
 	{
@@ -94,10 +207,7 @@ class Home extends CI_Controller{
 		//var_dump($email);exit();
 		echo json_encode($this->home_model->createUser($email,$password));
 	}
-	function loginCheck()
-	{
-		echo json_encode($this->home_model->loginCheck());
-	}
+	
 	function updMyAccountDet()
 	{
 		echo json_encode($this->home_model->updMyAccountDet());

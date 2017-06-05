@@ -119,6 +119,34 @@ class Admin extends CI_Controller {
 		$data['slide'] = $this->admin_model->get_slide(array('type'=>'S','id'=>$id));
 		$this->load->view('admin/slide_config',$data);
 	}
+	public function sections()
+	{
+		$pageData['page'] = 'HOME';
+		$pageData['pageTitle'] = 'Home Page Sections List';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['sections'] = $this->admin_model->get_section(array('type'=>'L'));
+		
+		$this->load->view('admin/sections',$data);
+	}
+	public function section_config($id=0)
+	{
+		$pageData['page'] = 'HOME';
+		$pageData['pageTitle'] = 'Home Page Section Configuration';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['section'] = $this->admin_model->get_section(array('type'=>'S','id'=>$id));
+		$qry= $this->admin_model->get_section(array('type'=>'PRODUCTS','id'=>$id));
+		$sproducts = array();
+		foreach($qry as $r)
+			array_push($sproducts,$r->product_id);
+			
+		$data['sproducts'] = $sproducts;
+		$data['products'] = $this->admin_model->get_product(array('type'=>'L'));
+		$this->load->view('admin/section_config',$data);
+	}
 	public function navigations()
 	{
 		$pageData['page'] = 'NAVIGATION';
@@ -159,7 +187,7 @@ class Admin extends CI_Controller {
 		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
 		$data['filter'] = $this->admin_model->get_filter(array('type'=>'S','id'=>$id));
-		$data['filter_keys'] = $this->admin_model->get_filter(array('type'=>'FK','id'=>$id));
+		//$data['filter_keys'] = $this->admin_model->get_filter(array('type'=>'FK','id'=>$id));
 		$this->load->view('admin/filter_config',$data);
 	}
 	
@@ -250,5 +278,8 @@ class Admin extends CI_Controller {
 	}
 	function test_api(){
 		echo json_encode($this->admin_model->validate_url());
+	}
+	function ins_upd_section(){
+		echo json_encode($this->admin_model->ins_upd_section());
 	}
 }
