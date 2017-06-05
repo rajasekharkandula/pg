@@ -137,7 +137,7 @@ class Home extends CI_Controller{
 	}
 	function products($navigationSlug = "")
 	{
-		
+
 		$navigationSlug = isset($_GET['slug']) ? $_GET['slug'] : NULL;
 		$age = isset($_GET['age']) ? $_GET['age'] : NULL;
 		$price = isset($_GET['price']) ? $_GET['price'] : NULL;
