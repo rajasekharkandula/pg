@@ -170,6 +170,7 @@
 			var formData = new FormData($("#product_form")[0]);
 			formData.append('type','INSERT_API_PRODUCTS');
 			formData.append('products',JSON.stringify(products));
+			formData.append('apiID',$("#api").val());
 			$.ajax({
 				url:'<?php echo base_url('admin/ins_upd_product');?>',
 				type:'POST',

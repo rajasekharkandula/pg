@@ -42,7 +42,7 @@
                         <td><?php echo $p->name; ?></td>
                         <td><img src="<?php echo $p->image; ?>" width="40px" height="40px"></td>
                         <td><?php echo $this->config->item('currency').$p->price; ?></td>
-                        <td><?php echo $p->source; ?></td>
+                        <td><?php echo $p->apiName; ?></td>
                         <td>
 							<a href="<?php echo base_url('admin/product/'.$p->id); ?>" class="btn btn-primary"><i class="mdi mdi-edit"></i></a>
 							<button class="btn btn-danger remove" data-id="<?php echo $p->id; ?>"><i class="mdi mdi-delete"></i></button>

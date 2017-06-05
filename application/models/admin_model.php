@@ -200,6 +200,7 @@ class Admin_model extends CI_Model{
 		$max_age=(int)$this->input->post('max_age');
 		$gender=$this->input->post('gender');
 		$category=$this->input->post('category');
+		$apiID=$this->input->post('apiID');
 		$source=$this->input->post('source') ? $this->input->post('source') : 'Manual';
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		
@@ -212,14 +213,14 @@ class Admin_model extends CI_Model{
 		}
 		
 		if($type == 'INSERT'){
-			$this->db->query("INSERT INTO tbl_product (name, description, slug, price, image, product_link, min_age, max_age, gender, category, source, created_date,modified_date,status) VALUES ('$name', '$description', '$slug', '$price', '$image', '$product_link', '$min_age', '$max_age', '$gender', '$category', '$source', NOW(), NOW(),'$status'); ");
+			$this->db->query("INSERT INTO tbl_product (name, description, slug, price, image, product_link, min_age, max_age, gender, category, apiID, created_date,modified_date,status) VALUES ('$name', '$description', '$slug', '$price', '$image', '$product_link', '$min_age', '$max_age', '$gender', '$category', '0', NOW(), NOW(),'$status'); ");
 			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_product")->row()->id;
 			$retvalue['status']= true;
 			$retvalue['message']= 'Product saved successfully';
 		}
 		
 		if($type == 'UPDATE'){			
-			$this->db->query("UPDATE tbl_product SET name = '$name', description = '$description', slug = '$slug', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', gender = '$gender', category = '$category', source = '$source', modified_date = NOW(), status = '$status' WHERE id = $id ");
+			$this->db->query("UPDATE tbl_product SET name = '$name', description = '$description', slug = '$slug', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', gender = '$gender', category = '$category', modified_date = NOW(), status = '$status' WHERE id = $id ");
 			$retvalue['status']= true;
 			$retvalue['message']= 'Product updated successfully';
 		}
@@ -248,9 +249,9 @@ class Admin_model extends CI_Model{
 				
 				$product = $this->db->query("SELECT * FROM tbl_product WHERE id = $id")->row();
 				if($product){
-					$this->db->query("UPDATE tbl_product SET name = '$name', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', category = '$category', source = 'BEST BUY', modified_date = NOW(), status = 'Active' WHERE id = $id ");
+					$this->db->query("UPDATE tbl_product SET name = '$name', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', category = '$category', apiID = '$apiID', modified_date = NOW(), status = 'Active' WHERE id = $id ");
 				}else{
-					$this->db->query("INSERT INTO tbl_product (id,name, price, image, product_link, min_age, max_age, category, source, created_date,modified_date,status) VALUES ($id,'$name', '$price', '$image', '$product_link', '$min_age', '$max_age', '$category', 'BEST BUY', NOW(), NOW(),'Active'); ");
+					$this->db->query("INSERT INTO tbl_product (id,name, price, image, product_link, min_age, max_age, category, apiID, created_date,modified_date,status) VALUES ($id,'$name', '$price', '$image', '$product_link', '$min_age', '$max_age', '$category', '$apiID', NOW(), NOW(),'Active'); ");
 				}
 				$this->db->query("DELETE FROM tbl_navigation_products WHERE product_id = $id");
 				foreach($navigation as $n){
@@ -258,7 +259,6 @@ class Admin_model extends CI_Model{
 				}
 				
 			}
-			
 			$retvalue['status']= true;
 			$retvalue['message']= 'Product saved successfully';
 		}
@@ -290,7 +290,7 @@ class Admin_model extends CI_Model{
 			return $this->db->query("SELECT * FROM tbl_product WHERE id = '$id'")->row();
 		}
 		if($type == 'L'){
-			return $this->db->query("SELECT * FROM tbl_product ORDER BY id DESC")->result();
+			return $this->db->query("SELECT *,(select name from tbl_api where id =p.apiID) as apiName FROM tbl_product p ORDER BY id DESC")->result();
 		}
 		
 	}
