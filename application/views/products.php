@@ -126,9 +126,9 @@
 							<?php } } ?>
 						</div>
 						<?php if(count($products) > 0){ ?>
-						<div class="row products">
+						<div class="row plist">
 							<?php foreach($products as $p){ ?>
-							<div class="col-md-3 col-xs-6">
+							<div class="col-md-4 col-xs-6">
 								<div class="product">
 									<button class="like" data-id="<?php echo $p->id; ?>"><?php if($p->liked > 0){?><i class="fa fa-heart"></i><?php }else{ ?><i class="fa fa-heart-o"></i><?php } ?></button>
 									<button class="gift" data-id="<?php echo $p->id; ?>"><i class="fa fa-gift"></i></button>
@@ -138,7 +138,7 @@
 										</div>
 										<div class="content">
 											<div class="title"><?php echo $p->name; ?></div>
-											<div class="price">$<?php echo $p->price; ?></div>
+											<div class="price"><?php echo $this->config->item('currency'); ?><?php echo $p->price; ?></div>
 										</div>
 									</a>
 								</div>

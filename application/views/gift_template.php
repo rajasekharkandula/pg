@@ -2,12 +2,20 @@
 	<!-- Modal content-->
 	<div class="modal-content">
 		<div class="modal-body">
+			
+			<?php if($product){ ?>
 			<div class="row">
 			   <div class="col-sm-6">
-					<div class="box">
-						<img src="<?php echo $product->image; ?>" id="pdimage" style="width:100%;">
-						<h4 id="pdname" class="pdname"><?php echo $product->name; ?></h4>
-						<div id="pdprice" class="pdprice">$<?php echo $product->price; ?></div>
+					<div class="product" style="width:100%;">
+						<a href="<?php echo $product->product_link; ?>" target="_blank">
+							<div class="img">
+								<img src="<?php echo $product->image; ?>">
+							</div>
+							<div class="content">
+								<div class="title"><?php echo $product->name; ?></div>
+								<div class="price"><?php echo $this->config->item('currency'); ?><?php echo $product->price; ?></div>
+							</div>
+						</a>
 					</div>
 			   </div>
 			   <div class="col-sm-6">
@@ -20,6 +28,10 @@
 				</ul>
 			   </div>
 			</div>
+			<?php }else{ ?>
+				<h4>Invalid product configuration.</h4>
+			<?php } ?>
+			
 		</div>
 	</div>
 </div>

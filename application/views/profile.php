@@ -65,7 +65,6 @@
 					}
 				});
 				
-				
 				if(error == 0){
 					$("#save_btn").attr("disabled",true);
 					$("#save_btn").html("Please wait...");

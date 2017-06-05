@@ -5,6 +5,7 @@ class Home extends CI_Controller{
 	function __construct(){
 		parent::__construct();
 		$this->load->model("home_model");
+		$this->load->model("admin_model");
 	}
 	function index(){
 	
@@ -75,7 +76,8 @@ class Home extends CI_Controller{
 		$data['header'] = $this->load->view('templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
 		$data['products'] = $this->home_model->get_likes(array('type'=>'L','userID'=>$this->session->userdata('userID')));
-		//var_dump($data['user']);exit();
+		$data['gifts'] = $this->home_model->get_user_gift(array('type'=>'L','userID'=>$this->session->userdata('userID')));
+		//var_dump($data['gifts']);exit();
 		$this->load->view('likes',$data);
 	}
 	function profiles(){
@@ -123,6 +125,9 @@ class Home extends CI_Controller{
 	}
 	function ins_upd_gift(){
 		echo json_encode($this->home_model->ins_upd_gift());
+	}
+	function ins_upd_user_gift(){
+		echo json_encode($this->home_model->ins_upd_user_gift());
 	}
 	function contact()
 	{
@@ -196,6 +201,21 @@ class Home extends CI_Controller{
 			$data['user'] = $user;
 			//var_dump($data['users']);exit();
 			$this->load->view('user_profile',$data);
+		}else{
+			echo 'Invalid URL';
+		}
+	}
+	function page($id=0)
+	{
+		$page = $this->admin_model->get_page(array("type"=>'S','id'=>$id));
+		if($page){
+			$pageData['data'] = $this->home_model->getHeader();
+			$data['head'] = $this->load->view('templates/head',$pageData,true);
+			$data['header'] = $this->load->view('templates/header',$pageData,true);
+			$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+			$data['page'] = $page;
+			//var_dump($data['users']);exit();
+			$this->load->view('page',$data);
 		}else{
 			echo 'Invalid URL';
 		}

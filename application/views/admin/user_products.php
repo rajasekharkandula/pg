@@ -16,32 +16,34 @@
               <div class="panel panel-default panel-table">
                 <div class="panel-heading">
 					<div class="row">
-						<div class="col-md-6">Home Page Sections</div>
-						<div class="col-md-6 text-right"> 
-							<a href="<?php echo base_url('admin/section_config'); ?>" class="btn btn-primary"><i class="mdi mdi-plus"></i> Add</a>
-						</div>
+						<div class="col-md-6">User Products</div>
 					</div>
                 </div>
                 <div class="panel-body">
-                  <table id="table1" class="table table-hover table-fw-widget">
+                  <table id="table1" class="table table-striped table-hover table-fw-widget">
                     <thead>
                       <tr>
-                        <th>Name</th>
-                        <th>Order</th>
+						<th>User</th>
+						<th>Name</th>
+                        <th>Image</th>
+                        <th>Price</th>
+                        <th>Link</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <?php foreach($sections as $s){ ?>
+                      <?php $i=1;foreach($products as $p){ ?>
 					  <tr>
-                        <td><?php echo $s->name; ?></td>
-                        <td><?php echo $s->sortingOrder; ?></td>
+                        <td><?php echo $p->username; ?></td>
+                        <td><?php echo $p->name; ?></td>
+                        <td><img src="<?php echo $p->image; ?>" width="40px" height="40px"></td>
+                        <td><?php echo $this->config->item('currency').$p->price; ?></td>
+                        <td><?php echo $p->link; ?></td>
                         <td>
-							<a href="<?php echo base_url('admin/section_config/'.$s->id); ?>" class="btn btn-primary"><i class="mdi mdi-edit"></i></a>
-							<button class="btn btn-danger remove" data-id="<?php echo $s->id; ?>"><i class="mdi mdi-delete"></i></button>
+							<button class="btn btn-danger remove" data-id="<?php echo $p->id; ?>"><i class="mdi mdi-delete"></i></button>
 						</td>
                       </tr>
-                      <?php } ?>
+                      <?php $i++; } ?>
                     </tbody>
                   </table>
                 </div>
@@ -67,7 +69,7 @@
             <div class="text-center">
               <div class="text-danger"><span class="modal-main-icon mdi mdi-close-circle-o"></span></div>
               <h3>Delete!</h3>
-              <p>Are you sure want to delete section?</p>
+              <p>Are you sure want to delete product?</p>
               <div class="xs-mt-50">
                 <button type="button" data-dismiss="modal" class="btn btn-space btn-default">Cancel</button>
                 <button type="button" class="btn btn-space btn-danger" id="delete_btn">Proceed</button>
@@ -97,7 +99,7 @@
 		obj.attr('disabled',true);
 		obj.html('<i class="mdi mdi-spinner"></i>');
 		$.ajax({
-			url:'<?php echo base_url('admin/ins_upd_section');?>',
+			url:'<?php echo base_url('home/ins_upd_user_gift');?>',
 			type:'POST',
 			data:{'id':id,'type':'DELETE'},
 			dataType:'JSON'

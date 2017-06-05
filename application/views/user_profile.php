@@ -16,23 +16,21 @@
 				<h2><?php echo $user->first_name.' '.$user->last_name; ?> Profile</h2>
 				
 				<h4>Liked Gifts</h4>
-				<div class="row">
+				<div class="products">
 						
 					<?php foreach($liked as $l){ ?>
-					<div class="col-md-3 col-xs-6">
-						<div class="product">
-							<button class="like" data-id="<?php echo $l->id; ?>"><i class="fa fa-heart"></i></button>
-							<button class="gift" data-id="<?php echo $l->id; ?>"><i class="fa fa-gift"></i></button>
-							<a href="<?php echo $l->product_link; ?>" target="_blank">
-								<div class="img">
-									<img src="<?php echo $l->image; ?>">
-								</div>
-								<div class="content">
-									<div class="title"><?php echo $l->name; ?></div>
-									<div class="price"><?php echo $l->price; ?></div>
-								</div>
-							</a>
-						</div>
+					<div class="product">
+						<button class="like" data-id="<?php echo $l->id; ?>"><i class="fa fa-heart"></i></button>
+						<button class="gift" data-id="<?php echo $l->id; ?>"><i class="fa fa-gift"></i></button>
+						<a href="<?php echo $l->product_link; ?>" target="_blank">
+							<div class="img">
+								<img src="<?php echo $l->image; ?>">
+							</div>
+							<div class="content">
+								<div class="title"><?php echo $l->name; ?></div>
+								<div class="price"><?php echo $this->config->item('currency'); ?><?php echo $l->price; ?></div>
+							</div>
+						</a>
 					</div>
 					<?php } ?>
 					
@@ -48,23 +46,21 @@
 					<span>Relation To You: <?php echo $pr->relation; ?></span>
 				</div>
 				
-				<div class="row">
+				<div class="products">
 						
 					<?php foreach($products as $p){ if($p->profile_id == $pr->id){ ?>
-					<div class="col-md-3 col-xs-6">
-						<div class="product">
-							<button class="like" data-id="<?php echo $p->id; ?>"><?php if($p->liked > 0){?><i class="fa fa-heart"></i><?php }else{ ?><i class="fa fa-heart-o"></i><?php } ?></button>
-							<button class="gift" data-id="<?php echo $p->id; ?>"><i class="fa fa-gift"></i></button>
-							<a href="<?php echo $p->product_link; ?>" target="_blank">
-								<div class="img">
-									<img src="<?php echo $p->image; ?>">
-								</div>
-								<div class="content">
-									<div class="title"><?php echo $p->name; ?></div>
-									<div class="price"><?php echo $p->price; ?></div>
-								</div>
-							</a>
-						</div>
+					<div class="product">
+						<button class="like" data-id="<?php echo $p->id; ?>"><?php if($p->liked > 0){?><i class="fa fa-heart"></i><?php }else{ ?><i class="fa fa-heart-o"></i><?php } ?></button>
+						<button class="gift" data-id="<?php echo $p->id; ?>"><i class="fa fa-gift"></i></button>
+						<a href="<?php echo $p->product_link; ?>" target="_blank">
+							<div class="img">
+								<img src="<?php echo $p->image; ?>">
+							</div>
+							<div class="content">
+								<div class="title"><?php echo $p->name; ?></div>
+								<div class="price"><?php echo $this->config->item('currency'); ?><?php echo $p->price; ?></div>
+							</div>
+						</a>
 					</div>
 					<?php } } ?>
 					

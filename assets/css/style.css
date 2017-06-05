@@ -324,24 +324,30 @@ section h2.title{
 }
 .product{
 	border-radius: 3px;
-    background-color: #FFF;
-    border: 1px solid #E1E3DF;
-    border-bottom-color: #CBCCC9;
+    background-color: #DDD;
+    border: 1px solid #CCC;
+    border-bottom-color: #CCC;
     display: inline-block;
     position: relative;
     width: 100%;
-	margin-bottom: 15px;
+    margin-bottom: 30px;
+}
+.plist .product{
+	 margin-bottom: 20px;
+}
+.hlist .product{
+	 margin-bottom: 0px;
 }
 
 .product .img{
 	overflow: hidden;
     width: 100%;
-    height:190px;
+    height:200px;
     text-align: center;
 }
 .product img{
 	max-width:100%;
-	height:100%;
+	height:200px;
 	background-position: 50% 0%;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -366,7 +372,7 @@ section h2.title{
     text-align: center;
     font-size: 15px;
     background-color: #fff;
-    border-top: 1px solid #e2e2e2;
+    border-top: 1px solid #ccc;
 }
 .product .content .title{
 	color: #555;

@@ -11,7 +11,7 @@
 	<link href="<?php echo base_url(); ?>assets/css/font-awesome.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/owl.carousel.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/owl.theme.default.min.css" rel="stylesheet">
-	<link href="<?php echo base_url(); ?>assets/css/animate.min.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>assets/css/animate.css" rel="stylesheet">
 
 	<!-- Theme CSS -->
 	<link href="<?php echo base_url(); ?>assets/css/style.css" rel="stylesheet">

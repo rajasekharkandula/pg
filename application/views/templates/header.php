@@ -49,17 +49,21 @@
 			<ul>
 				<?php foreach($data as $m){ if($m->parent_id == 0){ ?>
 				<li class="dropdown">
+					
+					<?php if($m->navigation_type == 'page'){ ?>
+					<a href="<?php echo base_url('home/page/'.$m->page_id);?>"><?php echo $m->name; ?> </a>
+					<?php }else if($m->navigation_type == 'custom'){ ?>
+					<a href="<?php echo $m->navigation_link; ?>"><?php echo $m->name; ?> </a>
+					<?php }else if($m->navigation_type == 'product'){ ?>
 					<a href="<?php echo base_url();?>home/products/<?php echo $m->slug;?>"><?php echo $m->name; ?> <i class="fa fa-angle-down"></i></a>
 					<ul class="dropdown-list">
 						<?php foreach($data as $cm) { if($cm->parent_id == $m->id){ ?>
 						<li><a href="<?php echo base_url();?>home/products/<?php echo $cm->slug;?>"><?php echo $cm->name;?> </a></li>
 						<?php } } ?>
 					</ul>
+					<?php } ?>
 				</li>
 				<?php } } ?>
-				
-				<li><a href="#">Store & Advise</a></li>
-				<li><a href="#">Contact Us</a></li>
 			</ul>
 		</div>
 	</div>

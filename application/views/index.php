@@ -35,15 +35,17 @@
 		<section class="home-banners">
 			<div class="container">
 				<div class="row">
+					
+					<?php foreach($banners as $b){ ?>
 					<div class="col-md-6">
 						<div class="thumbnail thumbnail-banner size-1x3">
 							<div class="media">
-								<a class="media-link" href="http://edujana.com/painlessgift/home/products/for-him">
-									<div class="img-bg" style="background-image: url('http://edujana.com/painlessgift/assets/images/slides/slide170526150943.jpg')"></div>
+								<a class="media-link" href="<?php echo base_url($b->slideUrl); ?>">
+									<div class="img-bg" style="background-image: url('<?php echo base_url($b->image); ?>')"></div>
 									<div class="caption">
 										<div class="caption-wrapper div-table">
 											<div class="caption-inner">
-												<h2 class="caption-title"><span>For Him</span></h2>
+												<h2 class="caption-title"><span><?php echo $b->title; ?></span></h2>
 												<span class="btn btn-theme btn-theme-sm">Shop Now</span>
 											</div>
 										</div>
@@ -52,23 +54,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="thumbnail thumbnail-banner size-1x3">
-							<div class="media">
-								<a class="media-link" href="http://edujana.com/painlessgift/home/products/for-her">
-									<div class="img-bg" style="background-image: url('http://edujana.com/painlessgift/assets/images/slides/slide170526151438.jpg')"></div>
-									<div class="caption">
-										<div class="caption-wrapper div-table">
-											<div class="caption-inner div-cell">
-												<h2 class="caption-title"><span>For Her</span></h2>
-												<span class="btn btn-theme btn-theme-sm">Shop Now</span>
-											</div>
-										</div>
-									</div>
-								</a>
-							</div>
-						</div>
-					</div>
+					<?php } ?>
+					
 				</div>
 			</div>
 		</section>
@@ -77,7 +64,7 @@
 		<section class="padding-30">
 			<div class="container">
 				<h2 class="title"><?php echo $s['name']; ?> <a href="#" class="view-more hide"> View More <i class="fa fa-caret-right"></i></a></h2>
-				<div class="row products">
+				<div class="row hlist">
 					<?php foreach($s['products'] as $p){ ?>
 					<div class="col-md-3 col-xs-6">
 						<div class="product">
@@ -89,7 +76,7 @@
 								</div>
 								<div class="content">
 									<div class="title"><?php echo $p->name; ?></div>
-									<div class="price">$<?php echo $p->price; ?></div>
+									<div class="price"><?php echo $this->config->item('currency'); ?><?php echo $p->price; ?></div>
 								</div>
 							</a>
 						</div>

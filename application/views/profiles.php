@@ -42,7 +42,7 @@
 								</div>
 								<div class="content">
 									<div class="title"><?php echo $p->name; ?></div>
-									<div class="price"><?php echo $p->price; ?></div>
+									<div class="price"><?php echo $this->config->item('currency'); ?><?php echo $p->price; ?></div>
 								</div>
 							</a>
 						</div>

@@ -615,10 +615,14 @@ class Admin_model extends CI_Model{
 		$slug=(string)$this->input->post('slug');
 		$description=(string)$this->input->post('description');
 		$parent_id=(int)$this->input->post('parent_id');
+		$sortin_order=(int)$this->input->post('sortin_order');
+		$page_id=(int)$this->input->post('page_id');
+		$navigation_type=$this->input->post('navigation_type');
+		$navigation_link=$this->input->post('navigation_link');
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		
 		if($type == "INSERT"){
-			$this->db->query("INSERT INTO tbl_navigation (name, slug, parent_id, created_date, modified_date, status) VALUES ('$name', '$slug', '$parent_id', NOW(), NOW(), '$status')");
+			$this->db->query("INSERT INTO tbl_navigation (name, slug, parent_id, navigation_type, navigation_link, sortin_order, page_id, created_date, modified_date, status) VALUES ('$name', '$slug', '$parent_id', '$navigation_type', '$navigation_link', $sortin_order, $page_id, NOW(), NOW(), '$status')");
 			
 			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_navigation")->row()->id;
 			$retvalue['status']= true;
@@ -626,7 +630,7 @@ class Admin_model extends CI_Model{
 		}
 		
 		if($type == "UPDATE"){
-			$this->db->query("UPDATE tbl_navigation SET name = '$name', slug = '$slug', parent_id = '$parent_id', modified_date = NOW(), status = '$status' WHERE id = $id ");
+			$this->db->query("UPDATE tbl_navigation SET name = '$name', slug = '$slug', parent_id = '$parent_id', navigation_type = '$navigation_type', navigation_link = '$navigation_link', sortin_order = '$sortin_order', page_id = '$page_id', modified_date = NOW(), status = '$status' WHERE id = $id ");
 			$retvalue['status']= true;
 			$retvalue['message']= 'Navigation updated successfully';
 		}

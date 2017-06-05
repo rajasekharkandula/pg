@@ -43,15 +43,42 @@
                       </div>
                     </div>
 					<div class="form-group">
-                      <label class="col-sm-3">Navigation Type </label>
+                      <label class="col-sm-3">Navigation Type <span>*</span></label>
                       <div class="col-sm-6">
-                        <select class="select2" name="ntype">
-							<option value="product">Products</option>
-							<option value="page">Pages</option>
+                        <select req="true" class="select2" name="navigation_type" id="navigation_type">
+							<option value="product"  <?php if(isset($navigation->navigation_type))if($navigation->navigation_type == 'product')echo 'selected'; ?> >Products</option>
+							<option value="page" <?php if(isset($navigation->navigation_type))if($navigation->navigation_type == 'page')echo 'selected'; ?> >Pages</option>
+							<option value="custom" <?php if(isset($navigation->navigation_type))if($navigation->navigation_type == 'custom')echo 'selected'; ?> >Custom</option>
 						</select>
                       </div>
                     </div>
-                    		
+					
+					<div class="form-group <?php if(isset($navigation->navigation_type)){if($navigation->navigation_type != 'page')echo 'hide'; }else{echo 'hide';} ?>" id="page_id">
+                      <label class="col-sm-3">Pages <span>*</span></label>
+                      <div class="col-sm-6">
+                        <select class="select2" data-placeholder="Select page" name="page_id">
+							<option></option>
+							<?php foreach($pages as $p){ ?>
+							<option value="<?php echo $p->id; ?>" <?php if(isset($navigation->page_id))if($p->id == $navigation->page_id)echo 'selected'; ?>><?php echo $p->name; ?></option>
+							<?php } ?>
+						</select>
+                      </div>
+                    </div>
+					
+					<div class="form-group <?php if(isset($navigation->navigation_type)){if($navigation->navigation_type != 'custom')echo 'hide'; }else{echo 'hide';} ?>" id="navigation_link">
+                      <label class="col-sm-3">Navigation Link <span>*</span></label>
+                      <div class="col-sm-6">
+                        <input type="text" class="form-control" name="navigation_link" value="<?php if(isset($navigation->navigation_link))echo $navigation->navigation_link; ?>">
+                      </div>
+                    </div>
+                    
+					<div class="form-group">
+                      <label class="col-sm-3">Sorting </label>
+                      <div class="col-sm-6">
+                        <input type="text" class="form-control" name="sortin_order" value="<?php if(isset($navigation->sortin_order))echo $navigation->sortin_order; ?>">
+                      </div>
+                    </div>
+					
 					<div class="col-sm-12 text-center">
                         <button class="btn btn-primary btn-lg" type="button" id="submit_btn">Submit</button>
                         <a href="<?php echo base_url('admin/navigations'); ?>" class="btn btn-default btn-lg">Cancel</a>
@@ -75,6 +102,17 @@
 		App.formElements();
 		App.textEditors();
       });
+	  $("#navigation_type").on("change",function(){
+		  if( $("#navigation_type").val() == 'custom')
+			  $("#navigation_link").removeClass("hide");
+		  else
+			  $("#navigation_link").addClass("hide");
+		  
+		  if( $("#navigation_type").val() == 'page')
+			  $("#page_id").removeClass("hide");
+		  else
+			  $("#page_id").addClass("hide");
+	  });
 	  $("#submit_btn").on("click",function(){
 		var error=0;$(".text-danger").remove();
 		$("#navigation_form input").each(function(){
@@ -83,6 +121,14 @@
 				$(this).parent().append('<div class="text-danger">This field is required</div>');
 			}
 		});
+		if( $("#navigation_type").val() == 'custom' && $("input[name=navigation_link]").val().trim() == ''){
+			error++;
+			$("input[name=navigation_link]").parent().append('<div class="text-danger">This field is required</div>');
+		}
+		if( $("#navigation_type").val() == 'page' && $("input[name=page_id]").val() == ''){
+			error++;
+			$("input[name=page_id]").parent().append('<div class="text-danger">This field is required</div>');
+		}
 		if(error == 0){
 			//$("#submit_btn").attr("disabled",true);
 			

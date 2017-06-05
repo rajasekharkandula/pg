@@ -11,48 +11,14 @@
 		<?php echo $header;?>
 		<!-- HEADER -->
         
-		<section class="profile">
+		<section>
 			<div class="container">
-				<h2>Liked Gifts <button class="pull-right" id="create_btn">Add Gift</button></h2>
-				<div class="row">
-						
-					<?php foreach($products as $p){ ?>
-					<div class="col-md-3 col-xs-6">
-						<div class="product">
-							<button class="like" data-id="<?php echo $p->id; ?>"><i class="fa fa-heart"></i></button>
-							<button class="gift" data-id="<?php echo $p->id; ?>"><i class="fa fa-gift"></i></button>
-							<a href="<?php echo $p->product_link; ?>" target="_blank">
-								<div class="img">
-									<img src="<?php echo $p->image; ?>">
-								</div>
-								<div class="content">
-									<div class="title"><?php echo $p->name; ?></div>
-									<div class="price"><?php echo $this->config->item('currency'); ?><?php echo $p->price; ?></div>
-								</div>
-							</a>
-						</div>
-					</div>
-					<?php } ?>
-					
-					<?php foreach($gifts as $g){ ?>
-					<div class="col-md-3 col-xs-6">
-						<div class="product">
-							<button class="gift" data-type="USER_GIFT" data-id="<?php echo $g->id; ?>"><i class="fa fa-gift"></i></button>
-							<a href="<?php echo $g->link; ?>" target="_blank">
-								<div class="img">
-									<img src="<?php echo $g->image; ?>">
-								</div>
-								<div class="content">
-									<div class="title"><?php echo $g->name; ?></div>
-									<div class="price"><?php echo $this->config->item('currency'); ?><?php echo $g->price; ?></div>
-								</div>
-							</a>
-						</div>
-					</div>
-					<?php } ?>
-					
+				<h2><?php echo $page->name; ?></h2>
+			
+				<div class="page">
+					<?php echo $page->content; ?>
 				</div>
-					
+			
 			</div>			
 		</section>
 		
@@ -124,7 +90,7 @@
 					$("#submit_btn").html("Please wait...");
 					var formData = new FormData($("#gift_form")[0]);
 					$.ajax({
-						url:'<?php echo base_url('home/ins_upd_user_gift');?>',
+						url:'<?php echo base_url('home/ins_upd_profile');?>',
 						type:'POST',
 						data:formData,
 						dataType:'JSON',
@@ -138,7 +104,7 @@
 						}else{
 							$("#gift_form").prepend('<div class="text-danger text-center">'+data.message+'</div>');
 							$("#submit_btn").removeAttr("disabled");
-							$("#submit_btn").html("Submit");
+							$("#submit_btn").html("Save");
 						}
 						
 					});

@@ -5,6 +5,7 @@ class Admin extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('admin_model');
+		$this->load->model('home_model');
 	}
 	
 	public function index()
@@ -166,6 +167,7 @@ class Admin extends CI_Controller {
 		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
 		$data['navigation'] = $this->admin_model->get_navigation(array('type'=>'S','id'=>$id));
 		$data['navigations'] = $this->admin_model->get_navigation(array('type'=>'P'));
+		$data['pages'] = $this->admin_model->get_page(array('type'=>'L'));
 		$this->load->view('admin/navigation_config',$data);
 	}
 	
@@ -230,6 +232,16 @@ class Admin extends CI_Controller {
 		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
 		$data['page'] = $this->admin_model->get_page(array('type'=>'S','id'=>$id));
 		$this->load->view('admin/page_config',$data);
+	}
+	public function user_products()
+	{
+		$pageData['page'] = 'CMS';
+		$pageData['pageTitle'] = 'Page Configuration';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['products'] = $this->home_model->get_user_gift(array('type'=>'ALL'));
+		$this->load->view('admin/user_products',$data);
 	}
 	
 	function ins_upd_page(){

@@ -12,6 +12,7 @@
 class Home_model extends CI_Model{
 	public function __Construct(){
 		parent:: __Construct();
+		$this->load->model("admin_model");
 	}
 	
 	/**
@@ -188,6 +189,57 @@ class Home_model extends CI_Model{
 		if($type == 'DELETE'){
 			$this->db->query("DELETE FROM tbl_custom_profiles WHERE id = $id");
 			$retvalue['message'] = 'Profile deleted successfully';
+			$retvalue['status'] = true;
+		}
+		
+		return $retvalue;
+	}
+	function get_user_gift($data){
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		$userID = isset($data['userID']) ? (int)$data['userID'] : 0;
+		$sessionUserID = (int)$this->session->userdata("userID");
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_user_products WHERE user_id=$userID")->result();
+		}
+		if($type == 'ALL'){
+			return $this->db->query("SELECT p.*,CONCAT(u.first_name,' ',u.last_name) AS username,u.email FROM tbl_user_products p INNER JOIN tbl_user u ON u.id = p.user_id")->result();
+		}
+		
+	}
+	function ins_upd_user_gift(){
+		$retvalue = array();
+		$retvalue['status'] = false;
+		$type = $this->input->post("type");
+		$id = (int)$this->input->post("id");
+		$name = $this->input->post("name");
+		$price = $this->input->post("price");
+		$link = $this->input->post("link");
+		$userID = (int)$this->session->userdata("userID");
+		
+		if(isset($_FILES['image'])){		
+			$image=$this->admin_model->image_upload($_FILES['image'],'assets/images/products/','product');
+			if(!$image)
+				$image = $this->input->post('uploaded_img') ? $this->input->post('uploaded_img') : $this->config->item('default_image');
+		}else{
+			$image = $this->config->item('default_image');
+		}
+		
+		if($type == 'INSERT'){
+			$this->db->query("INSERT INTO tbl_user_products (user_id, name, price, link, image, created_date, status) VALUES ($userID, '$name', '$price', '$link', '$image', NOW(), 'Active')");
+			$retvalue['message'] = 'Gift created successfully';
+			$retvalue['status'] = true;
+		}
+		
+		if($type == 'UPDATE'){
+			$this->db->query("UPDATE tbl_user_products SET name = '$name', price = '$price', link = '$link', image = '$image', status = 'Active' WHERE id = $id");
+			$retvalue['message'] = 'Gift updated successfully';
+			$retvalue['status'] = true;
+		}
+		
+		if($type == 'DELETE'){
+			$this->db->query("DELETE FROM tbl_user_products WHERE id = $id");
+			$retvalue['message'] = 'Gift deleted successfully';
 			$retvalue['status'] = true;
 		}
 		
