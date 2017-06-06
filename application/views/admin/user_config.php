@@ -47,6 +47,15 @@
                     </div>
 					<?php } ?>
 					<div class="form-group">
+                      <label class="col-sm-3">Role <span>*</span></label>
+                      <div class="col-sm-6">
+                       <select class="select2" name="role" id="role">
+						<option value="USER">User</option>
+						<option value="ADMIN">Admin</option>
+					   </select>
+                      </div>
+                    </div>
+					<div class="form-group">
                       <label class="col-sm-3">Phone</label>
                       <div class="col-sm-6">
                         <input type="text" class="form-control" name="phone" value="<?php if(isset($user->phone))echo $user->phone; ?>">

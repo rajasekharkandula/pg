@@ -43,7 +43,7 @@ class Admin_model extends CI_Model{
 			return $this->db->query("SELECT * FROM tbl_user WHERE id = '$id'")->row();
 		}
 		if($type == 'L'){
-			return $this->db->query("SELECT * FROM tbl_user WHERE role='USER' ORDER BY id DESC")->result();
+			return $this->db->query("SELECT * FROM tbl_user ORDER BY id DESC")->result();
 		}
 		if($type == 'DL'){
 			return $this->db->query("SELECT * FROM tbl_user WHERE role='USER' ORDER BY id DESC LIMIT 5")->result();
@@ -123,11 +123,17 @@ class Admin_model extends CI_Model{
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		
 		if($type == "INSERT"){
-			$this->db->query("INSERT INTO tbl_user (first_name, last_name, email, password, auth_id, role, phone, gender, city, country, address, created_date, modified_date, status) VALUES ('$first_name', '$last_name', '$email', '$password', '$auth_id', '$role', '$phone', '$gender', '$city', '$country', '$address', NOW(), NOW(), '$status'); ");
-			
-			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_user")->row()->id;
-			$retvalue['status']= true;
-			$retvalue['message']= 'User created successfully';
+			$user = $this->db->query("SELECT * FROM tbl_user WHERE email='$email'")->row();
+			if(!$user){
+				$this->db->query("INSERT INTO tbl_user (first_name, last_name, email, password, auth_id, role, phone, gender, city, country, address, created_date, modified_date, status) VALUES ('$first_name', '$last_name', '$email', '$password', '$auth_id', '$role', '$phone', '$gender', '$city', '$country', '$address', NOW(), NOW(), '$status'); ");
+				
+				$id = $this->db->query("SELECT MAX(id) as id FROM tbl_user")->row()->id;
+				$retvalue['status']= true;
+				$retvalue['message']= 'User created successfully';
+			}else{
+				$retvalue['status']= false;
+				$retvalue['message']= 'Email already exist';
+			}
 		}
 		
 		if($type == "UPDATE"){

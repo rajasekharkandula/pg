@@ -30,6 +30,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
+                        <th>Role</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -40,6 +41,7 @@
                         <td><?php echo $u->first_name.' '.$u->last_name; ?></td>
                         <td><?php echo $u->email; ?></td>
                         <td><?php echo $u->phone; ?></td>
+                        <td><?php echo $u->role; ?></td>
                         <td>
 							<a href="<?php echo base_url('admin/user_config/'.$u->id); ?>" class="btn btn-primary"><i class="mdi mdi-edit"></i></a>
 							<button class="btn btn-danger remove" data-id="<?php echo $u->id; ?>"><i class="mdi mdi-delete"></i></button>

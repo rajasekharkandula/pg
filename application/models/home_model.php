@@ -46,12 +46,20 @@ class Home_model extends CI_Model{
 			 $userdata = array(
 				 'userID' => $user->id,
 				 'email' => $user->email,
+				 'role' => $user->role,
 				 'name' => $user->first_name.' '.$user->last_name,
 				 'logged_in' => TRUE
 				 );
 			$this->session->set_userdata($userdata);
+			
+			if($user->role == 'ADMIN')
+				$url = base_url('admin');
+			else
+				$url = base_url('home');
+			
+			$retvalue['url'] = $url;
 			$retvalue['message'] = "Success";
-			 $retvalue['status'] = true;
+			$retvalue['status'] = true;
 		 }else{
 			 $retvalue['message'] = "Invalid Credintials";
 		 }
@@ -155,10 +163,10 @@ class Home_model extends CI_Model{
 			return $this->db->query("SELECT pr.profile_id,pd.*,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$sessionUserID' AND product_id = pd.id) AS liked FROM tbl_custom_profiles_products pr INNER JOIN tbl_custom_profiles p ON p.id = pr.profile_id INNER JOIN tbl_product pd ON pd.id = pr.product_id WHERE p.user_id=$userID")->result();
 		}
 		if($type == 'USERS'){
-			$str = "SELECT u.id,CONCAT(u.first_name,' ',u.last_name) as name FROM tbl_user u INNER JOIN tbl_custom_profiles p ON p.user_id AND u.id ";
+			$str = "SELECT DISTINCT u.id,CONCAT(u.first_name,' ',u.last_name) as name FROM tbl_user u INNER JOIN tbl_custom_profiles p ON p.user_id AND u.id ";
 			if($key != NULL && $key != '')
 				$str.=" WHERE u.first_name LIKE '%$key%' OR u.last_name LIKE '%$key%'";
-			$str.=" GROUP BY u.id";
+			$str.=" ";
 			return $this->db->query($str)->result();
 		}
 	}

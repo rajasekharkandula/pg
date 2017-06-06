@@ -7,10 +7,16 @@ class Admin extends CI_Controller {
 		$this->load->model('admin_model');
 		$this->load->model('home_model');
 	}
+	function access($data=array()){
+		if($this->session->userdata('role') != 'ADMIN'){
+			redirect('home/signin');
+		}
+	}
 	
 	public function index()
 	{
 		
+		$this->access();
 		$pageData['page'] = 'DASHBOARD';
 		$pageData['pageTitle'] = 'Dashboard';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -23,6 +29,7 @@ class Admin extends CI_Controller {
 	}
 	public function categories()
 	{
+		$this->access();
 		$pageData['page'] = 'CATALOG';
 		$pageData['pageTitle'] = 'Categories';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -34,6 +41,7 @@ class Admin extends CI_Controller {
 	}
 	public function category($id=0)
 	{
+		$this->access();
 		$pageData['page'] = 'CATALOG';
 		$pageData['pageTitle'] = 'Categories';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -46,6 +54,7 @@ class Admin extends CI_Controller {
 	}
 	public function products()
 	{
+		$this->access();
 		$pageData['page'] = 'CATALOG';
 		$pageData['pageTitle'] = 'Products';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -57,6 +66,7 @@ class Admin extends CI_Controller {
 	}
 	public function product($id=0)
 	{
+		$this->access();
 		$pageData['page'] = 'CATALOG';
 		$pageData['pageTitle'] = 'Products';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -69,6 +79,7 @@ class Admin extends CI_Controller {
 	}
 	public function api_products()
 	{
+		$this->access();
 		$pageData['page'] = 'CATALOG';
 		$pageData['pageTitle'] = 'Products';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -80,6 +91,7 @@ class Admin extends CI_Controller {
 	}
 	public function api()
 	{
+		$this->access();
 		$pageData['page'] = 'API';
 		$pageData['pageTitle'] = 'API List';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -90,6 +102,7 @@ class Admin extends CI_Controller {
 	}
 	public function api_config($id=0)
 	{
+		$this->access();
 		$pageData['page'] = 'API';
 		$pageData['pageTitle'] = 'API List';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -102,6 +115,7 @@ class Admin extends CI_Controller {
 	}
 	public function slides()
 	{
+		$this->access();
 		$pageData['page'] = 'SLIDE';
 		$pageData['pageTitle'] = 'Slides List';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -112,6 +126,7 @@ class Admin extends CI_Controller {
 	}
 	public function slide_config($id=0)
 	{
+		$this->access();
 		$pageData['page'] = 'SLIDE';
 		$pageData['pageTitle'] = 'Slides List';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -122,6 +137,7 @@ class Admin extends CI_Controller {
 	}
 	public function sections()
 	{
+		$this->access();
 		$pageData['page'] = 'HOME';
 		$pageData['pageTitle'] = 'Home Page Sections List';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -133,6 +149,7 @@ class Admin extends CI_Controller {
 	}
 	public function section_config($id=0)
 	{
+		$this->access();
 		$pageData['page'] = 'HOME';
 		$pageData['pageTitle'] = 'Home Page Section Configuration';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -150,6 +167,7 @@ class Admin extends CI_Controller {
 	}
 	public function navigations()
 	{
+		$this->access();
 		$pageData['page'] = 'NAVIGATION';
 		$pageData['pageTitle'] = 'Navigation List';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -160,6 +178,7 @@ class Admin extends CI_Controller {
 	}
 	public function navigation_config($id=0)
 	{
+		$this->access();
 		$pageData['page'] = 'SLIDE';
 		$pageData['pageTitle'] = 'Slides List';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -173,6 +192,7 @@ class Admin extends CI_Controller {
 	
 	public function filters()
 	{
+		$this->access();
 		$pageData['page'] = 'FILTER';
 		$pageData['pageTitle'] = 'Filter List';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -183,6 +203,7 @@ class Admin extends CI_Controller {
 	}
 	public function filter_config($id=0)
 	{
+		$this->access();
 		$pageData['page'] = 'FILTER';
 		$pageData['pageTitle'] = 'Filter Configuration';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -195,6 +216,7 @@ class Admin extends CI_Controller {
 	
 	public function users()
 	{
+		$this->access();
 		$pageData['page'] = 'USER';
 		$pageData['pageTitle'] = 'User List';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -205,6 +227,7 @@ class Admin extends CI_Controller {
 	}
 	public function user_config($id=0)
 	{
+		$this->access();
 		$pageData['page'] = 'USER';
 		$pageData['pageTitle'] = 'User Configuration';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -215,6 +238,7 @@ class Admin extends CI_Controller {
 	}
 	public function pages()
 	{
+		$this->access();
 		$pageData['page'] = 'CMS';
 		$pageData['pageTitle'] = 'Pages List';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -225,6 +249,7 @@ class Admin extends CI_Controller {
 	}
 	public function page_config($id=0)
 	{
+		$this->access();
 		$pageData['page'] = 'CMS';
 		$pageData['pageTitle'] = 'Page Configuration';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
@@ -235,6 +260,7 @@ class Admin extends CI_Controller {
 	}
 	public function user_products()
 	{
+		$this->access();
 		$pageData['page'] = 'CMS';
 		$pageData['pageTitle'] = 'Page Configuration';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);

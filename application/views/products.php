@@ -13,10 +13,12 @@
         
 		<section>
 			<div class="container">
-				<h2><?php if(isset($navigation->name))echo $navigation->name;else echo 'Products'; ?></h2>
+				<h2><?php if(isset($navigation->name))echo $navigation->name;else echo 'Products'; ?> 
+				<button class="pull-right visible-xs" id="m-filter">Filters <i class="fa fa-angle-down"></i></button>
+				</h2>
 				<div class="row">
-					<div class="col-md-3">
-						<div class="search-box">
+					<div class="col-md-3 col-sm-3">
+						<div class="search-box" id="search-box">
 							<div class="title">Categories</div>
 							<ul>
 								<?php foreach($categories as $c){ ?>
@@ -71,7 +73,7 @@
 							<?php } ?>
 						</div>
 					</div>
-					<div class="col-md-9">
+					<div class="col-md-9 col-sm-9">
 						<div class="search-labels">
 							
 							<?php if($key != NULL){ ?>
@@ -128,7 +130,7 @@
 						<?php if(count($products) > 0){ ?>
 						<div class="row plist">
 							<?php foreach($products as $p){ ?>
-							<div class="col-md-4 col-xs-6">
+							<div class="col-md-4 col-sm-4 col-xs-6">
 								<div class="product">
 									<button class="like" data-id="<?php echo $p->id; ?>"><?php if($p->liked > 0){?><i class="fa fa-heart"></i><?php }else{ ?><i class="fa fa-heart-o"></i><?php } ?></button>
 									<button class="gift" data-id="<?php echo $p->id; ?>"><i class="fa fa-gift"></i></button>

@@ -15,7 +15,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-1"></div>
-					<div class="col-md-5 text-center">
+					<div class="col-md-5 col-sm-6 text-center">
 						<form class="login_form" id="login_form">
 							<h3>Login</h3>
 							<div class="form-group">
@@ -32,7 +32,7 @@
 							</div>
 						</form>
 					</div>
-					<div class="col-md-5 text-center divider">
+					<div class="col-md-5 col-sm-6 text-center divider">
 						<button class="fb"><i class="fa fa-facebook"></i> Sign In with Facebook</button><br>
 						<button class="gmail"><i class="fa fa-envelope"></i> Sign Up with Email</button>
 					</div>
@@ -65,7 +65,7 @@
 						dataType:'JSON'
 					}).success(function(data){						
 						if(data.status == 1)
-							window.location.reload();
+							window.location = data.url;
 						else{
 							$('<div class="text-danger">'+data.message+'</div>').insertAfter( "#login_form h3" );
 							$("#login_btn").removeAttr("disabled");

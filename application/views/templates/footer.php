@@ -49,6 +49,7 @@
 				obj.html('<i class="fa fa-heart"></i>');
 			else
 				obj.html('<i class="fa fa-heart-o"></i>');
+			window.location.reload();
 		});
 		<?php }else{ ?>
 		window.location = '<?php echo base_url('home/signin'); ?>';

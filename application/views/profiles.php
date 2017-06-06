@@ -19,20 +19,20 @@
 				<div class="profile-info">
 					<b>Gifts for <?php echo $pr->name; ?></b>
 					<span>Reason for Gift: <?php echo $pr->reason; ?></span>
-						&nbsp;&nbsp;|&nbsp;&nbsp;
+					<span class="space">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
 					<span>Date for Gift: <?php echo date('M,d Y',strtotime($pr->date_for_gift)); ?></span>
-						&nbsp;&nbsp;|&nbsp;&nbsp;
+					<span class="space">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
 					<span>Relation To You: <?php echo $pr->relation; ?></span>
 					<div class="actions">
-					<button type="button" data-id="<?php echo $pr->id; ?>" class="pedit"><i class="fa fa-pencil"></i></button>
-					<button type="button" class="btn-danger pdelete" data-id="<?php echo $pr->id; ?>"><i class="fa fa-trash"></i></button>
+						<button type="button" data-id="<?php echo $pr->id; ?>" class="pedit"><i class="fa fa-pencil"></i></button>
+						<button type="button" class="btn-danger pdelete" data-id="<?php echo $pr->id; ?>"><i class="fa fa-trash"></i></button>
 					</div>
 				</div>
 				
-				<div class="row">
+				<div class="row plist">
 						
 					<?php foreach($products as $p){ if($p->profile_id == $pr->id){ ?>
-					<div class="col-md-3 col-xs-6">
+					<div class="col-md-3 col-sm-4 col-xs-6">
 						<div class="product">
 							<button class="like" data-id="<?php echo $p->id; ?>"><?php if($p->liked > 0){?><i class="fa fa-heart"></i><?php }else{ ?><i class="fa fa-heart-o"></i><?php } ?></button>
 							<button class="gift" data-id="<?php echo $p->id; ?>"><i class="fa fa-gift"></i></button>

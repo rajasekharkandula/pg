@@ -14,10 +14,10 @@
 		<section class="profile">
 			<div class="container">
 				<h2>Liked Gifts <button class="pull-right" id="create_btn">Add Gift</button></h2>
-				<div class="row">
+				<div class="row plist">
 						
 					<?php foreach($products as $p){ ?>
-					<div class="col-md-3 col-xs-6">
+					<div class="col-md-3 col-sm-4 col-xs-6">
 						<div class="product">
 							<button class="like" data-id="<?php echo $p->id; ?>"><i class="fa fa-heart"></i></button>
 							<button class="gift" data-id="<?php echo $p->id; ?>"><i class="fa fa-gift"></i></button>

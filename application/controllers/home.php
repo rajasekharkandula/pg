@@ -7,8 +7,16 @@ class Home extends CI_Controller{
 		$this->load->model("home_model");
 		$this->load->model("admin_model");
 	}
+	
+	function access($data=array()){
+		if($this->session->userdata('role') == 'ADMIN'){
+			redirect('admin');
+		}
+	}
+	
 	function index(){
 	
+		$this->access();
 		$pageData['data'] = $this->home_model->getHeader();
 		$data['head'] = $this->load->view('templates/head',$pageData,true);
 		$data['header'] = $this->load->view('templates/header',$pageData,true);
@@ -20,6 +28,7 @@ class Home extends CI_Controller{
 		$this->load->view('index',$data);
 	}
 	function signin(){
+		$this->access();
 		if($this->session->userdata('logged_in') == true)redirect('home');
 		$pageData['data'] = $this->home_model->getHeader();
 		$data['head'] = $this->load->view('templates/head',$pageData,true);
@@ -28,6 +37,7 @@ class Home extends CI_Controller{
 		$this->load->view('login',$data);
 	}
 	function signup(){
+		$this->access();
 		if($this->session->userdata('logged_in') == true)redirect('home');
 		$pageData['data'] = $this->home_model->getHeader();
 		$data['head'] = $this->load->view('templates/head',$pageData,true);
@@ -46,6 +56,7 @@ class Home extends CI_Controller{
 		redirect('home');
 	}
 	function profile(){
+		$this->access();
 		if($this->session->userdata('logged_in') == false)redirect('home/signin');
 		$pageData['data'] = $this->home_model->getHeader();
 		$data['head'] = $this->load->view('templates/head',$pageData,true);
@@ -59,6 +70,7 @@ class Home extends CI_Controller{
 		echo json_encode($this->home_model->update_user());
 	}
 	function reset_password(){
+		$this->access();
 		if($this->session->userdata('logged_in') == false)redirect('home/signin');
 		$pageData['data'] = $this->home_model->getHeader();
 		$data['head'] = $this->load->view('templates/head',$pageData,true);
@@ -70,6 +82,7 @@ class Home extends CI_Controller{
 		echo json_encode($this->home_model->change_password());
 	}
 	function likes(){
+		$this->access();
 		if($this->session->userdata('logged_in') == false)redirect('home/signin');
 		$pageData['data'] = $this->home_model->getHeader();
 		$data['head'] = $this->load->view('templates/head',$pageData,true);
@@ -81,6 +94,7 @@ class Home extends CI_Controller{
 		$this->load->view('likes',$data);
 	}
 	function profiles(){
+		$this->access();
 		if($this->session->userdata('logged_in') == false)redirect('home/signin');
 		$pageData['data'] = $this->home_model->getHeader();
 		$data['head'] = $this->load->view('templates/head',$pageData,true);
@@ -137,7 +151,10 @@ class Home extends CI_Controller{
 	}
 	function products($navigationSlug = "")
 	{
-
+		
+		$this->access();
+		
+		if($navigationSlug == "")
 		$navigationSlug = isset($_GET['slug']) ? $_GET['slug'] : NULL;
 		$age = isset($_GET['age']) ? $_GET['age'] : NULL;
 		$price = isset($_GET['price']) ? $_GET['price'] : NULL;
@@ -173,6 +190,9 @@ class Home extends CI_Controller{
 	}
 	function users()
 	{
+		
+		$this->access();
+		
 		$key = isset($_GET['key']) ? $_GET['key'] : NULL;
 		$pageData['search_key'] = $data['key'] = $key;
 		$pageData['search_type'] = 'user';
@@ -189,6 +209,8 @@ class Home extends CI_Controller{
 	}
 	function user_profile($id=0)
 	{
+		$this->access();
+		
 		$user = $this->home_model->get_user(array("type"=>'S','userID'=>$id));
 		if($user){
 			$pageData['data'] = $this->home_model->getHeader();
@@ -207,6 +229,8 @@ class Home extends CI_Controller{
 	}
 	function page($id=0)
 	{
+		$this->access();
+		
 		$page = $this->admin_model->get_page(array("type"=>'S','id'=>$id));
 		if($page){
 			$pageData['data'] = $this->home_model->getHeader();

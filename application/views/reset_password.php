@@ -17,20 +17,20 @@
 				<div class="box">
 					<form id="user_form">
 					<div class="row mb-10">
-						<label class="col-md-3">Password <span>*</span></label>
-						<div class="col-md-6">	
+						<label class="col-md-3 col-sm-3">Password <span>*</span></label>
+						<div class="col-md-6 col-sm-6">	
 							<input type="password" class="form-control" name="password" id="password" placeholder="Enter password...">
 						</div>
 					</div>
 					<div class="row mb-10">
-						<label class="col-md-3">Confirm Password <span>*</span></label>
-						<div class="col-md-6">	
+						<label class="col-md-3 col-sm-3">Confirm Password <span>*</span></label>
+						<div class="col-md-6 col-sm-6">	
 							<input type="password" class="form-control" name="cpassword" id="cpassword" placeholder="Enter confirm password...">
 						</div>
 					</div>
 					
 					<div class="row">
-						<div class="col-md-8 text-center">	
+						<div class="col-md-8 col-sm-9 text-center">	
 							<button type="button" id="save_btn">Change Password</button>
 						</div>
 					</div>
