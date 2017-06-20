@@ -38,7 +38,7 @@
 					<div class="col-md-3 col-xs-6">
 						<div class="product">
 							<button class="gift" data-type="USER_GIFT" data-id="<?php echo $g->id; ?>"><i class="fa fa-gift"></i></button>
-							<a href="<?php echo $g->link; ?>" target="_blank">
+							<a href="<?php echo $g->product_link; ?>" target="_blank">
 								<div class="img">
 									<img src="<?php echo $g->image; ?>">
 								</div>
@@ -57,7 +57,7 @@
 		</section>
 		
 		<!-- Profile Modal -->
-			<div class="modal fade" id="gift_modal" role="dialog">
+			<div class="modal fade" id="create_gift_modal" role="dialog">
 				<div class="modal-dialog">
 				
 				  <!-- Modal content-->
@@ -66,7 +66,6 @@
 					<div class="row">
 					  <div class="col-sm-12">
 						<form id="gift_form">
-							<input type="hidden" name="id" id="gid" value="0">
 							<input type="hidden" name="type" id="gtype" value="INSERT">
 							<div class="form-group">
 								<label>Gift Name:</label>
@@ -78,7 +77,7 @@
 							</div>
 							<div class="form-group">
 								<label>Gift Link:</label>
-								<input class="form-control" placeholder="Gift Link" type="text" name="link" id="glink">
+								<input class="form-control" placeholder="Gift Link" type="text" name="product_link" id="glink">
 							</div>
 							<div class="form-group">
 								<label>Image</label>
@@ -106,7 +105,7 @@
 			$("#create_btn").on("click",function(){
 				$("#gift_form")[0].reset();
 				$("#gtype").val('INSERT');
-				$("#gift_modal").modal("show");
+				$("#create_gift_modal").modal("show");
 			});
 			$("#submit_btn").on("click",function(){
 				var error=0;$("#gift_form .text-danger,#gift_form .text-success").remove();
@@ -123,6 +122,8 @@
 					$("#submit_btn").attr("disabled",true);
 					$("#submit_btn").html("Please wait...");
 					var formData = new FormData($("#gift_form")[0]);
+					formData.append('type','INSERT');
+					formData.append('source','User');
 					$.ajax({
 						url:'<?php echo base_url('home/ins_upd_user_gift');?>',
 						type:'POST',

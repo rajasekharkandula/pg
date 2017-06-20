@@ -16,7 +16,7 @@
 				<div class="row">
 					<div class="col-md-1"></div>
 					<div class="col-md-5 col-sm-6 text-center">
-						<form class="login_form" id="login_form">
+						<form action="#" class="login_form" id="login_form">
 							<h3>Login</h3>
 							<div class="form-group">
 								<label>Email</label>
@@ -28,13 +28,17 @@
 							</div>
 							<div class="form-group">
 								<button type="button" id="login_btn">Login</button>
-								<p class="forgot_link">Forgot Password ?</p>
+								<p class="forgot_link" id="forgot_link">Forgot Password ?</p>
+								<div id="forgot_div" class="hide">
+									<input type="text" id="femail" class="form-control mb-5" placeholder="Enter email...">
+									<button type="submit" id="submit_btn">Submit</button>
+								</div>
 							</div>
 						</form>
 					</div>
 					<div class="col-md-5 col-sm-6 text-center divider">
-						<button class="fb"><i class="fa fa-facebook"></i> Sign In with Facebook</button><br>
-						<button class="gmail"><i class="fa fa-envelope"></i> Sign Up with Email</button>
+						<a href="<?php echo $fb_login_url; ?>" class="fb"><i class="fa fa-facebook"></i> Sign In with Facebook</a><br>
+						<a class="gmail" href="<?php echo base_url('home/signup'); ?>"><i class="fa fa-envelope"></i> Sign Up with Email</a>
 					</div>
 				</div>
 			</div>                        
@@ -45,6 +49,39 @@
 		<!-- FOOTER -->
 		
 		<script>
+			$("#login_form").on("submit",function(e){
+				e.preventDefault();
+				$("#login_btn").trigger("click");
+			});
+			$("#forgot_link").on("click",function(){
+				$("#forgot_div").removeClass("hide");
+			});
+			$("#submit_btn").on("click",function(){
+				var email = $("#femail").val();
+				var error=0;$(".text-danger").remove();
+				if(email.trim() == ''){
+					error++;
+					$('<div class="text-danger">This field is required</div>').insertAfter("#femail");
+				}
+				if(error == 0){
+					$("#submit_btn").attr("disabled",true);
+					$("#submit_btn").html("Please wait...");
+					$.ajax({
+						url:'<?php echo base_url('home/forgot_password');?>',
+						type:'POST',
+						data:{'email':$("#femail").val(),'password':$("#password").val()},
+						dataType:'JSON'
+					}).success(function(data){						
+						if(data.status == 1){
+							$("#forgot_div").html('<div class="text-success">'+data.message+'</div>');
+						}else{
+							$('<div class="text-danger">'+data.message+'</div>').insertAfter("#femail");
+							$("#submit_btn").removeAttr("disabled");
+							$("#submit_btn").html("Submit");
+						}
+					});
+				}
+			});
 			$("#login_btn").on("click",function(){
 				var error=0;$(".login_form .text-danger").remove();
 				if($("#email").val() == ''){

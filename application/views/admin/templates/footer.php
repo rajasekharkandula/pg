@@ -26,7 +26,6 @@
 <script src="<?php echo base_url(); ?>/assets/admin/lib/datatables/plugins/buttons/js/buttons.colVis.js" type="text/javascript"></script>
 <script src="<?php echo base_url(); ?>/assets/admin/lib/datatables/plugins/buttons/js/buttons.bootstrap.js" type="text/javascript"></script>
 
-<script src="<?php echo base_url(); ?>/assets/admin/lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
 <script src="<?php echo base_url(); ?>/assets/admin/lib/jquery.nestable/jquery.nestable.js" type="text/javascript"></script>
 <script src="<?php echo base_url(); ?>/assets/admin/lib/moment.js/min/moment.min.js" type="text/javascript"></script>
 <script src="<?php echo base_url(); ?>/assets/admin/lib/datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
@@ -37,3 +36,4 @@
 <script src="<?php echo base_url(); ?>/assets/admin/lib/summernote/summernote-ext-beagle.js" type="text/javascript"></script>
 <script src="<?php echo base_url(); ?>/assets/admin/lib/bootstrap-markdown/js/bootstrap-markdown.js" type="text/javascript"></script>
 <script src="<?php echo base_url(); ?>/assets/admin/lib/markdown-js/markdown.js" type="text/javascript"></script>
+<script src="<?php echo base_url();?>assets/js/fileupload.js"></script>

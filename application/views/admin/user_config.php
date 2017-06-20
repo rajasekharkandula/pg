@@ -35,7 +35,7 @@
 					<div class="form-group">
                       <label class="col-sm-3">Email <span>*</span></label>
                       <div class="col-sm-6">
-                        <input req="true" type="text" class="form-control" name="email" value="<?php if(isset($user->email))echo $user->email; ?>">
+                        <input req="true" type="text" class="form-control" name="email" id="email" value="<?php if(isset($user->email))echo $user->email; ?>">
                       </div>
                     </div>
 					<?php if(!isset($user->id)){ ?>
@@ -115,6 +115,11 @@
 				$(this).parent().append('<div class="text-danger">This field is required</div>');
 			}
 		});
+		var email_regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		if(!email_regex.test($("#email").val()) && $("#email").val() != ''){
+			error++;
+			$("#email").parent().append('<div class="text-danger">Invalid email</div>');
+		}
 		if(error == 0){
 			$("#submit_btn").attr("disabled",true);
 			

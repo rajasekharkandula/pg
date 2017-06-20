@@ -31,7 +31,7 @@ class Home_model extends CI_Model{
 		return 'r'.$result;
 	}
 	function getHeader(){
-		 return $this->db->query("select * from tbl_navigation")->result();
+		 return $this->db->query("select *,(SELECT COUNT(*) FROM tbl_navigation WHERE parent_id = n.id) AS childs from tbl_navigation n ORDER BY n.sortin_order")->result();
 	}
 	
 	function login()
@@ -41,27 +41,32 @@ class Home_model extends CI_Model{
 		 $email = $this->input->post('email');
 		 $password = $this->input->post('password');
 		
-		 $user = $this->db->query("select * from tbl_user where email = '$email' AND password='$password'")->row();
+		 $user = $this->db->query("select * from tbl_user where email = '$email'")->row();
 		 if($user){
-			 $userdata = array(
-				 'userID' => $user->id,
-				 'email' => $user->email,
-				 'role' => $user->role,
-				 'name' => $user->first_name.' '.$user->last_name,
-				 'logged_in' => TRUE
-				 );
-			$this->session->set_userdata($userdata);
-			
-			if($user->role == 'ADMIN')
-				$url = base_url('admin');
-			else
-				$url = base_url('home');
-			
-			$retvalue['url'] = $url;
-			$retvalue['message'] = "Success";
-			$retvalue['status'] = true;
+			if(password_verify($password,$user->password)){			
+				$userdata = array(
+					 'userID' => $user->id,
+					 'email' => $user->email,
+					 'role' => $user->role,
+					 'image' => $user->image,
+					 'name' => $user->first_name.' '.$user->last_name,
+					 'logged_in' => TRUE
+				);
+				$this->session->set_userdata($userdata);
+				
+				if($user->role == 'ADMIN')
+					$url = base_url('admin');
+				else
+					$url = base_url('home');
+				
+				$retvalue['url'] = $url;
+				$retvalue['message'] = "Success";
+				$retvalue['status'] = true;
+			}else{
+				$retvalue['message'] = "Wrong password";
+			}
 		 }else{
-			 $retvalue['message'] = "Invalid Credintials";
+			 $retvalue['message'] = "This email is not registered with us";
 		 }
 		 return $retvalue;
 	}
@@ -73,18 +78,23 @@ class Home_model extends CI_Model{
 		$name = $this->input->post('name');
 		$email = $this->input->post('email');
 		$password = $this->input->post('password');
+		
+		$password = password_hash($password, PASSWORD_DEFAULT);
+				
+		$image = base_url($this->config->item('default_image_user'));
 		$user = $this->db->query("select * from tbl_user where email = '$email'")->row();
 		if($user){
 			$retvalue['message'] = "This email already exists.";
 			return $retvalue;
 		}
-		$this->db->query("INSERT INTO tbl_user (email, password, role, created_date, modified_date, status) VALUES ( '$email', '$password', 'USER', NOW() NOW(), 'Active')");
+		$this->db->query("INSERT INTO tbl_user (email, password, role, image, created_date, modified_date, status) VALUES ( '$email', '$password', 'USER', '$image', NOW(), NOW(), 'Active')");
 		
-		$user = $this->db->query("select * from tbl_user where email = '$email' AND password='$password'")->row();
+		$user = $this->db->query("select * from tbl_user where email = '$email'")->row();
 		if($user){
 			$userdata = array(
 				'userID' => $user->id,
 				'email' => $user->email,
+				'image' => $user->image,
 				'name' => $user->first_name.' '.$user->last_name,
 				'logged_in' => TRUE
 			);
@@ -96,11 +106,45 @@ class Home_model extends CI_Model{
 		}
 		return $retvalue;
 	}
+	function facebook($user)
+	{
+		//var_dump($user);exit();
+		$id = isset($user['id']) ? $user['id'] : 0;
+		$first_name = isset($user['first_name']) ? $user['first_name'] : '';
+		$last_name = isset($user['last_name']) ? $user['last_name'] : '';
+		$gender = isset($user['gender']) ? $user['gender'] : '';
+		$email = isset($user['email']) ? $user['email'] : '';
+		if($email == '' || $email == NULL)return false;
+		
+		$image = base_url($this->config->item("default_image_user"));
+		
+		$user = $this->db->query("select * from tbl_user where email = '$email'")->row();
+		if(!$user){
+			$this->db->query("INSERT INTO tbl_user (first_name, last_name, email, role, image, provider, provider_id, created_date, modified_date, status) VALUES ('$first_name', '$last_name', '$email', 'USER', '$image', 'facebook', '$id', NOW(), NOW(), 'Active')");
+		}
+		$user = $this->db->query("select * from tbl_user where email = '$email'")->row();
+		if($user){
+			$userdata = array(
+				'userID' => $user->id,
+				'email' => $user->email,
+				'image' => $user->image,
+				'name' => $user->first_name.' '.$user->last_name,
+				'logged_in' => TRUE
+			);
+			$this->session->set_userdata($userdata);
+			return true;
+		}
+		return false;
+	}
 	function get_user($data){
 		$type = isset($data['type']) ? $data['type'] : '';
 		$userID = isset($data['userID']) ? (int)$data['userID'] : 0;
+		$auth_id = isset($data['auth_id']) ? $data['auth_id'] : '';
 		if($type == 'S'){
 			return $this->db->query("SELECT * FROM tbl_user WHERE id=$userID")->row();
+		}
+		if($type == 'CHECH_AUTH'){
+			return $this->db->query("SELECT * FROM tbl_user WHERE auth_id='$auth_id' AND modified_date > (NOW() - interval 60 minute)")->row();
 		}
 	}
 	function update_user(){
@@ -111,15 +155,31 @@ class Home_model extends CI_Model{
 		$email = $this->input->post('email');
 		$phone = $this->input->post('phone');
 		$userID = $this->session->userdata("userID");
+		
+		//var_dump($_FILES['image']);
+		
+		if($_FILES['image']['name'] != ''){		
+			$iu=$this->admin_model->image_upload($_FILES['image'],'assets/images/users/','user');
+			if($iu['status'] == true)
+				$image = $iu['path'];
+			else
+				return $iu;
+		}else{
+			$image = $this->input->post('uploaded_img');
+		}
+		if(getimagesize($image) === false)
+			$image = base_url($this->config->item('default_image_user'));
+		
 		$row = $this->db->query("SELECT * FROM tbl_user WHERE email='$email' AND id != $userID")->row();
 		if($row){
 			$retvalue['message'] = 'This email already exists';
 			return $retvalue;
 		}
-		$this->db->query("UPDATE tbl_user SET first_name = '$first_name',last_name = '$last_name', email = '$email', phone = '$phone' WHERE id  = $userID");
+		$this->db->query("UPDATE tbl_user SET first_name = '$first_name',last_name = '$last_name', email = '$email', phone = '$phone', image = '$image' WHERE id  = $userID");
 		
 		$userdata = array(
 			'email' => $email,
+			'image' => $image,
 			'name' => $first_name.' '.$last_name,
 		);
 		$this->session->set_userdata($userdata);
@@ -132,8 +192,18 @@ class Home_model extends CI_Model{
 	function change_password(){
 		$password = $this->input->post('password');
 		$userID = $this->session->userdata("userID");
+		$password = password_hash($password, PASSWORD_DEFAULT);
 		$this->db->query("UPDATE tbl_user SET password = '$password' WHERE id  = $userID");
-		$retvalue['message'] = 'Password successfully';
+		$retvalue['message'] = 'Password changed successfully';
+		$retvalue['status'] = true;
+		return $retvalue;
+	}
+	function password_change(){
+		$password = $this->input->post('password');
+		$auth_id = $this->input->post('auth_id');
+		$password = password_hash($password, PASSWORD_DEFAULT);
+		$this->db->query("UPDATE tbl_user SET password = '$password',auth_id = NULL WHERE auth_id  = '$auth_id'");
+		$retvalue['message'] = 'Password changed successfully';
 		$retvalue['status'] = true;
 		return $retvalue;
 	}
@@ -163,9 +233,9 @@ class Home_model extends CI_Model{
 			return $this->db->query("SELECT pr.profile_id,pd.*,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$sessionUserID' AND product_id = pd.id) AS liked FROM tbl_custom_profiles_products pr INNER JOIN tbl_custom_profiles p ON p.id = pr.profile_id INNER JOIN tbl_product pd ON pd.id = pr.product_id WHERE p.user_id=$userID")->result();
 		}
 		if($type == 'USERS'){
-			$str = "SELECT DISTINCT u.id,CONCAT(u.first_name,' ',u.last_name) as name FROM tbl_user u INNER JOIN tbl_custom_profiles p ON p.user_id AND u.id ";
+			$str = "SELECT DISTINCT u.id,CONCAT(u.first_name,' ',u.last_name) as name,u.image FROM tbl_user u INNER JOIN tbl_custom_profiles p ON p.user_id AND u.id WHERE role = 'USER' ";
 			if($key != NULL && $key != '')
-				$str.=" WHERE u.first_name LIKE '%$key%' OR u.last_name LIKE '%$key%'";
+				$str.=" AND (u.first_name LIKE '%$key%' OR u.last_name LIKE '%$key%') ";
 			$str.=" ";
 			return $this->db->query($str)->result();
 		}
@@ -183,7 +253,7 @@ class Home_model extends CI_Model{
 		$userID = (int)$this->session->userdata("userID");
 		
 		if($type == 'INSERT'){
-			$this->db->query("INSERT INTO tbl_custom_profiles (user_id, name, created_date, updated_date, date_for_gift, relation, reason, status) VALUES ($userID, '$name', NOW(), NOW(), '$date', '$reason', '$reason','Active'); ");
+			$this->db->query("INSERT INTO tbl_custom_profiles (user_id, name, created_date, updated_date, date_for_gift, relation, reason, status) VALUES ($userID, '$name', NOW(), NOW(), '$date', '$relation', '$reason','Active'); ");
 			$retvalue['message'] = 'Profile created successfully';
 			$retvalue['status'] = true;
 		}
@@ -202,16 +272,16 @@ class Home_model extends CI_Model{
 		
 		return $retvalue;
 	}
-	function get_user_gift($data){
+	function get_user_products($data){
 		$type = isset($data['type']) ? $data['type'] : '';
 		$id = isset($data['id']) ? (int)$data['id'] : 0;
 		$userID = isset($data['userID']) ? (int)$data['userID'] : 0;
 		$sessionUserID = (int)$this->session->userdata("userID");
 		if($type == 'L'){
-			return $this->db->query("SELECT * FROM tbl_user_products WHERE user_id=$userID")->result();
+			return $this->db->query("SELECT * FROM tbl_product WHERE created_by=$userID")->result();
 		}
 		if($type == 'ALL'){
-			return $this->db->query("SELECT p.*,CONCAT(u.first_name,' ',u.last_name) AS username,u.email FROM tbl_user_products p INNER JOIN tbl_user u ON u.id = p.user_id")->result();
+			return $this->db->query("SELECT p.*,CONCAT(u.first_name,' ',u.last_name) AS username,u.email FROM tbl_product p INNER JOIN tbl_user u ON u.id = p.created_by")->result();
 		}
 		
 	}
@@ -225,13 +295,17 @@ class Home_model extends CI_Model{
 		$link = $this->input->post("link");
 		$userID = (int)$this->session->userdata("userID");
 		
-		if(isset($_FILES['image'])){		
-			$image=$this->admin_model->image_upload($_FILES['image'],'assets/images/products/','product');
-			if(!$image)
-				$image = $this->input->post('uploaded_img') ? $this->input->post('uploaded_img') : $this->config->item('default_image');
+		if($_FILES['image']['name'] != ''){		
+			$iu=$this->admin_model->image_upload($_FILES['image'],'assets/images/products/','product');
+			if($iu['status'] == true)
+				$image = $iu['path'];
+			else
+				return $iu;
 		}else{
-			$image = $this->config->item('default_image');
+			$image = $this->input->post('uploaded_img');
 		}
+		if(getimagesize($image) === false)
+			$image = base_url($this->config->item('default_image'));
 		
 		if($type == 'INSERT'){
 			$this->db->query("INSERT INTO tbl_user_products (user_id, name, price, link, image, created_date, status) VALUES ($userID, '$name', '$price', '$link', '$image', NOW(), 'Active')");
@@ -296,6 +370,41 @@ class Home_model extends CI_Model{
 		}
 	}
 	
+	function forgot_password(){
+		$retvalue = array();
+		$retvalue['status'] = false;
+		$email = $this->input->post("email");
+		$user = $this->db->query("SELECT * FROM tbl_user WHERE email = '$email'")->row();
+		if($user){
+			$auth_id = $this->db->query("SELECT UUID() AS auth_id")->row()->auth_id;
+			$this->db->query("UPDATE tbl_user SET auth_id = '$auth_id',modified_date = NOW() WHERE id = ".$user->id);
+			
+			$to = $user->email;
+			$subject = 'Password reset link';
+			$url = base_url('home/password_reset/'.$auth_id);
+			$message="Hi ".$user->first_name.' '.$user->last_name.",<br><br>";
+			$message.="To reset your password, click on the link below (or copy and paste the URL into your browser):<br><a href=".$url.">".$url."</a><br><br>";
+			$message.="Thanks,<br>Painlessgift Team."; 
+			$this->send_email($to,$subject,$message);
+			
+			$retvalue['status'] = true;
+			$retvalue['message'] = 'Reset password link has been sent successfully';
+		}else{
+			$retvalue['message'] = 'Email does not exist';
+		}
+		return $retvalue;
+	}
+	public function send_email($to,$subject,$message){
+		$this->load->library('email');
+		$this->email->from($this->config->item('admin_email'),'Painlessgift');
+		$this->email->to($to);
+		$this->email->subject($subject);
+		$this->email->message($message);
+		$status = $this->email->send();
+		//echo $this->email->print_debugger();exit();
+		return $status;
+	}
+	
 	function getSlides()
 	{
 		 $query = $this->db->query("select id,image from tbl_slide WHERE slideType='slide'")->result();
@@ -320,12 +429,33 @@ class Home_model extends CI_Model{
 		$qry = $this->db->query("select * from tbl_section ORDER BY sortingOrder ASC")->result();
 		foreach($qry as $r){
 			$section = array();
+			$section['id'] = $r->id;
 			$section['name'] = $r->name;
-			$section['products'] = $this->db->query("select p.*,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$userID' AND product_id = p.id) AS liked from tbl_section_products s INNER JOIN tbl_product p ON p.id = s.product_id WHERE s.section_id = ".$r->id." LIMIT 4")->result();
+			$section['products'] = $this->db->query("select p.*,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$userID' AND product_id = p.id) AS liked from tbl_section_products s INNER JOIN tbl_product p ON p.id = s.product_id WHERE s.section_id = ".$r->id." LIMIT 20")->result();
 			array_push($retvalue,$section);
 		}
 		return $retvalue;
 	 }
+	function get_section($data){
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		$slug = isset($data['slug']) ? $data['slug'] : 0;
+		$page = isset($data['page']) ? $data['page'] : 1;
+		$userID = $this->session->userdata("userID");
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * from tbl_section WHERE id = $id")->row();
+		}
+		if($type == 'SP'){
+			if($page <= 0)
+			$page = 1;
+			$start = (int)((int)($page-1) * $this->config->item("default_items"));	
+			return $this->db->query("SELECT p.*,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$userID' AND product_id = p.id) AS liked from tbl_section_products s INNER JOIN tbl_product p ON p.id = s.product_id WHERE s.section_id = $id LIMIT ".$start.",".$this->config->item("default_items"))->result();
+		}
+		if($type == 'COUNT'){
+			return $this->db->query("SELECT COUNT(*) as pCount FROM tbl_section_products s WHERE s.section_id = $id")->row()->pCount;
+		}
+	}
 	 function getTopRated()
 	 {
 		 $query = $this->db->query("select * from tbl_product")->result();
@@ -370,51 +500,63 @@ class Home_model extends CI_Model{
 	 }
 	 function getProducts($data)
 	 {
-		 $type = isset($data['type']) ? $data['type'] : '';
-		 $navigationSlug = isset($data['navigationSlug']) ? $data['navigationSlug'] : '';
-		 $category = isset($data['category']) ? $data['category'] : NULL;
-		 $age = isset($data['age']) ? $data['age'] : NULL;
-		 $price = isset($data['price']) ? $data['price'] : NULL;
-		 $key = isset($data['key']) ? $data['key'] : NULL;
-		 $userID = (int)$this->session->userdata("userID");
-		if($type == 'SEARCH'){
-			$str = "SELECT *,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$userID' AND product_id = p.id) AS liked FROM tbl_product p WHERE p.status = 'Active' ";
-			
-			if($navigationSlug != NULL && $navigationSlug !=''){
-				$query = $this->db->query("SELECT id FROM tbl_navigation n WHERE n.slug = '$navigationSlug' OR n.parent_id IN (SELECT id FROM tbl_navigation WHERE slug = '$navigationSlug')")->result();
-				$ids = array();
-				foreach($query as $r)array_push($ids,$r->id);
-				$ids = implode(",",$ids);
-				$str.=" AND p.id IN (SELECT product_id FROM tbl_navigation_products WHERE navigation_id IN ($ids)) ";
-			}
-			if($category != NULL && $category !=''){
-				$str.=" AND p.category IN ($category) ";
-			}
-			if($age != NULL && $age !=''){
-				$query = $this->db->query("SELECT * FROM tbl_filter WHERE id = $age")->row();
-				if($query)
-				$str.=" AND (p.min_age >= ".$query->min_value." AND p.max_age <= ".$query->max_value.")";
-			}
-			if($price != NULL && $price !=''){
-				$query = $this->db->query("SELECT * FROM tbl_filter WHERE id = $price")->row();
-				if($query)
-				$str.=" AND (p.price >= ".$query->min_value." AND p.price <= ".$query->max_value.")";
-			}
-			if($key != NULL && $key !=''){
-				$str.=" AND p.name LIKE '%$key%'";
-			}
-			
-			//echo $str;exit();
-			return $this->db->query($str)->result();
+		$type = isset($data['type']) ? $data['type'] : '';
+		$navigationSlug = isset($data['navigationSlug']) ? $data['navigationSlug'] : '';
+		$category = isset($data['category']) ? $data['category'] : NULL;
+		$age = isset($data['age']) ? $data['age'] : NULL;
+		$price = isset($data['price']) ? $data['price'] : NULL;
+		$key = isset($data['key']) ? $data['key'] : NULL;
+		$page = isset($data['page']) ? (int)$data['page'] : 1;
+		$userID = (int)$this->session->userdata("userID");
+		
+		$str = "SELECT *,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$userID' AND product_id = p.id) AS liked FROM tbl_product p WHERE p.status = 'Active' AND p.source != 'User' ";
+		if($type == 'PRODUCTS_COUNT'){
+			$str = "SELECT COUNT(*) AS count FROM tbl_product p WHERE p.status = 'Active' AND p.source != 'User' ";
 		}
+		
+		if($navigationSlug != NULL && $navigationSlug !=''){
+			$query = $this->db->query("SELECT id FROM tbl_navigation n WHERE n.slug = '$navigationSlug' OR n.parent_id IN (SELECT id FROM tbl_navigation WHERE slug = '$navigationSlug')")->result();
+			$ids = array();
+			foreach($query as $r)array_push($ids,$r->id);
+			$ids = implode(",",$ids);
+			$str.=" AND p.id IN (SELECT product_id FROM tbl_navigation_products WHERE navigation_id IN ($ids)) ";
+		}
+		if($category != NULL && $category !=''){
+			$str.=" AND p.category IN ($category) ";
+		}
+		if($age != NULL && $age !=''){
+			$query = $this->db->query("SELECT * FROM tbl_filter WHERE id = $age")->row();
+			if($query)
+			$str.=" AND (p.min_age >= ".$query->min_value." AND p.max_age <= ".$query->max_value.")";
+		}
+		if($price != NULL && $price !=''){
+			$query = $this->db->query("SELECT * FROM tbl_filter WHERE id = $price")->row();
+			if($query)
+			$str.=" AND (p.price >= ".$query->min_value." AND p.price <= ".$query->max_value.")";
+		}
+		if($key != NULL && $key !=''){
+			$str.=" AND p.name LIKE '%$key%'";
+		}
+		
+		if($type == 'PRODUCTS_COUNT'){
+			return $this->db->query($str)->row()->count;
+		}
+		if($page <= 0)
+			$page = 1;
+		$start = (int)((int)($page-1) * $this->config->item("default_items"));		
+		$str.=" LIMIT ".$start.",".$this->config->item("default_items");
+		//echo $str;exit();
+		return $this->db->query($str)->result();
+		
 		 
 	 }
-	 function getNavigationBySlug($slug)
-	 {
-		 $query = $this->db->query("select * from tbl_navigation where slug='$slug'")->row();
-		 mysqli_next_result($this->db->conn_id);
-		 return $query;
-	 }
+	function getNavigationBySlug($slug)
+	{
+		$query = $this->db->query("select * from tbl_navigation where slug='$slug'")->row();
+		mysqli_next_result($this->db->conn_id);
+		return $query;
+	}
+	
 	 function getMyAccountDet()
 	 {
 		 $id = $this->session->userdata("userID");

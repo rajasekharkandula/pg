@@ -117,6 +117,7 @@ class Admin_model extends CI_Model{
 		$country=$this->input->post('country');
 		$city=$this->input->post('city');
 		$password=$this->input->post('password');
+		$password = password_hash($password, PASSWORD_DEFAULT);		
 		$username=$this->input->post('username');
 		$auth_id=$this->input->post('auth_id');
 		$role=$this->input->post('role') ? $this->input->post('role') : 'USER';
@@ -173,9 +174,10 @@ class Admin_model extends CI_Model{
 		$password=$this->input->post('password');
 		$username=$this->input->post('username');
 		$status=$this->input->post('status');
+		$image = base_url($this->config->item('default_image'));
 		$qry = $this->db->query("SELECT * FROM tbl_user WHERE email = '$email'")->row();		
 		if(!$qry){
-			$this->db->query("INSERT INTO tbl_user (firstName,lastName, email, password, username, phone, role, company, country,  newsletter, createdDate, status) VALUES ('$fname', '$lname', '$email', '$password', '$username','$phone', 'USER', '$company', '$country', '$newsletter', NOW(), 'Active')");
+			$this->db->query("INSERT INTO tbl_user (firstName,lastName, email, password, username, phone, image, role, company, country,  newsletter, createdDate, status) VALUES ('$fname', '$lname', '$email', '$password', '$username','$phone', '$image', 'USER', '$company', '$country', '$newsletter', NOW(), 'Active')");
 			$this->login($email,$password);
 			
 			$data['name'] = $fname.' '.$lname;
@@ -206,27 +208,54 @@ class Admin_model extends CI_Model{
 		$max_age=(int)$this->input->post('max_age');
 		$gender=$this->input->post('gender');
 		$category=$this->input->post('category');
-		$apiID=$this->input->post('apiID');
+		$apiID=(int)$this->input->post('apiID');
 		$source=$this->input->post('source') ? $this->input->post('source') : 'Manual';
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		
-		if(isset($_FILES['image'])){		
-			$image=$this->image_upload($_FILES['image'],'assets/images/products/','product');
-			if(!$image)
+		$userID = (int)$this->session->userdata("userID");
+		
+		if(isset($_FILES['image']['name'])){
+			if($_FILES['image']['name'] != ''){		
+				$iu=$this->admin_model->image_upload($_FILES['image'],'assets/images/products/','product');
+				if($iu['status'] == true)
+					$image = $iu['path'];
+				else
+					return $iu;
+			}else{
 				$image = $this->input->post('uploaded_img');
-		}else{
-			$image = $this->config->item('default_image');
+			}
 		}
+		if(!@file_get_contents($image))
+			$image = base_url($this->config->item('default_image'));
+		
 		
 		if($type == 'INSERT'){
-			$this->db->query("INSERT INTO tbl_product (name, description, slug, price, image, product_link, min_age, max_age, gender, category, apiID, created_date,modified_date,status) VALUES ('$name', '$description', '$slug', '$price', '$image', '$product_link', '$min_age', '$max_age', '$gender', '$category', '0', NOW(), NOW(),'$status'); ");
+			$this->db->query("INSERT INTO tbl_product (name, description, slug, price, image, product_link, min_age, max_age, gender, category, apiID, source, created_by, modified_by, created_date,modified_date,status) VALUES ('$name', '$description', '$slug', '$price', '$image', '$product_link', '$min_age', '$max_age', '$gender', '$category', $apiID, '$source', $userID, $userID, NOW(), NOW(),'$status')");
 			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_product")->row()->id;
+			
+			if($this->input->post('navigation')){
+				$navigation = (array)$this->input->post('navigation');
+				$this->db->query("DELETE FROM tbl_navigation_products WHERE product_id = $id");
+				foreach($navigation as $n){
+					$this->db->query("INSERT INTO tbl_navigation_products(navigation_id,product_id) VALUES($n,$id)");
+				}
+			}
+			
 			$retvalue['status']= true;
 			$retvalue['message']= 'Product saved successfully';
 		}
 		
 		if($type == 'UPDATE'){			
-			$this->db->query("UPDATE tbl_product SET name = '$name', description = '$description', slug = '$slug', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', gender = '$gender', category = '$category', modified_date = NOW(), status = '$status' WHERE id = $id ");
+			$this->db->query("UPDATE tbl_product SET name = '$name', description = '$description', slug = '$slug', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', gender = '$gender', category = '$category', modified_by=$userID, modified_date = NOW(), status = '$status' WHERE id = $id ");
+			
+			if($this->input->post('navigation')){
+				$navigation = (array)$this->input->post('navigation');
+				$this->db->query("DELETE FROM tbl_navigation_products WHERE product_id = $id");
+				foreach($navigation as $n){
+					$this->db->query("INSERT INTO tbl_navigation_products(navigation_id,product_id) VALUES($n,$id)");
+				}
+			}
+			
 			$retvalue['status']= true;
 			$retvalue['message']= 'Product updated successfully';
 		}
@@ -243,7 +272,7 @@ class Admin_model extends CI_Model{
 			$products = json_decode($this->input->post('products'));
 			foreach($products as $p){
 				$product = json_decode($p[4]);
-				$name = $product->name;
+				$name = str_replace("'","\\'",str_replace("\\","\\\\",($product->name)));
 				$id = $product->id;
 				$price = $product->price;
 				$image = $product->image;
@@ -255,9 +284,9 @@ class Admin_model extends CI_Model{
 				
 				$product = $this->db->query("SELECT * FROM tbl_product WHERE id = $id")->row();
 				if($product){
-					$this->db->query("UPDATE tbl_product SET name = '$name', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', category = '$category', apiID = '$apiID', modified_date = NOW(), status = 'Active' WHERE id = $id ");
+					$this->db->query("UPDATE tbl_product SET name = '$name', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', category = '$category', apiID = '$apiID',modified_by = $userID, modified_date = NOW(), status = 'Active' WHERE id = $id ");
 				}else{
-					$this->db->query("INSERT INTO tbl_product (id,name, price, image, product_link, min_age, max_age, category, apiID, created_date,modified_date,status) VALUES ($id,'$name', '$price', '$image', '$product_link', '$min_age', '$max_age', '$category', '$apiID', NOW(), NOW(),'Active'); ");
+					$this->db->query("INSERT INTO tbl_product (id,name, price, image, product_link, min_age, max_age, category, apiID, source, created_by, modified_by, created_date,modified_date,status) VALUES ($id,'$name', '$price', '$image', '$product_link', '$min_age', '$max_age', '$category', '$apiID', '$source', $userID, $userID, NOW(), NOW(),'Active'); ");
 				}
 				$this->db->query("DELETE FROM tbl_navigation_products WHERE product_id = $id");
 				foreach($navigation as $n){
@@ -274,14 +303,26 @@ class Admin_model extends CI_Model{
 	}
 	
 	function image_upload($file,$uploaddir='assets/images/products/',$id=""){
+		$retvalue = array();
+		$retvalue['status'] = false;
+		$retvalue['path'] = base_url($this->config->item("placeholder.png"));
+		$retvalue['message'] = 'Please try again later';
+		
 		$ext = end(explode(".", $file["name"]));
+		$img_ext = $this->config->item("img_ext");
+		if(!in_array($ext,$img_ext)){
+			$retvalue['message'] = 'Invalid image file.Please upload file with these(jpg,png) extensions';
+			return $retvalue;
+		}
+			
 		$path=$uploaddir.$id.date('ymdHis').'.'.$ext;
-		if(file_exists($path) )
+		if(file_exists($path))
 			unlink($path);
-		if(move_uploaded_file($file["tmp_name"],$path))
-			return base_url($path);
-		else
-			return false;
+		if(move_uploaded_file($file["tmp_name"],$path)){
+			$retvalue['status'] = true;
+			$retvalue['path'] = base_url($path);
+		}
+		return $retvalue;
 	}
 	
 	public function get_product($data){		
@@ -297,6 +338,9 @@ class Admin_model extends CI_Model{
 		}
 		if($type == 'L'){
 			return $this->db->query("SELECT *,(select name from tbl_api where id =p.apiID) as apiName FROM tbl_product p ORDER BY id DESC")->result();
+		}
+		if($type == 'NS'){
+			return $this->db->query("SELECT * FROM tbl_navigation_products WHERE product_id = $id")->result();
 		}
 		
 	}
@@ -511,13 +555,17 @@ class Admin_model extends CI_Model{
 		$description=(string)$this->input->post('description');
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		
-		if(isset($_FILES['image'])){		
-			$image=$this->image_upload($_FILES['image'],'assets/images/slides/','slide');
-			if(!$image)
-				$image = $this->input->post('uploaded_img');
+		if($_FILES['image']['name'] != ''){		
+			$iu=$this->admin_model->image_upload($_FILES['image'],'assets/images/slides/','slide');
+			if($iu['status'] == true)
+				$image = $iu['path'];
+			else
+				return $iu;
 		}else{
-			$image = $this->config->item('default_image');
+			$image = $this->input->post('uploaded_img');
 		}
+		if(getimagesize($image) === false)
+			$image = base_url($this->config->item('default_image'));
 		
 		if($type == "INSERT"){
 			$this->db->query("INSERT INTO tbl_slide (image, title, description,slideType, slideUrl, created_date, updated_date, status) VALUES ('$image', '$title', '$description', '$slideType', '$slideUrl', NOW(), NOW(), '$status')");
@@ -551,6 +599,62 @@ class Admin_model extends CI_Model{
 		}
 		if($type == 'L'){
 			return $this->db->query("SELECT * FROM tbl_slide ORDER BY id DESC")->result();
+		}	
+	}
+	function ins_upd_post(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$title=(string)$this->input->post('title');
+		$url=(string)$this->input->post('postUrl');
+		$description=(string)$this->input->post('description');
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		
+		if($_FILES['image']['name'] != ''){		
+			$iu=$this->admin_model->image_upload($_FILES['image'],'assets/images/posts/','post');
+			if($iu['status'] == true)
+				$image = $iu['path'];
+			else
+				return $iu;
+		}else{
+			$image = $this->input->post('uploaded_img');
+		}
+		if(getimagesize($image) === false)
+			$image = base_url($this->config->item('default_image'));
+		
+		if($type == "INSERT"){
+			$this->db->query("INSERT INTO tbl_post (image, title, description,url, created_date, updated_date, status) VALUES ('$image', '$title', '$description', '$url', NOW(), NOW(), '$status')");
+			
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_post")->row()->id;
+			$retvalue['status']= true;
+			$retvalue['message']= 'Post created successfully';
+		}
+		
+		if($type == "UPDATE"){
+			$this->db->query("UPDATE tbl_post SET title = '$title', description = '$description', url = '$url', image = '$image', updated_date = NOW(), status = '$status' WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Post updated successfully';
+		}
+		
+		if($type == "DELETE"){
+			$this->db->query("DELETE FROM tbl_post WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Slide deleted successfully';
+		}
+		return $retvalue;
+	}
+	
+	public function get_post($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_post WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_post ORDER BY id DESC")->result();
 		}	
 	}
 	function ins_upd_section(){
@@ -660,8 +764,14 @@ class Admin_model extends CI_Model{
 		if($type == 'L'){
 			return $this->db->query("SELECT * FROM tbl_navigation ORDER BY id DESC")->result();
 		}
+		if($type == 'NL'){
+			return $this->db->query("SELECT * FROM tbl_navigation WHERE navigation_type = 'product' ORDER BY id DESC")->result();
+		}
 		if($type == 'P'){
 			return $this->db->query("SELECT * FROM tbl_navigation WHERE parent_id = 0")->result();
+		}
+		if($type == 'SL'){
+			return $this->db->query("SELECT * FROM tbl_navigation WHERE parent_id = $id")->result();
 		}	
 	}
 	function ins_upd_filter(){

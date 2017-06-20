@@ -51,6 +51,8 @@
 			  </li>
 			  <li <?php if($page == 'HOME')echo 'class="active"';?>><a href="<?php echo base_url('admin/sections'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Home Page Sections</span></a>
 			  </li>
+			  <li <?php if($page == 'POST')echo 'class="active"';?>><a href="<?php echo base_url('admin/posts'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Recent Posts</span></a>
+			  </li>
 			</ul>
 		  </div>
 		</div>

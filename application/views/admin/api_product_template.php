@@ -35,8 +35,7 @@
 					</select>
 				</td>
 				<td>
-					<select id="navigation_<?php echo $p->id; ?>" multiple disabled>
-						<option value="">Select Navigation</option>
+					<select id="navigation_<?php echo $p->id; ?>" data-placeholder="Select Navigation" class="select2 sm" multiple disabled style="width:160px;height: 30px;" >
 						<?php foreach($navigations as $n){ if($n->parent_id == 0){ ?>
 						<optgroup label="<?php echo $n->name; ?>">
 							<?php foreach($navigations as $sn){ if($n->id == $sn->parent_id){ ?>

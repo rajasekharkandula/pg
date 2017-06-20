@@ -38,7 +38,7 @@
 					  <tr>
                         <td><?php echo $i; ?></td>
                         <td><?php echo $s->title; ?></td>
-                        <td><img src="<?php echo base_url($s->image); ?>" width="40px" height="40px"></td>
+                        <td><img src="<?php echo $s->image; ?>" width="40px" height="40px"></td>
                         <td><?php echo $s->description; ?></td>
                         <td>
 							<a href="<?php echo base_url('admin/slide_config/'.$s->id); ?>" class="btn btn-primary"><i class="mdi mdi-edit"></i></a>

@@ -21,7 +21,7 @@
 				</div>
 				<?php if(count($users) > 0){ ?>
 				<?php foreach($users as $u){ ?>
-				<a class="puser_link" href="<?php echo base_url('home/user_profile/'.$u->id); ?>" target="_blank">
+				<a class="puser_link" href="<?php echo base_url('home/user_profile/'.$u->id); ?>" target="_blank"  style="background-image:url('<?php echo $u->image; ?>')">
 					<div class="puser">
 						<?php echo $u->name; ?>
 					</div>

@@ -35,6 +35,17 @@
 						</select>
 					  </div>
                     </div>
+                    <div class="form-group">
+                      <label class="col-sm-3">Navigations <span>*</span></label>
+                      <div class="col-sm-6">
+                        <select class="select2" name="navigation[]" multiple data-placeholder="Select">
+							<option></option>
+							<?php foreach($navigation as $n){ ?>
+							<option class="bold" value="<?php echo $n->id; ?>" <?php if(in_array($n->id,$selectedNavigation))echo 'selected'; ?>><?php if($n->parent_id != 0)echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"; echo $n->name; ?></option>
+							<?php } ?>
+						</select>
+					  </div>
+                    </div>
                     
 					<div class="form-group">
                       <label class="col-sm-3">Description <span>*</span></label>
@@ -55,9 +66,9 @@
                       <div class="col-sm-6">
 						<input type="file" name="image" id="image" onchange="return Upload('image',200,200)">
 						<input type="hidden" name="uploaded_img" id="uploaded_img" value="<?php if(isset($product->image))echo $product->image;?>">
-						<?php if(isset($product->image)){?>
-						<img class="preview" src="<?php echo $product->image;?>">
-						<?php } ?>
+						<?php if(isset($product->image)){if(getimagesize($product->image) !== false){ ?>
+						<img class="preview" src="<?php echo $product->image; ?>">
+						<?php } } ?>
                       </div>
                     </div>
 					
@@ -89,11 +100,11 @@
                       </div>
                     </div>
 					
-					
 					<div class="col-sm-12 text-center">
                         <button class="btn btn-primary btn-lg" type="button" id="submit_btn">Submit</button>
                         <a href="<?php echo base_url('admin/products'); ?>" class="btn btn-default btn-lg">Cancel</a>
                     </div>
+					
 				  </form>
                 </div>
               </div>

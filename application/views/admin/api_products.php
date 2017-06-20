@@ -62,7 +62,7 @@
 		App.formElements();
 		App.textEditors();
 		//App.dataTables();
-      
+		$(".select2").select2();
 	  $("#api").on("change",function(){
 		var apiID = $("#api").val();
 		var html = '<option></option>';
@@ -95,14 +95,19 @@
 			$("#url").parent().append('<div class="text-danger">This field is required</div>');
 		  }
 		  if(error == 0){
+			$("#fetch_btn").attr("disbaled",true);
+			$("#fetch_btn").html("Please wait...");
 			$.ajax({
 				url:'<?php echo base_url('admin/get_product_from_api');?>',
 				type:'POST',
 				data:{'apiID':apiID,'url':url},
 				dataType:'HTML'
 			}).success(function(data){
+				$("#fetch_btn").removeAttr("disbaled");
+				$("#fetch_btn").html("Fetch");
 				$("#products_list").html(data);
 				$("#products_list").removeClass("hide");
+				$(".select2").select2();
 			});
 		  }
 	  });

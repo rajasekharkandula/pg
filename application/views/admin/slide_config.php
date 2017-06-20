@@ -28,7 +28,7 @@
 					<div class="form-group">
                       <label class="col-sm-3">Type <span>*</span></label>
                       <div class="col-sm-6">
-                        <select class="select2" name="slideType">
+                        <select req="true" class="select2" name="slideType">
 							<option></option>
 							<option value="slide" <?php if(isset($slide->slideType))if($slide->slideType == 'slide')echo 'selected';?>>Slide</option>
 							<option value="banner" <?php if(isset($slide->slideType))if($slide->slideType == 'banner')echo 'selected';?>>Banner</option>
@@ -44,7 +44,7 @@
                     </div>
 					
 					<div class="form-group">
-                      <label class="col-sm-3">Description <span>*</span></label>
+                      <label class="col-sm-3">Description </label>
                       <div class="col-sm-6">
                        <div id="editor1"><?php if(isset($slide->description))echo $slide->description; ?></div>
                       </div>
@@ -54,11 +54,11 @@
 					<div class="form-group">
                       <label class="col-sm-3">Image <span>*</span></label>
                       <div class="col-sm-6">
-						<input type="file" name="image" id="image" onchange="return Upload('image',200,200)">
+						<input req="true" type="file" name="image" id="image" onchange="return Upload('image',400,250)">
 						<input type="hidden" name="uploaded_img" id="uploaded_img" value="<?php if(isset($slide->image))echo $slide->image;?>">
-						<?php if(isset($slide->image)){?>
-						<img class="preview" src="<?php echo base_url($slide->image);?>">
-						<?php } ?>
+						<?php if(isset($slide->image)){if(getimagesize($slide->image) !== false){?>
+						<img class="preview" src="<?php echo $slide->image;?>">
+						<?php } } ?>
                       </div>
                     </div>
 										

@@ -12,16 +12,16 @@
 		<!-- HEADER -->
         
 		<section>
-			<div class="owl-carousel">
+			<div class="home-slide owl-carousel">
 				<?php foreach($slides as $s) { ?>
-				<div class="item slide" style="background-image:url('<?php echo base_url($s->image); ?>');">
+				<div class="item slide" style="background-image:url('<?php echo $s->image; ?>');">
 					<div class="container">
 						<div class="caption">
 							<h2>LOOKING FOR GREAT GIFT IDEAS?</h2>
-							<a class="signup-email" href="<?php echo base_url();?>home/signup">
+							<a class="signup-email" href="<?php echo base_url('home/signup');?>">
 								<i class="fa fa-envelope"></i> <span>Sign Up with Email</span>
 							</a>
-							<a class="signin-facebook" href="/users/auth/facebook">
+							<a class="signin-facebook" href="<?php echo $fb_login_url; ?>">
 								<i class="fa fa-facebook"></i> <span>Sign In with Facebook</span>
 							</a>
 							<h2>LET US HELP!</h2>
@@ -41,7 +41,7 @@
 						<div class="thumbnail thumbnail-banner size-1x3">
 							<div class="media">
 								<a class="media-link" href="<?php echo base_url('home/products/'.$b->slideUrl); ?>">
-									<div class="img-bg" style="background-image: url('<?php echo base_url($b->image); ?>')"></div>
+									<div class="img-bg" style="background-image: url('<?php echo $b->image; ?>')"></div>
 									<div class="caption">
 										<div class="caption-wrapper div-table">
 											<div class="caption-inner">
@@ -63,10 +63,11 @@
 		<?php foreach($sections as $s){ ?>
 		<section class="padding-30">
 			<div class="container">
-				<h2 class="title"><?php echo $s['name']; ?> <a href="#" class="view-more hide"> View More <i class="fa fa-caret-right"></i></a></h2>
-				<div class="row hlist">
+				<?php if(count($s['products']) > 0){ ?>
+				<h2 class="title"><?php echo $s['name']; ?> </h2>
+				<div class="home_sections hlist">
 					<?php foreach($s['products'] as $p){ ?>
-					<div class="col-md-3 col-sm-3 col-xs-6">
+					<div class="item">
 						<div class="product">
 							<button class="like" data-id="<?php echo $p->id; ?>"><?php if($p->liked > 0){?><i class="fa fa-heart"></i><?php }else{ ?><i class="fa fa-heart-o"></i><?php } ?></button>
 							<button class="gift" data-id="<?php echo $p->id; ?>"><i class="fa fa-gift"></i></button>
@@ -83,6 +84,8 @@
 					</div>
 					<?php } ?>
 				</div>
+				<div class="text-center"><a href="<?php echo base_url('home/products_home/'.$s['id']); ?>" class="view-more"> View More <i class="fa fa-caret-right"></i></a></div>
+				<?php } ?>
 			</div>
 		</section>
 		<?php } ?>
@@ -91,78 +94,26 @@
 			<div class="container">
 				<h2 class="title">Our Recent Posts</h2>
 				<div class="row">
+					
+					<?php foreach($posts as $p){ ?>
 					<div class="col-md-6">
 						<div class="recent-post">
 							<div class="media">
-								<a class="pull-left media-link" href="#">
-									<img class="media-object" src="http://edujana.com/painlessgift/assets/img/preview/blog/recent-post-1.jpg" alt="">
+								<a class="pull-left media-link" href="<?php echo $p->url; ?>" target="_blank">
+									<img class="media-object" src="<?php echo $p->image; ?>" alt="">
 								</a>
 								<div class="media-body">
-									<h4 class="media-heading"><a href="#">Standard Post Comment Header Here</a></h4>
-									<p>Fusce gravida interdum eros a mollis. Sed non lorem varius, volutpat nisl in, laoreet ante.Sed non lorem varius, volutpat nisl in, laoreet ante.</p>
+									<h4 class="media-heading"><a href="<?php echo $p->url; ?>" target="_blank"><?php echo substr($p->title, 0, 40); ?></a></h4>
+									<p><?php echo substr($p->description, 0, 150); ?></p>
 									<div class="media-meta">
-										6th June 2014
-										<span class="divider">/</span><a href="#"><i class="fa fa-comment"></i>27</a>
-										<span class="divider">/</span><a href="#"><i class="fa fa-heart"></i>18</a>
+										<?php echo date('d M, Y',strtotime($p->created_date)); ?>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="recent-post">
-							<div class="media">
-								<a class="pull-left media-link" href="#">
-									<img class="media-object" src="http://edujana.com/painlessgift/assets/img/preview/blog/recent-post-1.jpg" alt="">
-								</a>
-								<div class="media-body">
-									<h4 class="media-heading"><a href="#">Standard Post Comment Header Here</a></h4>
-									<p>Fusce gravida interdum eros a mollis. Sed non lorem varius, volutpat nisl in, laoreet ante.Sed non lorem varius, volutpat nisl in, laoreet ante.</p>
-									<div class="media-meta">
-										6th June 2014
-										<span class="divider">/</span><a href="#"><i class="fa fa-comment"></i>27</a>
-										<span class="divider">/</span><a href="#"><i class="fa fa-heart"></i>18</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="recent-post">
-							<div class="media">
-								<a class="pull-left media-link" href="#">
-									<img class="media-object" src="http://edujana.com/painlessgift/assets/img/preview/blog/recent-post-1.jpg" alt="">
-								</a>
-								<div class="media-body">
-									<h4 class="media-heading"><a href="#">Standard Post Comment Header Here</a></h4>
-									<p>Fusce gravida interdum eros a mollis. Sed non lorem varius, volutpat nisl in, laoreet ante.Sed non lorem varius, volutpat nisl in, laoreet ante.</p>
-									<div class="media-meta">
-										6th June 2014
-										<span class="divider">/</span><a href="#"><i class="fa fa-comment"></i>27</a>
-										<span class="divider">/</span><a href="#"><i class="fa fa-heart"></i>18</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="recent-post">
-							<div class="media">
-								<a class="pull-left media-link" href="#">
-									<img class="media-object" src="http://edujana.com/painlessgift/assets/img/preview/blog/recent-post-1.jpg" alt="">
-								</a>
-								<div class="media-body">
-									<h4 class="media-heading"><a href="#">Standard Post Comment Header Here</a></h4>
-									<p>Fusce gravida interdum eros a mollis. Sed non lorem varius, volutpat nisl in, laoreet ante.Sed non lorem varius, volutpat nisl in, laoreet ante.</p>
-									<div class="media-meta">
-										6th June 2014
-										<span class="divider">/</span><a href="#"><i class="fa fa-comment"></i>27</a>
-										<span class="divider">/</span><a href="#"><i class="fa fa-heart"></i>18</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+					<?php } ?>
+					
 				</div>
 			</div>
 		</section>

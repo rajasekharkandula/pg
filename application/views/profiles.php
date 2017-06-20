@@ -34,7 +34,9 @@
 					<?php foreach($products as $p){ if($p->profile_id == $pr->id){ ?>
 					<div class="col-md-3 col-sm-4 col-xs-6">
 						<div class="product">
+							<?php if($p->source != 'User'){ ?>
 							<button class="like" data-id="<?php echo $p->id; ?>"><?php if($p->liked > 0){?><i class="fa fa-heart"></i><?php }else{ ?><i class="fa fa-heart-o"></i><?php } ?></button>
+							<?php } ?>
 							<button class="gift" data-id="<?php echo $p->id; ?>"><i class="fa fa-gift"></i></button>
 							<a href="<?php echo $p->product_link; ?>" target="_blank">
 								<div class="img">
@@ -73,11 +75,12 @@
 						  
 						  <div class="form-group">
 							<label>Reason for Gift:</label>
-							<select class="form-control" name="reason" id="preason">
-							  <option value="Birthday">Birthday</option>
-							  <option value="Anniversary">Anniversary</option>
-							  <option value="Valentines Day">Valentines Day</option>
-							</select>
+							<input class="form-control" placeholder="Reason" type="text" name="reason" list="preason">
+							<datalist id="preason">
+								<option value="Birthday">Birthday</option>
+								<option value="Anniversary">Anniversary</option>
+								<option value="Valentines Day">Valentines Day</option>
+							</datalist>
 						  </div>
 						  <div class="form-group">
 							<label>Date For Gift:</label>
@@ -85,7 +88,8 @@
 						  </div>
 						  <div class="form-group">
 							<label>Relation To You:</label>
-							<select class="form-control" name="relation" id="prelation">
+							<input class="form-control" placeholder="Relation To You"  type="text" name="relation" list="prelation">
+							<datalist id="prelation">
 								<option value="Friend">Friend</option>
 								<option value="Significant Other">Significant Other</option>
 								<option value="Mom">Mom</option>
@@ -95,7 +99,7 @@
 								<option value="Daughter/Niece">Daughter/Niece</option>
 								<option value="Son/Nephew">Son/Nephew</option>
 								<option value="Other">Other</option>
-							</select>
+							</datalist>
 						  </div>
 						  <button type="button" id="submit_btn">Submit</button>
 						  <button type="button" data-dismiss="modal">Cancel</button>

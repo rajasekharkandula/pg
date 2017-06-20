@@ -58,6 +58,11 @@
 					error++;
 					$("#email").parent().append('<div class="text-danger">This field is required</div>');
 				}
+				var email_regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+				if(!email_regex.test($("#email").val()) && $("#email").val() != ''){
+					error++;
+					$("#email").parent().append('<div class="text-danger">Invalid email</div>');
+				}
 				if($("#password").val() == ''){
 					error++;
 					$("#password").parent().append('<div class="text-danger">This field is required</div>');

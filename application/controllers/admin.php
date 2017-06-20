@@ -74,7 +74,12 @@ class Admin extends CI_Controller {
 		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
 		$data['product'] = $this->admin_model->get_product(array('type'=>'S','id'=>$id));
 		$data['categories'] = $this->admin_model->get_category(array('type'=>'L'));
-		//var_dump($data['api_categories']);exit();
+		$data['navigation'] = $this->admin_model->get_navigation(array('type'=>'L'));
+		$qry = $this->admin_model->get_product(array('type'=>'NS','id'=>$id));
+		$selectedNavigation = array();
+		foreach($qry as $q)array_push($selectedNavigation,$q->navigation_id);
+		$data['selectedNavigation'] = $selectedNavigation;
+		//var_dump($data['selectedNavigation']);exit();
 		$this->load->view('admin/product',$data);
 	}
 	public function api_products()
@@ -134,6 +139,28 @@ class Admin extends CI_Controller {
 		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
 		$data['slide'] = $this->admin_model->get_slide(array('type'=>'S','id'=>$id));
 		$this->load->view('admin/slide_config',$data);
+	}
+	public function posts()
+	{
+		$this->access();
+		$pageData['page'] = 'POST';
+		$pageData['pageTitle'] = 'Posts List';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['posts'] = $this->admin_model->get_post(array('type'=>'L'));
+		$this->load->view('admin/posts',$data);
+	}
+	public function post_config($id=0)
+	{
+		$this->access();
+		$pageData['page'] = 'POST';
+		$pageData['pageTitle'] = 'Posts List';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['post'] = $this->admin_model->get_post(array('type'=>'S','id'=>$id));
+		$this->load->view('admin/post_config',$data);
 	}
 	public function sections()
 	{
@@ -266,7 +293,7 @@ class Admin extends CI_Controller {
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
 		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
-		$data['products'] = $this->home_model->get_user_gift(array('type'=>'ALL'));
+		$data['products'] = $this->home_model->get_user_products(array('type'=>'ALL'));
 		$this->load->view('admin/user_products',$data);
 	}
 	
@@ -281,6 +308,9 @@ class Admin extends CI_Controller {
 	}
 	function ins_upd_slide(){
 		echo json_encode($this->admin_model->ins_upd_slide());
+	}
+	function ins_upd_post(){
+		echo json_encode($this->admin_model->ins_upd_post());
 	}
 	function ins_upd_navigation(){
 		echo json_encode($this->admin_model->ins_upd_navigation());
@@ -297,7 +327,7 @@ class Admin extends CI_Controller {
 	function get_product_from_api(){
 		$data['products'] = $this->admin_model->get_products_url();
 		$data['categories'] = $this->admin_model->get_category(array('type'=>'L'));
-		$data['navigations'] = $this->admin_model->get_navigation(array('type'=>'L'));
+		$data['navigations'] = $this->admin_model->get_navigation(array('type'=>'NL'));
 		//var_dump($data['products']);exit();
 		echo $this->load->view("admin/api_product_template",$data,true);
 	}

@@ -38,7 +38,7 @@
                         <td><?php echo $p->name; ?></td>
                         <td><img src="<?php echo $p->image; ?>" width="40px" height="40px"></td>
                         <td><?php echo $this->config->item('currency').$p->price; ?></td>
-                        <td><?php echo $p->link; ?></td>
+                        <td><?php echo $p->product_link; ?></td>
                         <td>
 							<button class="btn btn-danger remove" data-id="<?php echo $p->id; ?>"><i class="mdi mdi-delete"></i></button>
 						</td>

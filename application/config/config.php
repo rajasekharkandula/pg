@@ -367,7 +367,13 @@ $config['proxy_ips'] = '';
 
 
 $config['currency'] = '$';
+$config['admin_email'] = 'mygiftspainless@gmail.com';
+$config['default_items'] = 20;
 $config['default_image'] = 'assets/images/placeholder.png';
+$config['default_image_user'] = 'assets/images/user.jpg';
+$config['img_ext'] = array('jpg','png','jpeg');
+$config['fb_app_id'] = '239011039923860';
+$config['fb_secret_id'] = '556f3e69b7497da28c406496b3bac7f3';
 
 
 /* End of file config.php */
