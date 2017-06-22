@@ -18,12 +18,14 @@
 					<div class="container">
 						<div class="caption">
 							<h2>LOOKING FOR GREAT GIFT IDEAS?</h2>
+							<?php if($this->session->userdata('logged_in') != true){ ?>
 							<a class="signup-email" href="<?php echo base_url('home/signup');?>">
 								<i class="fa fa-envelope"></i> <span>Sign Up with Email</span>
 							</a>
 							<a class="signin-facebook" href="<?php echo $fb_login_url; ?>">
 								<i class="fa fa-facebook"></i> <span>Sign In with Facebook</span>
 							</a>
+							<?php } ?>
 							<h2>LET US HELP!</h2>
 						</div>
 					</div>
