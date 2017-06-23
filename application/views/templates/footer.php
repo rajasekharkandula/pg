@@ -85,6 +85,7 @@
 			if(data){
 				obj.addClass('active');
 			}else{
+				window.location.reload();
 				obj.removeClass('active');
 			}
 		});

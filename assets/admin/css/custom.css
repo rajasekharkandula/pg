@@ -133,4 +133,5 @@ img.preview{width:300px;height:200px;margin-top:10px;}
 }
 .select2{
 	width:100%;
+	display: table;
 }

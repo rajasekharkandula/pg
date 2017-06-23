@@ -527,7 +527,7 @@ class Home_model extends CI_Model{
 		if($age != NULL && $age !=''){
 			$query = $this->db->query("SELECT * FROM tbl_filter WHERE id = $age")->row();
 			if($query)
-			$str.=" AND (p.min_age >= ".$query->min_value." AND p.max_age <= ".$query->max_value.")";
+				$str.=" AND ((p.min_age >= ".$query->min_value." AND p.min_age <= ".$query->max_value.") OR (p.max_age >= ".$query->min_value." AND p.max_age <= ".$query->max_value."))";
 		}
 		if($price != NULL && $price !=''){
 			$query = $this->db->query("SELECT * FROM tbl_filter WHERE id = $price")->row();

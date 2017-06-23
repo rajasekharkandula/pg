@@ -17,15 +17,21 @@
 				
 				<?php foreach($profiles as $pr){ ?>
 				<div class="profile-info">
-					<b>Gifts for <?php echo $pr->name; ?></b>
-					<span>Reason for Gift: <?php echo $pr->reason; ?></span>
-					<span class="space">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-					<span>Date for Gift: <?php echo date('M,d Y',strtotime($pr->date_for_gift)); ?></span>
-					<span class="space">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-					<span>Relation To You: <?php echo $pr->relation; ?></span>
-					<div class="actions">
-						<button type="button" data-id="<?php echo $pr->id; ?>" class="pedit"><i class="fa fa-pencil"></i></button>
-						<button type="button" class="btn-danger pdelete" data-id="<?php echo $pr->id; ?>"><i class="fa fa-trash"></i></button>
+					<div class="row">
+						<div class="col-md-8">
+							<b>Gifts for <?php echo $pr->name; ?></b>
+							<span>Reason for Gift: <?php echo $pr->reason; ?></span>
+							<span class="space">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+							<span>Date for Gift: <?php echo date('M,d Y',strtotime($pr->date_for_gift)); ?></span>
+							<span class="space">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+							<span>Relation To You: <?php echo $pr->relation; ?></span>
+						</div>
+						<div class="col-md-4">
+							<div class="actions">
+								<button type="button" data-id="<?php echo $pr->id; ?>" class="pedit"><i class="fa fa-pencil"></i></button>
+								<button type="button" class="btn-danger pdelete" data-id="<?php echo $pr->id; ?>"><i class="fa fa-trash"></i></button>
+							</div>
+						</div>
 					</div>
 				</div>
 				
