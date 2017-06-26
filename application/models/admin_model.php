@@ -666,7 +666,7 @@ class Admin_model extends CI_Model{
 		$review=(string)$this->input->post('review');
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		
-		if($_FILES['image']['name'] != ''){		
+		if(isset($_FILES['image']['name'])){		
 			$iu=$this->admin_model->image_upload($_FILES['image'],'assets/images/reviews/','review');
 			if($iu['status'] == true)
 				$image = $iu['path'];
@@ -693,7 +693,7 @@ class Admin_model extends CI_Model{
 		}
 		
 		if($type == "DELETE"){
-			$this->db->query("DELETE FROM review WHERE id = $id");
+			$this->db->query("DELETE FROM tbl_review WHERE id = $id");
 			$retvalue['status']= true;
 			$retvalue['message']= 'Review deleted successfully';
 		}
