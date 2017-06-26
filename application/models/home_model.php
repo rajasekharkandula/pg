@@ -91,6 +91,9 @@ class Home_model extends CI_Model{
 		
 		$user = $this->db->query("select * from tbl_user where email = '$email'")->row();
 		if($user){
+			
+			$this->db->query("INSERT INTO tbl_custom_profiles (user_id, name, created_date, updated_date, date_for_gift, relation, reason, status) VALUES ('".$user->id."', 'me', NOW(), NOW(), NOW(), 'My Self', 'Painlessgift','Active')");			
+			
 			$userdata = array(
 				'userID' => $user->id,
 				'email' => $user->email,

@@ -140,6 +140,28 @@ class Admin extends CI_Controller {
 		$data['slide'] = $this->admin_model->get_slide(array('type'=>'S','id'=>$id));
 		$this->load->view('admin/slide_config',$data);
 	}
+	public function reviews()
+	{
+		$this->access();
+		$pageData['page'] = 'REVIEW';
+		$pageData['pageTitle'] = 'Reviews List';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['reviews'] = $this->admin_model->get_review(array('type'=>'L'));
+		$this->load->view('admin/reviews',$data);
+	}
+	public function review_config($id=0)
+	{
+		$this->access();
+		$pageData['page'] = 'REVIEW';
+		$pageData['pageTitle'] = 'Posts List';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['review'] = $this->admin_model->get_review(array('type'=>'S','id'=>$id));
+		$this->load->view('admin/review_config',$data);
+	}
 	public function posts()
 	{
 		$this->access();
@@ -311,6 +333,9 @@ class Admin extends CI_Controller {
 	}
 	function ins_upd_post(){
 		echo json_encode($this->admin_model->ins_upd_post());
+	}
+	function ins_upd_review(){
+		echo json_encode($this->admin_model->ins_upd_review());
 	}
 	function ins_upd_navigation(){
 		echo json_encode($this->admin_model->ins_upd_navigation());

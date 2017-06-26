@@ -289,6 +289,17 @@ footer{
 	
 }
 
+.owl-theme .owl-controls .owl-nav [class*=owl-]:hover {
+	background:#616bef;
+}
+.owl-theme .owl-controls .owl-nav [class*=owl-] {
+    color: #616bef;
+    font-size: 30px;
+    padding: 0px 10px;
+	margin:0px;
+	background:transparent;
+}
+
 .home-banners {
 	padding-top:30px;
 }
@@ -489,6 +500,26 @@ section h2.title{
 	font-size:14px;
 }
 
+.reviews .media-object{
+	width:130px !important;
+	height:130px;
+	border-radius:100%;
+	float: left;
+    margin-right: 20px;
+}
+.reviews .media-heading{
+	color:#616bef;
+}
+.reviews .media-body{
+	height:130px;
+	vertical-align:middle;
+	overflow:hidden;
+	text-align: justify;
+}
+.reviews q{
+	font-size:15px;
+}
+
 .recent-post{
 	background-color: #fff;
     border: 1px solid #e2e2e2;
@@ -566,7 +597,7 @@ section h2.title{
 .search-box{
 	background-color: #fff;
     border: 1px solid #ddd;
-    padding: 10px;
+    padding: 5px;
 }
 .search-box .title{
 	font-size: 15px;
@@ -975,7 +1006,7 @@ img.preview{
 	}
 	
 	.product .img {
-		height: 270px;
+		/* height: 270px; */
 	}
 	.hlist .col-xs-6:nth-child(odd) {
 		padding-right:5px;
@@ -1188,6 +1219,7 @@ img.preview{
 		margin-bottom: 20px;
 		font-size: 18px;
 		text-align:left;
+		font-weight:bold;
 	}
 	.home-banners .thumbnail {
 		height: 145px;
@@ -1228,6 +1260,31 @@ img.preview{
 	.home-slide .owl-next,.home-slide .owl-prev{
 		top:25%;
 		font-size:30px;
+	}
+	.reviews .item{
+		text-align:center;
+	}
+	.reviews .item img{
+		display:inline !important;
+	}
+	.reviews .media-object{
+		width:130px !important;
+		height:130px;
+		border-radius:100%;
+		float: none;
+		margin-right: 0px;
+		display:inline;
+	}
+	.reviews .media-heading{
+		margin-top:5px;
+		text-align:center;
+	}
+	.reviews .media-body{
+		height:auto;
+		overflow:initial;
+		display:inline-block;
+		width:100%;
+		margin-top:10px;
 	}
 	
 }

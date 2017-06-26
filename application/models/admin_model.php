@@ -620,7 +620,7 @@ class Admin_model extends CI_Model{
 		}else{
 			$image = $this->input->post('uploaded_img');
 		}
-		if(getimagesize($image) === false)
+		if(@file_get_contents($image) === false)
 			$image = base_url($this->config->item('default_image'));
 		
 		if($type == "INSERT"){
@@ -640,7 +640,7 @@ class Admin_model extends CI_Model{
 		if($type == "DELETE"){
 			$this->db->query("DELETE FROM tbl_post WHERE id = $id");
 			$retvalue['status']= true;
-			$retvalue['message']= 'Slide deleted successfully';
+			$retvalue['message']= 'Post deleted successfully';
 		}
 		return $retvalue;
 	}
@@ -655,6 +655,61 @@ class Admin_model extends CI_Model{
 		}
 		if($type == 'L'){
 			return $this->db->query("SELECT * FROM tbl_post ORDER BY id DESC")->result();
+		}	
+	}
+	function ins_upd_review(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$name=(string)$this->input->post('name');
+		$review=(string)$this->input->post('review');
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		
+		if($_FILES['image']['name'] != ''){		
+			$iu=$this->admin_model->image_upload($_FILES['image'],'assets/images/reviews/','review');
+			if($iu['status'] == true)
+				$image = $iu['path'];
+			else
+				return $iu;
+		}else{
+			$image = $this->input->post('uploaded_img');
+		}
+		if(@file_get_contents($image) === false)
+			$image = base_url($this->config->item('default_user_image'));
+		
+		if($type == "INSERT"){
+			$this->db->query("INSERT INTO tbl_review (image, name, review, created_date, updated_date, status) VALUES ('$image', '$name', '$review', NOW(), NOW(), '$status')");
+			
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_review")->row()->id;
+			$retvalue['status']= true;
+			$retvalue['message']= 'Review created successfully';
+		}
+		
+		if($type == "UPDATE"){
+			$this->db->query("UPDATE tbl_review SET name = '$name', review = '$review', image = '$image', updated_date = NOW(), status = '$status' WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Review updated successfully';
+		}
+		
+		if($type == "DELETE"){
+			$this->db->query("DELETE FROM review WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Review deleted successfully';
+		}
+		return $retvalue;
+	}
+	
+	public function get_review($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_review WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_review ORDER BY id DESC")->result();
 		}	
 	}
 	function ins_upd_section(){

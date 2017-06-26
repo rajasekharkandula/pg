@@ -63,9 +63,9 @@
 		</section>
 		
 		<?php foreach($sections as $s){ ?>
+		<?php if(count($s['products']) > 0){ ?>
 		<section class="padding-30">
 			<div class="container">
-				<?php if(count($s['products']) > 0){ ?>
 				<h2 class="title"><?php echo $s['name']; ?> </h2>
 				<div class="home_sections hlist">
 					<?php foreach($s['products'] as $p){ ?>
@@ -87,11 +87,31 @@
 					<?php } ?>
 				</div>
 				<div class="text-center"><a href="<?php echo base_url('home/products_home/'.$s['id']); ?>" class="view-more"> View More <i class="fa fa-caret-right"></i></a></div>
-				<?php } ?>
 			</div>
 		</section>
 		<?php } ?>
-		
+		<?php } ?>
+		<?php if(count($reviews) > 0){ ?>
+		<section class="padding-30">
+			<div class="container">
+				<h2 class="title">Reviews</h2>
+				<div class="reviews">
+					<?php foreach($reviews as $r){ ?>
+					<div class="item">
+						<div class="media">
+							<img class="media-object" src="<?php echo $r->image; ?>">
+							<div class="media-body">
+								<h4 class="media-heading"><?php echo $r->name; ?></h4>
+								<q><?php echo substr($r->review, 0, 200); ?></q>
+							</div>
+						</div>
+					</div>
+					<?php } ?>
+				</div>
+			</div>
+		</section>
+		<?php } ?>
+		<?php if(count($posts) > 0){ ?>
 		<section class="padding-30">
 			<div class="container">
 				<h2 class="title">Our Recent Posts</h2>
@@ -119,7 +139,7 @@
 				</div>
 			</div>
 		</section>
-		
+		<?php } ?>
 		<!-- FOOTER -->
 		<?php echo $footer; ?>
 		<!-- FOOTER -->

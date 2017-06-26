@@ -53,6 +53,8 @@
 			  </li>
 			  <li <?php if($page == 'POST')echo 'class="active"';?>><a href="<?php echo base_url('admin/posts'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Recent Posts</span></a>
 			  </li>
+			  <li <?php if($page == 'REVIEW')echo 'class="active"';?>><a href="<?php echo base_url('admin/reviews'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Reviews</span></a>
+			  </li>
 			</ul>
 		  </div>
 		</div>

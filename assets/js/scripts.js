@@ -7,6 +7,7 @@ $('.owl-carousel').owlCarousel({
 	autoplayTimeout:3000,
 	/* animateIn: 'slideInRight',
 	animateOut: 'slideOutLeft', */
+	autoplayHoverPause: true,
 	navText : ["<i class='fa fa-angle-left'></i>","<i class='fa fa-angle-right'></i>"]
 })
 $('.home_sections').owlCarousel({
@@ -15,8 +16,9 @@ $('.home_sections').owlCarousel({
 	dots:false,
 	items:4,
 	margin:20,
-	/* autoplay:true,
-	autoplayTimeout:3000, */
+	autoplay:true,
+	autoplayTimeout:3000,
+	autoplayHoverPause: true,
 	navText : ["<i class='fa fa-angle-left'></i>","<i class='fa fa-angle-right'></i>"],
 	responsiveClass:true,
 	responsive:{
@@ -24,10 +26,33 @@ $('.home_sections').owlCarousel({
 			items:2
 		},
 		600:{
-			items:2
+			items:3
 		},
 		1000:{
 			items:4
+		}
+	}
+});
+$('.reviews').owlCarousel({
+    loop:true,
+    nav:true,
+	dots:false,
+	items:2,
+	margin:20,
+	autoplay:true,
+	autoplayTimeout:3000,
+	autoplayHoverPause: true,
+	navText : ["<i class='fa fa-angle-left'></i>","<i class='fa fa-angle-right'></i>"],
+	responsiveClass:true,
+	responsive:{
+		0:{
+			items:1
+		},
+		600:{
+			items:1
+		},
+		1000:{
+			items:2
 		}
 	}
 });

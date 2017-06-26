@@ -88,6 +88,7 @@ class Home extends CI_Controller{
 		$data['banners'] = $this->home_model->getBanners();
 		$data['sections'] = $this->home_model->getSections();
 		$data['posts'] = $this->admin_model->get_post(array('type'=>'L'));
+		$data['reviews'] = $this->admin_model->get_review(array('type'=>'L'));
 		$data['fb_login_url'] = $this->facebook->getRedirectLoginHelper()->getLoginUrl(base_url('home/facebook'), array('email'));
 		//var_dump($data['posts']);exit();
 		$this->load->view('index',$data);
