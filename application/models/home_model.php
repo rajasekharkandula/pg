@@ -78,6 +78,7 @@ class Home_model extends CI_Model{
 		$name = $this->input->post('name');
 		$email = $this->input->post('email');
 		$password = $this->input->post('password');
+		$private = $this->input->post('private') ? (int)$this->input->post('private') : 0;
 		
 		$password = password_hash($password, PASSWORD_DEFAULT);
 				
@@ -87,7 +88,7 @@ class Home_model extends CI_Model{
 			$retvalue['message'] = "This email already exists.";
 			return $retvalue;
 		}
-		$this->db->query("INSERT INTO tbl_user (email, password, role, image, created_date, modified_date, status) VALUES ( '$email', '$password', 'USER', '$image', NOW(), NOW(), 'Active')");
+		$this->db->query("INSERT INTO tbl_user (email, password, role, image, private, created_date, modified_date, status) VALUES ( '$email', '$password', 'USER', '$image', $private, NOW(), NOW(), 'Active')");
 		
 		$user = $this->db->query("select * from tbl_user where email = '$email'")->row();
 		if($user){
@@ -157,6 +158,7 @@ class Home_model extends CI_Model{
 		$last_name = $this->input->post('last_name');
 		$email = $this->input->post('email');
 		$phone = $this->input->post('phone');
+		$private = $this->input->post('private') ? (int)$this->input->post('private') : 0;
 		$userID = $this->session->userdata("userID");
 		
 		//var_dump($_FILES['image']);
@@ -178,7 +180,7 @@ class Home_model extends CI_Model{
 			$retvalue['message'] = 'This email already exists';
 			return $retvalue;
 		}
-		$this->db->query("UPDATE tbl_user SET first_name = '$first_name',last_name = '$last_name', email = '$email', phone = '$phone', image = '$image' WHERE id  = $userID");
+		$this->db->query("UPDATE tbl_user SET first_name = '$first_name',last_name = '$last_name', email = '$email', phone = '$phone', image = '$image', private = '$private' WHERE id  = $userID");
 		
 		$userdata = array(
 			'email' => $email,
@@ -236,7 +238,7 @@ class Home_model extends CI_Model{
 			return $this->db->query("SELECT pr.profile_id,pd.*,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$sessionUserID' AND product_id = pd.id) AS liked FROM tbl_custom_profiles_products pr INNER JOIN tbl_custom_profiles p ON p.id = pr.profile_id INNER JOIN tbl_product pd ON pd.id = pr.product_id WHERE p.user_id=$userID")->result();
 		}
 		if($type == 'USERS'){
-			$str = "SELECT DISTINCT u.id,CONCAT(u.first_name,' ',u.last_name) as name,u.image FROM tbl_user u INNER JOIN tbl_custom_profiles p ON p.user_id AND u.id WHERE role = 'USER' ";
+			$str = "SELECT DISTINCT u.id,CONCAT(u.first_name,' ',u.last_name) as name,u.image FROM tbl_user u INNER JOIN tbl_custom_profiles p ON p.user_id AND u.id WHERE role = 'USER' AND private = 0 ";
 			if($key != NULL && $key != '')
 				$str.=" AND (u.first_name LIKE '%$key%' OR u.last_name LIKE '%$key%') ";
 			$str.=" ";
