@@ -1,4 +1,4 @@
- <?php if($products['products']){ ?>
+ <?php if(isset($products['products'])){ ?>
  <div class="col-sm-12">
   <div class="panel panel-default panel-table">
 	<div class="panel-heading">
@@ -10,10 +10,10 @@
 	  <table id="table1" class="table table-striped table-hover table-fw-widget api_products">
 		<thead>
 		  <tr>
-			<th width="100px" class="text-center">Select</th>
+			<th width="70px" class="text-center">Select</th>
 			<th>Name</th>
-			<th>Price</th>
-			<th>Category</th>
+			<th width="70px">Price</th>
+			<th width="170px">Category</th>
 			<th>Navigation</th>
 			<th>Min Age</th>
 			<th>Max Age</th>
@@ -24,10 +24,10 @@
 			<?php foreach($products['products'] as $p){ ?>
 			<tr>
 				<td class="text-center"><input type="checkbox" class="select_product" data-id="<?php echo $p->id; ?>" value='<?php echo json_encode($p); ?>'></td>
-				<td><img src="<?php echo $p->image; ?>"><?php echo $p->name; ?></td>
+				<td><img src="<?php echo $p->image; ?>"><div class="name"><?php echo $p->name; ?></div></td>
 				<td><?php echo $p->price; ?></td>
 				<td>
-					<select id="category_<?php echo $p->id; ?>" disabled>
+					<select id="category_<?php echo $p->id; ?>" class="select2 sm" disabled>
 						<option value="">Select Category</option>
 						<?php foreach($categories as $c){ ?>
 						<option value="<?php echo $c->id; ?>"><?php echo $c->name; ?></option>

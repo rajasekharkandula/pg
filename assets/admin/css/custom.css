@@ -125,6 +125,15 @@ img.preview{width:300px;height:200px;margin-top:10px;}
 .api_products td img{
 	height:50px;
 }
+.api_products td img{
+	width:15%;
+    vertical-align: top;
+}
+.api_products td .name{
+	width:83%;
+	padding-left:5px;
+	display:inline-block;
+}
 .has-error{
 	border:1px solid red;
 }

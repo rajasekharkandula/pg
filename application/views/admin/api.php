@@ -150,49 +150,56 @@
 				data:{'testURL':testURL,'rootPath':rootPath,'id_depth':id_depth,'name_depth':name_depth,'image_depth':image_depth,'url_depth':url_depth,'price_depth':price_depth},
 				dataType:'JSON'
 			}).success(function(data){
+				
+				if(data.status == 1)
+					$.notify({ message: data.message },{type: 'success'});				
+				else
+					$.notify({ message: data.message },{type: 'danger'});					
+				
 				$("input").removeClass("has-error");
-				$("input").removeClass("has-success");
-				if(data.product.id == 'undefined' || data.product.id == false){
+				$("input").removeClass("has-success");					
+				
+				if(data.product.id == true){
+					$("#id_depth").addClass("has-success");
+				}else{
 					$("#id_depth").addClass("has-error");
 					error++;
 					$("#id_depth").parent().append('<div class="text-danger">Invalid</div>');
 				}
-				else
-					$("#id_depth").addClass("has-success");
 				
-				if(data.product.name == 'undefined' || data.product.name == false){
+				if(data.product.name == true){					
+					$("#name_depth").addClass("has-success");
+				}else{
 					$("#name_depth").addClass("has-error");
 					error++;
 					$("#name_depth").parent().append('<div class="text-danger">Invalid</div>');
 				}
-				else
-					$("#name_depth").addClass("has-success");
 				
-				if(data.product.image == 'undefined' || data.product.image == false){
+				if(data.product.image == true){					
+					$("#image_depth").addClass("has-success");
+				}else{
 					$("#image_depth").addClass("has-error");
 					error++;
 					$("#image_depth").parent().append('<div class="text-danger">Invalid</div>');
 				}
-				else
-					$("#image_depth").addClass("has-success");
 				
-				if(data.product.url == 'undefined' || data.product.url == false){
+				if(data.product.url == true){					
+					$("#url_depth").addClass("has-success");
+				}else{
 					$("#url_depth").addClass("has-error");
 					error++;
 					$("#url_depth").parent().append('<div class="text-danger">Invalid</div>');
 				}
-				else
-					$("#url_depth").addClass("has-success");
 				
-				if(data.product.price == 'undefined' || data.product.price == false){
+				if(data.product.price == true){					
+					$("#price_depth").addClass("has-success");
+				}else{
 					$("#price_depth").addClass("has-error");
 					error++;
 					$("#price_depth").parent().append('<div class="text-danger">Invalid</div>');
 				}
-				else
-					$("#price_depth").addClass("has-success");
 				
-				if(error == 0){
+				if(data.status == 1){
 					$("#submit_btn").attr("disabled",true);
 					var formData = new FormData($("#api_form")[0]);
 					<?php if(isset($api->id)){ ?>

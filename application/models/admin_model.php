@@ -965,7 +965,11 @@ class Admin_model extends CI_Model{
 				return $retvalue;
 			}
 			
-			$result = file_get_contents($url);
+			$result = @file_get_contents($url);
+		
+			$xmlresult = @simplexml_load_string($result);
+			if($xmlresult)$result = json_encode($xmlresult);
+			
 			$result = json_decode($result,true);
 			if(count($result) > 0){
 				$products = array();
@@ -1007,9 +1011,9 @@ class Admin_model extends CI_Model{
 							//Price
 							$keys = explode("/",$price_depth);
 							if(is_array($r))
-								$product['price'] = $this->get_array_value($r,$keys);
+								$product['price'] = floatval(str_replace("$","",$this->get_array_value($r,$keys)));
 							else
-								$product['price'] = $r;
+								$product['price'] = floatval(str_replace("$","",$r));
 							
 							array_push($products,(object)$product);
 						}
@@ -1037,6 +1041,7 @@ class Admin_model extends CI_Model{
 	}
 	
 	function validate_url(){
+		$status=false;$message='Failed';
 		$url = $this->input->post("testURL");
 		$rootPath = $this->input->post("rootPath");
 		$id_depth = $this->input->post("id_depth");
@@ -1052,9 +1057,15 @@ class Admin_model extends CI_Model{
 			return $retvalue;
 		}
 		$product = array();
-		$result = file_get_contents($url);
+		$result = @file_get_contents($url);
+		
+		$xmlresult = @simplexml_load_string($result);
+		if($xmlresult)$result = json_encode($xmlresult);		
+		
 		$result = json_decode($result,true);
+		
 		if(count($result) > 0){
+			
 			$products = array();
 			$keys = explode("/",$rootPath);
 			$result = $this->get_array_value($result,$keys);
@@ -1066,37 +1077,45 @@ class Admin_model extends CI_Model{
 						$keys = explode("/",$id_depth);
 						
 						if(is_array($r))
-							$product['id'] = $this->get_array_value($r,$keys);
+							$product['id'] = $this->get_array_value($r,$keys) == false ? false : true;
 						else
-							$product['id'] = $r;
+							$product['id'] = true;
 						
 						//Names
 						$keys = explode("/",$name_depth);
 						if(is_array($r))
-							$product['name'] = $this->get_array_value($r,$keys);
+							$product['name'] = $this->get_array_value($r,$keys) == false ? false : true;
 						else
-							$product['name'] = $r;
+							$product['name'] = true;
 						
 						//Image
 						$keys = explode("/",$image_depth);
 						if(is_array($r))
-							$product['image'] = $this->get_array_value($r,$keys);
+							$product['image'] = $this->get_array_value($r,$keys) == false ? false : true;
 						else
-							$product['image'] = $r;
+							$product['image'] = true;
 						
 						//Product URL
 						$keys = explode("/",$url_depth);
 						if(is_array($r))
-							$product['url'] = $this->get_array_value($r,$keys);
+							$product['url'] = $this->get_array_value($r,$keys) == false ? false : true;
 						else
-							$product['url'] = $r;
+							$product['url'] = true;
 						
 						//Price
 						$keys = explode("/",$price_depth);
 						if(is_array($r))
-							$product['price'] = $this->get_array_value($r,$keys);
+							$product['price'] = $this->get_array_value($r,$keys) == false ? false : true;
 						else
-							$product['price'] = $r;
+							$product['price'] = true;										
+					}
+					if($product['id'] == false || $product['name'] == false || $product['image'] == false || $product['url'] == false || $product['price'] == false){
+						$retvalue['status'] = false;
+						$retvalue['message'] = 'Failed. Please give JSON depth paths correctly';
+					}else{
+						$retvalue['status'] = true;
+						$retvalue['product'] = $product;
+						$retvalue['message'] = 'Api Validated Successfully';
 					}
 				}else{
 					$retvalue['message']=$rootPath.' is not an array';
@@ -1107,10 +1126,9 @@ class Admin_model extends CI_Model{
 				$retvalue['type']='Root Path';
 			}
 		}else{
-			$retvalue['message']='No Data Found';
+			$retvalue['message']='Invalid URL. No Data Found';
 			$retvalue['type']='URL';
-		}
-		$retvalue['product'] = $product;
+		}		
 		return $retvalue;
 		
 	}
