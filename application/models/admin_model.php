@@ -273,7 +273,7 @@ class Admin_model extends CI_Model{
 			foreach($products as $p){
 				$product = json_decode($p[4]);
 				$name = str_replace("'","\\'",str_replace("\\","\\\\",($product->name)));
-				$id = $product->id;
+				$api_product_id = $product->id;
 				$price = $product->price;
 				$image = $product->image;
 				$product_link = $product->url;
@@ -282,11 +282,13 @@ class Admin_model extends CI_Model{
 				$category = $p[0];
 				$navigation = (array)$p[1];
 				
-				$product = $this->db->query("SELECT * FROM tbl_product WHERE id = $id")->row();
+				$product = $this->db->query("SELECT * FROM tbl_product WHERE api_product_id = '$api_product_id'")->row();
 				if($product){
+					$id = $product->id;
 					$this->db->query("UPDATE tbl_product SET name = '$name', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', category = '$category', apiID = '$apiID',modified_by = $userID, modified_date = NOW(), status = 'Active' WHERE id = $id ");
 				}else{
-					$this->db->query("INSERT INTO tbl_product (id,name, price, image, product_link, min_age, max_age, category, apiID, source, created_by, modified_by, created_date,modified_date,status) VALUES ($id,'$name', '$price', '$image', '$product_link', '$min_age', '$max_age', '$category', '$apiID', '$source', $userID, $userID, NOW(), NOW(),'Active'); ");
+					$this->db->query("INSERT INTO tbl_product (api_product_id,name, price, image, product_link, min_age, max_age, category, apiID, source, created_by, modified_by, created_date,modified_date,status) VALUES ('$api_product_id','$name', '$price', '$image', '$product_link', '$min_age', '$max_age', '$category', '$apiID', '$source', $userID, $userID, NOW(), NOW(),'Active'); ");
+					$id = $this->db->query("SELECT MAX(id) AS id FROM tbl_product")->row()->id;
 				}
 				$this->db->query("DELETE FROM tbl_navigation_products WHERE product_id = $id");
 				foreach($navigation as $n){
@@ -1040,6 +1042,20 @@ class Admin_model extends CI_Model{
 		
 	}
 	
+	function get_api_response(){
+		$url = $this->input->post("testURL");
+		if (filter_var($url, FILTER_VALIDATE_URL) === false) {		
+			$result = "Invalid Url";
+			return $result;
+		}
+		$result = @file_get_contents($url);		
+		
+		$xmlresult = @simplexml_load_string($result);
+		if($xmlresult)
+			return $xmlresult;
+		else
+			return $result;
+	}
 	function validate_url(){
 		$status=false;$message='Failed';
 		$url = $this->input->post("testURL");
@@ -1063,6 +1079,8 @@ class Admin_model extends CI_Model{
 		if($xmlresult)$result = json_encode($xmlresult);		
 		
 		$result = json_decode($result,true);
+		
+		//var_dump($result['Items']['Item'][0]['ItemAttributes']);exit();
 		
 		if(count($result) > 0){
 			
@@ -1111,6 +1129,7 @@ class Admin_model extends CI_Model{
 					}
 					if($product['id'] == false || $product['name'] == false || $product['image'] == false || $product['url'] == false || $product['price'] == false){
 						$retvalue['status'] = false;
+						$retvalue['product'] = $product;
 						$retvalue['message'] = 'Failed. Please give JSON depth paths correctly';
 					}else{
 						$retvalue['status'] = true;

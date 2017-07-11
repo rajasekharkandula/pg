@@ -12,65 +12,65 @@
         <div class="main-content container-fluid">
 			
 			<div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
               <div class="panel panel-default panel-border-color panel-border-color-primary">
                 <div class="panel-heading panel-heading-divider">API Configuration</span></div>
                 <div class="panel-body">
                   <form class="form-horizontal" id="api_form">
                     <div class="form-group">
                       <label class="col-sm-3">Name <span>*</span></label>
-                      <div class="col-sm-6">
+                      <div class="col-sm-9">
                         <input req="true" type="text" class="form-control" name="name" value="<?php if(isset($api->name))echo $api->name; ?>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-sm-3">Key <span>*</span></label>
-                      <div class="col-sm-6">
+                      <div class="col-sm-9">
                         <input req="true" type="text" class="form-control" name="key" value="<?php if(isset($api->apiKey))echo $api->apiKey; ?>">
                       </div>
                     </div>
 					
 					<div class="form-group">
                       <label class="col-sm-3">Test URL <span>*</span></label>
-                      <div class="col-sm-6">
+                      <div class="col-sm-9">
                         <input req="true" type="text" class="form-control" id="testUrl" name="testURL" value="<?php if(isset($api->testUrl))echo $api->testUrl; ?>">
                       </div>
 					</div>
 					
 					<div class="form-group">
                       <label class="col-sm-3">JSON Root Path <span>*</span></label>
-                      <div class="col-sm-6">
+                      <div class="col-sm-9">
                         <input req="true" type="text" class="form-control" id="rootPath" name="rootPath" value="<?php if(isset($api->rootPath))echo $api->rootPath; ?>">
                       </div>
 					</div>
 					
 					<div class="form-group">
                       <label class="col-sm-3">ID<span>*</span></label>
-                      <div class="col-sm-6">
+                      <div class="col-sm-9">
                         <input req="true" type="text" class="form-control" placeholder="JSON Product ID depth" id="id_depth" name="id_depth" value="<?php if(isset($api->id_depth))echo $api->id_depth; ?>">
                       </div>
 					</div>
 					<div class="form-group">
                       <label class="col-sm-3">Name<span>*</span></label>
-                      <div class="col-sm-6">
+                      <div class="col-sm-9">
                         <input req="true" type="text" class="form-control" placeholder="JSON Product Name Depth" name="name_depth" id="name_depth" value="<?php if(isset($api->name_depth))echo $api->name_depth; ?>">
                       </div>					  
 					</div>
 					<div class="form-group">
                       <label class="col-sm-3">Image<span>*</span></label>
-                      <div class="col-sm-6">
+                      <div class="col-sm-9">
                         <input req="true" type="text" class="form-control" placeholder="JSON Product Image Depth" name="image_depth" id="image_depth" value="<?php if(isset($api->image_depth))echo $api->image_depth; ?>">
                       </div>
 					</div>
 					<div class="form-group">
                       <label class="col-sm-3">Product URL<span>*</span></label>
-                      <div class="col-sm-6">
+                      <div class="col-sm-9">
                         <input req="true" type="text" class="form-control" placeholder="JSON Product URL Depth" name="url_depth" id="url_depth" value="<?php if(isset($api->url_depth))echo $api->url_depth; ?>">
                       </div>
 					</div>
 					<div class="form-group">
                       <label class="col-sm-3">Price<span>*</span></label>
-                      <div class="col-sm-6">
+                      <div class="col-sm-9">
                         <input req="true" type="text" class="form-control" placeholder="JSON Product Price Depth" name="price_depth" id="price_depth" value="<?php if(isset($api->price_depth))echo $api->price_depth; ?>">
                       </div>
 					</div>
@@ -79,14 +79,14 @@
 						<?php $i=0;foreach($api_url as $u){ ?>
 							<div class="box url" id="urlbox_<?php echo $i; ?>">
 								<div class="form-group">
-								  <label class="col-sm-3">Name <span>*</span></label>
-								  <div class="col-sm-6">
+								  <label class="col-sm-2">Name <span>*</span></label>
+								  <div class="col-sm-9">
 									<input req="true" type="text" class="form-control" name="name_<?php echo $i; ?>" value="<?php echo $u->name; ?>">
 								  </div>
 								</div>
 								<div class="form-group">
-								  <label class="col-sm-3">Url <span>*</span></label>
-								  <div class="col-sm-6">
+								  <label class="col-sm-2">Url <span>*</span></label>
+								  <div class="col-sm-9">
 									<input req="true" type="text" class="form-control" name="url_<?php echo $i; ?>" value="<?php echo $u->apiUrl; ?>">
 								  </div>
 								</div>
@@ -110,6 +110,16 @@
                 </div>
               </div>
             </div>
+			<div class="col-md-6">
+              <div class="panel panel-default panel-border-color panel-border-color-primary">
+                <div class="panel-heading panel-heading-divider">API Response</span></div>
+                <div class="panel-body">
+					<pre class="api_response" id="api_response">
+						
+					</pre>
+                </div>
+              </div>
+            </div>
           </div>
 			
 		</div>
@@ -124,6 +134,25 @@
 		App.init();
       	App.dataTables();
       });
+	  $("#testUrl").on("blur",function(){
+		$("#api_response").html("");
+		$("#api_response").addClass("loading");
+		$.ajax({
+			url:'<?php echo base_url('admin/get_api_response');?>',
+			type:'POST',
+			data:{'testURL':$("#testUrl").val()},
+			dataType:'JSON'
+		}).success(function(data){
+			try {
+				var data = JSON.stringify(JSON.parse(data),null,2);  
+			} catch (e) {
+				var data = JSON.stringify(data,null,2);  
+			}
+			
+			$("#api_response").html(data);
+			$("#api_response").removeClass("loading");
+		});
+	  });
 	  $("#submit_btn").on("click",function(){
 		
 		var error=0;$(".text-danger").remove();

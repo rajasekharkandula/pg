@@ -134,6 +134,24 @@ img.preview{width:300px;height:200px;margin-top:10px;}
 	padding-left:5px;
 	display:inline-block;
 }
+.api_response{
+	height: 450px;
+    overflow-y: scroll;
+    word-wrap: break-word;
+	position:relative;
+}
+.api_response.loading:before{
+	content:"Loading...";
+	position:absolute;
+	top:0px;
+	left:0px;
+	right:0px;
+	bottom:0px;
+	background:rgba(0,0,0,0.1);
+	text-align: center;
+    padding-top: 48%;
+    font-size: 20px;
+}
 .has-error{
 	border:1px solid red;
 }

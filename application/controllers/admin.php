@@ -375,4 +375,7 @@ class Admin extends CI_Controller {
 	function ins_upd_section(){
 		echo json_encode($this->admin_model->ins_upd_section());
 	}
+	function get_api_response(){
+		echo json_encode($this->admin_model->get_api_response());
+	}
 }
