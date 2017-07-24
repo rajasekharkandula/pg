@@ -38,7 +38,9 @@
 					</div>
 					<div class="col-md-5 col-sm-6 text-center divider">
 						<a href="<?php echo $fb_login_url; ?>" class="fb"><i class="fa fa-facebook"></i> Sign In with Facebook</a><br>
-						<a class="gmail" href="<?php echo base_url('home/signup'); ?>"><i class="fa fa-envelope"></i> Sign Up with Email</a>
+						<a class="gmail" href="<?php echo base_url('home/signup'); ?>"><i class="fa fa-envelope"></i> Sign Up with Email</a><br><br>
+						Are you energetic, outgoing, dynamic individuals with excellent customer service skills, then join us and be a Assistant personal shopper.<br>
+						<a class="gmail" href="<?php echo base_url('home/shopper_signup'); ?>"><i class="fa fa-envelope"></i> Sign Up as a Shopper</a><br>
 					</div>
 				</div>
 			</div>                        

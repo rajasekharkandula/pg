@@ -80,6 +80,7 @@ class Home extends CI_Controller{
 	
 		$this->access();
 		$pageData['data'] = $this->home_model->getHeader();
+		$pageData['questions'] = $this->home_model->getquestions();
 		$data['head'] = $this->load->view('templates/head',$pageData,true);
 		$data['header'] = $this->load->view('templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
@@ -111,6 +112,18 @@ class Home extends CI_Controller{
 		$data['header'] = $this->load->view('templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
 		$this->load->view('register',$data);
+	}
+	function shopper_signup(){
+		$this->access();
+		if($this->session->userdata('logged_in') == true)redirect('home');
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		$this->load->view('shopper_signup',$data);
+	}
+	function ins_upd_shopper_request(){
+		echo json_encode($this->home_model->ins_upd_shopper_request());
 	}
 	function login(){
 		echo json_encode($this->home_model->login());
@@ -335,6 +348,7 @@ class Home extends CI_Controller{
 			$data['profiles'] = $this->home_model->get_profile(array('type'=>'L','userID'=>$id));
 			$data['products'] = $this->home_model->get_profile(array('type'=>'PRODUCTS','userID'=>$id));
 			$data['user'] = $user;
+			
 			//var_dump($data['users']);exit();
 			$this->load->view('user_profile',$data);
 		}else{

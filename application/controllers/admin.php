@@ -318,7 +318,39 @@ class Admin extends CI_Controller {
 		$data['products'] = $this->home_model->get_user_products(array('type'=>'ALL'));
 		$this->load->view('admin/user_products',$data);
 	}
-	
+	public function questionaire()
+	{
+		$this->access();
+		$pageData['page'] = 'CMS';
+		$pageData['pageTitle'] = 'Pages List';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['questions'] = $this->admin_model->get_questions(array('type'=>'L'));
+		$this->load->view('admin/questionaire',$data);
+	}
+		public function questionaire_config($id=0)
+	{
+		$this->access();
+		$pageData['page'] = 'CMS';
+		$pageData['pageTitle'] = 'Page Configuration';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['question'] = $this->admin_model->get_questions(array('type'=>'S','id'=>$id));
+		$this->load->view('admin/questionaire_config',$data);
+	}
+	public function shopper_requests()
+	{
+		$this->access();
+		$pageData['page'] = 'CMS';
+		$pageData['pageTitle'] = 'Pages List';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['shoppers'] = $this->admin_model->get_shoppers(array('type'=>'L'));
+		$this->load->view('admin/shopper_requests',$data);
+	}
 	function ins_upd_page(){
 		echo json_encode($this->admin_model->ins_upd_page());
 	}
@@ -377,5 +409,11 @@ class Admin extends CI_Controller {
 	}
 	function get_api_response(){
 		echo json_encode($this->admin_model->get_api_response());
+	}
+	function ins_upd_questions(){
+		echo json_encode($this->admin_model->ins_upd_questions());
+	}
+	function ins_upd_shopper(){
+		echo json_encode($this->admin_model->ins_upd_shopper());
 	}
 }

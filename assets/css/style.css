@@ -19,6 +19,9 @@ button:hover,button:focus{
 	background-color: #19209c;
     color: #fff;
 }
+.mt-10{
+margin-top: 10px;
+}
 .pagination{
 	margin:0px;
 }
@@ -102,6 +105,23 @@ button:hover,button:focus{
     color: #fff;
 	width: 15%;
 }
+.sticky-sidebar{
+	position: fixed;
+    right: -113px;
+    top: 50%;
+    transform: rotate(-90deg);
+    background-color: #616bef;
+    padding: 10px 20px;
+    color: #fff;
+    font-size: 18px;
+	/* z-index: 9; */
+}
+.sticky-sidebar a{
+	color: #fff;
+}
+.sticky-sidebar a:hover{
+	text-decoration:none;
+}
 .login-section{
 	padding: 5px 0px;
 	text-align:right;
@@ -113,6 +133,12 @@ button:hover,button:focus{
 	height: 40px;
     border-radius: 50%;
     background-color: #ddd;
+}
+.login .user_form{
+padding: 20px;
+}
+.login .user_form label{
+text-align:right;
 }
 .user-info{
 	position: relative;

@@ -4,6 +4,34 @@
 	</div>
 </footer>
 
+<div class="sticky-sidebar">
+	<a href="" > Personal Shopper Assistant</a>
+</div>
+<div id="modal-questions" tabindex="-1" role="dialog" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">Welcome to the World of Painless gifting.<br> To make the shopping experience
+		  seemless, please answer a few questions.
+            <button type="button" data-dismiss="modal" aria-hidden="true" class="close"><span class="mdi mdi-close"></span></button>
+          </div>
+          <div class="modal-body">
+            <div class="text-center">
+				<?php $i=1;foreach($questions as $q){ ?>
+					<div class="text-danger"><span class="modal-main-icon mdi mdi-close-circle-o"></span></div>
+					<h3><?php echo $q->question; ?></h3>
+					<p><textarea rows="4" cols="50"></textarea></p>
+					
+				<?php $i++; } ?>
+              <div class="xs-mt-50">
+                <button type="button" data-dismiss="modal" class="btn btn-space btn-default">Cancel</button>
+                <button type="button" class="btn btn-space btn-danger" id="delete_btn">Proceed</button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer"></div>
+        </div>
+      </div>
+    </div>
 <!-- Profile Modal -->
 <div class="modal fade" id="gift_modal" role="dialog">
 		
@@ -14,11 +42,15 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/bootstrap.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/owl.carousel.min.js"></script>
+<script src="<?php echo base_url(); ?>/assets/admin/js/bootstrap-notify.min.js" type="text/javascript"></script>
 <script src="<?php echo base_url();?>assets/js/fileupload.js"></script>
 <!-- JS Page Level -->
 <script src="<?php echo base_url(); ?>assets/js/scripts.js"></script>
 
 <script>
+$(document).ready(function(){
+$("#modal-questions").modal("show");
+      });
 	$("#search_form").on("submit",function(e){
 		e.preventDefault();
 		$("#search").trigger("click");

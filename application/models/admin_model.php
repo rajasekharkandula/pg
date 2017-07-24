@@ -1174,6 +1174,89 @@ class Admin_model extends CI_Model{
 		return $this->get_array_value($value, $indexes);
 	}
 	
+	public function get_shoppers($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_shopper_requests WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_shopper_requests where status='New'")->result();
+		}
+	}
+	function ins_upd_shopper(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		
+		//$question=(string)$this->input->post('question');
+
+		//$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		
+		if($type == "CONFIRM"){
+			$password = password_hash(mt_rand(), PASSWORD_DEFAULT);
+			$this->db->query("UPDATE tbl_shopper_requests SET status='Confirmed' WHERE id='".$id."';");
+			$this->db->query("INSERT INTO tbl_user (first_name, last_name, email, password, role, phone, gender, city, country, address, created_date, modified_date, status) select first_name, last_name, email, '$password', 'Shopper',phone,gender,city,country,address,NOW(),NOW(),'Active' from tbl_shopper_requests where id=".$id.";");
+			
+			//$id = $this->db->query("SELECT MAX(id) as id FROM tbl_questionaire")->row()->id;
+			$retvalue['status']= true;
+			$retvalue['message']= 'Shopper approval: CONFIRMED.';
+		}
+		
+		if($type == "DENY"){
+			$this->db->query("UPDATE tbl_shopper_requests SET status='Denied' WHERE id='".$id."';");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Shopper approval: DENIED.';
+		}
+		
+		return $retvalue;
+	}
+	public function get_questions($data){		
+		
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT * FROM tbl_questionaire WHERE id = '$id'")->row();
+		}
+		if($type == 'L'){
+			return $this->db->query("SELECT * FROM tbl_questionaire ORDER BY id DESC")->result();
+		}
+		
+	}
+	function ins_upd_questions(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$question=(string)$this->input->post('question');
+
+		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
+		
+		if($type == "INSERT"){
+			$this->db->query("INSERT INTO tbl_questionaire (question, created_date, status) VALUES ('$question',NOW(), '$status')");
+			
+			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_questionaire")->row()->id;
+			$retvalue['status']= true;
+			$retvalue['message']= 'Question created successfully';
+		}
+		
+		if($type == "UPDATE"){
+			$this->db->query("UPDATE tbl_questionaire SET question = '$question', status = '$status' WHERE id = $id ");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Question updated successfully';
+		}
+		
+		if($type == "DELETE"){
+			$this->db->query("DELETE FROM tbl_questionaire WHERE id = $id");
+			$retvalue['status']= true;
+			$retvalue['message']= 'Question deleted successfully';
+		}
+		return $retvalue;
+	}
 		
 }
 

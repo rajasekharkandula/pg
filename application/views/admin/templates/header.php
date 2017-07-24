@@ -55,6 +55,9 @@
 			  </li>
 			  <li <?php if($page == 'REVIEW')echo 'class="active"';?>><a href="<?php echo base_url('admin/reviews'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Reviews</span></a>
 			  </li>
+			  <li <?php if($page == 'REVIEW')echo 'class="active"';?>><a href="<?php echo base_url('admin/questionaire'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Questionaire</span></a>
+			  <li <?php if($page == 'REVIEW')echo 'class="active"';?>><a href="<?php echo base_url('admin/shopper_requests'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Shopper Requests</span></a>
+			  </li>
 			</ul>
 		  </div>
 		</div>

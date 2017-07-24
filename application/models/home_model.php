@@ -245,7 +245,32 @@ class Home_model extends CI_Model{
 			return $this->db->query($str)->result();
 		}
 	}
-	
+	function ins_upd_shopper_request(){
+		$type = $this->input->post('type');
+		$first_name = $this->input->post('first_name');
+		$last_name = $this->input->post('last_name');
+		$email = $this->input->post('email');
+		$phone = $this->input->post('phone');
+		$gender = $this->input->post('gender');
+		$address = $this->input->post('address');
+		$city = $this->input->post('city');
+		$country = $this->input->post('country');
+		
+		if($type =='INSERT'){
+			$chk=$this->db->query("select *  from tbl_shopper_requests where email='$email'")->row();
+			if(!$chk){
+				$this->db->query("INSERT INTO tbl_shopper_requests(first_name,last_name,email,phone,gender,city,country,address,created_date,status) VALUES('$first_name','$last_name','$email','$phone','$gender','$city','$country','$address',now(),'New');");
+				$retvalue['message'] = 'Request sent successfully';
+				$retvalue['status'] = true;
+			}else{
+				$retvalue['message'] = 'Email already exists, choose a different email.';
+				$retvalue['status'] = False;
+		
+			}
+			return $retvalue;
+		}
+		
+	}
 	function ins_upd_profile(){
 		$retvalue = array();
 		$retvalue['status'] = false;
@@ -717,6 +742,11 @@ class Home_model extends CI_Model{
 		 $data['search'] = $this->db->query("select * from tbl_product where name LIKE '".$search."'%")->result();
 		 return $data;
 	 }
+	 function getquestions()
+	 {
+		return $this->db->query("select * from tbl_questionaire")->result();
+	 }
+	 
 }
 
 ?>
