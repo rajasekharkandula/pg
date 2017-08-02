@@ -114,4 +114,7 @@ $("#search_type").on("change",function(){
 $(".pagination .disabled a").on("click",function(e){
 	e.preventDefault();
 });
+$(document).ready(function(){
+	$(".mbh").css("min-height",($(window).height()-166)+'px');
+});
 

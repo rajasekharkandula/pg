@@ -114,7 +114,7 @@ margin-top: 10px;
     padding: 10px 20px;
     color: #fff;
     font-size: 18px;
-	/* z-index: 9; */
+	z-index: 9;
 }
 .sticky-sidebar a{
 	color: #fff;
@@ -496,6 +496,14 @@ section h2.title{
 	color:#616bef;
 	font-weight:bold;
 }
+.product .content .price.bb{
+	border-bottom:1px solid #ddd;
+	margin-bottom:5px;
+}
+.product .content button{
+	padding: 5px 10px;
+    height: auto;
+}
 .product .like,.product .gift{
 	position: absolute;
     top: 5px;
@@ -518,6 +526,12 @@ section h2.title{
 }
 .product:hover .like,.product:hover .gift{
 	display: block;
+}
+.rd{
+	background-color: #fff;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
 }
 .view-more{
 	margin-top: 15px;
@@ -667,9 +681,12 @@ section h2.title{
 .login .divider{
 	border-left: 1px solid #DDDDDD;
     height: 200px;
-    padding-left: 0px;
     margin-top: 50px;
     padding-top: 40px;
+}
+.login .divider>p{
+	margin-top:-30px;
+	margin-bottom:0px;
 }
 .login .fb{
 	background-color: #3c5a98;
@@ -707,7 +724,10 @@ section h2.title{
 	margin-top: 10px;
 	font-size:15px;
 }
-
+.ssh{
+	margin-top: 0px;
+    margin-bottom: 25px;
+}
 .profile .sidebar{
 	list-style-type: none;
     padding: 8px;
@@ -814,7 +834,24 @@ section h2.title{
     color: #fff;
     border-radius: 3px;
 }
-
+.saq .hc{
+	font-size:15px;
+}
+.saq .qt:first-child{
+	margin-top:5px;
+}
+.saq .qt{
+	margin-bottom:3px;
+	margin-top:10px;
+}
+.saq textarea{
+	width: 100%;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    padding: 5px 10px;
+    outline: none;
+    border-radius: 5px;
+}
 .search-labels{
 	
 }
@@ -856,6 +893,52 @@ section h2.title{
     margin: 0px;
 }
 
+/* CSS for Credit Card Payment form */
+.credit-card-box .panel-title {
+    display: inline;
+    font-weight: bold;
+}
+.credit-card-box .form-control.error {
+    border-color: red;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(255,0,0,0.6);
+}
+.credit-card-box label.error {
+  font-weight: bold;
+  color: red;
+  padding: 2px 8px;
+  margin-top: 2px;
+}
+.credit-card-box .payment-errors {
+  font-weight: bold;
+  color: red;
+  padding: 2px 8px;
+  margin-top: 2px;
+}
+.credit-card-box label {
+    display: block;
+}
+/* The old "center div vertically" hack */
+.credit-card-box .display-table {
+    display: table;
+}
+.credit-card-box .display-tr {
+    display: table-row;
+}
+.credit-card-box .display-td {
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+}
+/* Just looks nicer */
+.credit-card-box .panel-heading img {
+    min-width: 180px;
+}
+.credit-card-box .btn-lg{
+	height: 40px;
+    font-size: 15px;
+    padding-bottom: 10px;
+}
 
 .m-header{
 	position: absolute;

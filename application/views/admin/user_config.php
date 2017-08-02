@@ -49,9 +49,11 @@
 					<div class="form-group">
                       <label class="col-sm-3">Role <span>*</span></label>
                       <div class="col-sm-6">
-                       <select class="select2" name="role" id="role">
+                       <select req="true" class="select2" name="role" id="role" data-placeholder="Select role">
+						<option></option>
 						<option value="USER">User</option>
 						<option value="ADMIN">Admin</option>
+						<option value="SHOPPER">Shopper</option>
 					   </select>
                       </div>
                     </div>
@@ -109,7 +111,7 @@
       });
 	  $("#submit_btn").on("click",function(){
 		var error=0;$(".text-danger").remove();
-		$("#user_form input").each(function(){
+		$("#user_form input,#user_form select").each(function(){
 			if($(this).attr("req") == "true" && $(this).val().trim() == ""){
 				error++;
 				$(this).parent().append('<div class="text-danger">This field is required</div>');

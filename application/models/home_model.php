@@ -13,6 +13,7 @@ class Home_model extends CI_Model{
 	public function __Construct(){
 		parent:: __Construct();
 		$this->load->model("admin_model");
+		$this->user_id = (int)$this->session->userdata("userID");
 	}
 	
 	/**
@@ -31,7 +32,10 @@ class Home_model extends CI_Model{
 		return 'r'.$result;
 	}
 	function getHeader(){
-		 return $this->db->query("select *,(SELECT COUNT(*) FROM tbl_navigation WHERE parent_id = n.id) AS childs from tbl_navigation n ORDER BY n.sortin_order")->result();
+		$data['navigations'] = $this->db->query("select *,(SELECT COUNT(*) FROM tbl_navigation WHERE parent_id = n.id) AS childs from tbl_navigation n ORDER BY n.sortin_order")->result();
+		$data['questions'] = $this->db->query("select * from tbl_questionaire")->result();
+		$data['notifications'] = $this->db->query("SELECT * FROM tbl_notification WHERE (user_id = $this->user_id OR (type = 'S_GLOBAL' && '".$this->session->userdata('role')."' = '".$this->config->item('role_shopper')."')) ORDER BY created_date DESC LIMIT 5")->result();
+		return $data;
 	}
 	
 	function login()
@@ -149,7 +153,7 @@ class Home_model extends CI_Model{
 		}
 		if($type == 'CHECH_AUTH'){
 			return $this->db->query("SELECT * FROM tbl_user WHERE auth_id='$auth_id' AND modified_date > (NOW() - interval 60 minute)")->row();
-		}
+		}		
 	}
 	function update_user(){
 		$retvalue = array();
@@ -733,20 +737,32 @@ class Home_model extends CI_Model{
 			  $this->db->query("insert into tbl_likes(user_id,product_id)values('$userID','$productID')");
 			  return true;
 		 }
-	 }
-	 function searchProducts()
-	 {
+	}
+	function searchProducts()
+	{
 		 echo "ok"; exit();
 		 $search = $this->input->post("searchkey");
 		 echo $search;
 		 $data['search'] = $this->db->query("select * from tbl_product where name LIKE '".$search."'%")->result();
 		 return $data;
-	 }
-	 function getquestions()
-	 {
-		return $this->db->query("select * from tbl_questionaire")->result();
-	 }
-	 
+	}
+	function ins_upd_user_answers(){
+		$answers = (array)$this->input->post('answers');
+		$userID = $this->session->userdata('userID');
+		
+		$this->db->query("INSERT INTO tbl_user_requests(userID,created_date,updated_date,status) VALUES($userID,NOW(),NOW(),'New')");
+		$id = $this->db->query("SELECT MAX(id) AS id FROM tbl_user_requests")->row()->id;
+		foreach($answers as $a){
+			$this->db->query("INSERT INTO tbl_user_answers(userID,questionID,answer,requestID) VALUES($userID,".$a['0'].",'".$a['1']."',$id)");
+		}
+		
+		$content = $this->session->userdata('name').' has been submitted new request.';
+		$this->db->query("INSERT INTO tbl_notification (user_id, subject, content, image, type, created_date, created_by, status) VALUES ($userID, '$content', '$content', '".$this->session->userdata('image')."', 'S_GLOBAL', NOW(), $userID, 'Active')");
+		
+		$retvalue['message'] = $content;
+		$retvalue['status'] = true;
+		return $retvalue;
+	}
 }
 
 ?>

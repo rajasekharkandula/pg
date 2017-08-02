@@ -16,10 +16,7 @@
               <div class="panel panel-default panel-table">
                 <div class="panel-heading">
 					<div class="row">
-						<div class="col-md-6">Shopper Approval</div>
-						<div class="col-md-6 text-right"> 
-							<a href="<?php echo base_url('admin/questionaire_config'); ?>" class="btn btn-primary"><i class="mdi mdi-plus"></i> Add</a>
-						</div>
+						<div class="col-md-6">Shopper Approval</div>						
 					</div>
                 </div>
                 <div class="panel-body">

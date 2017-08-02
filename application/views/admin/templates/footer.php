@@ -37,3 +37,4 @@
 <script src="<?php echo base_url(); ?>/assets/admin/lib/bootstrap-markdown/js/bootstrap-markdown.js" type="text/javascript"></script>
 <script src="<?php echo base_url(); ?>/assets/admin/lib/markdown-js/markdown.js" type="text/javascript"></script>
 <script src="<?php echo base_url();?>assets/js/fileupload.js"></script>
+<script src="<?php echo $this->config->item('node_server_url').'/socket.io/socket.io.js'; ?>"></script>

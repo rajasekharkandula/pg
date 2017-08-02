@@ -48,6 +48,120 @@ class Admin_model extends CI_Model{
 		if($type == 'DL'){
 			return $this->db->query("SELECT * FROM tbl_user WHERE role='USER' ORDER BY id DESC LIMIT 5")->result();
 		}
+		if($type == 'SHOPPERS'){
+			return $this->db->query("SELECT * FROM tbl_user WHERE role='".$this->config->item('role_shopper')."'")->result();
+		}
+		if($type == 'REQUESTS_L'){
+			return $this->db->query("SELECT u.first_name,u.last_name,ur.* FROM tbl_user u INNER JOIN tbl_user_requests ur ON ur.userID = u.id ORDER BY u.created_date DESC")->result();
+		}
+	}
+	
+	function get_user_requests($data){
+		$type = isset($data['type']) ? $data['type'] : '';
+		$id = isset($data['id']) ? (int)$data['id'] : 0;
+		$userID = isset($data['userID']) ? (int)$data['userID'] : 0;
+		$key = isset($data['key']) ? $data['key'] : '';
+		$shopperID = isset($data['shopperID']) ? $data['shopperID'] : 0;
+		$status = isset($data['status']) ? $data['status'] : '';
+		
+		if($type == 'S'){
+			return $this->db->query("SELECT u.first_name,u.last_name,ur.*,(SELECT CONCAT(first_name,' ',last_name) FROM tbl_user WHERE id = ur.shopper_id) AS shopperName FROM tbl_user u INNER JOIN tbl_user_requests ur ON ur.userID = u.id WHERE ur.id=$id")->row();
+		}
+		if($type == 'ALL_OLD'){
+			return $this->db->query("SELECT u.first_name,u.last_name,ur.* FROM tbl_user u INNER JOIN tbl_user_requests ur ON ur.userID = u.id ORDER BY u.created_date DESC")->result();
+		}
+		if($type == 'ALL'){
+			return $this->db->query("SELECT CONCAT(u.first_name,' ',u.last_name) AS userName,(SELECT CONCAT(first_name,' ',last_name) FROM tbl_user WHERE id = ur.shopper_id) AS shopperName,ur.*  FROM tbl_user_requests ur INNER JOIN tbl_user u ON u.id = ur.userID  ORDER BY ur.created_date DESC")->result();
+		}
+		if($type == 'ANSWERS'){
+			return $this->db->query("SELECT q.question,a.answer FROM painlessgift.tbl_user_answers a INNER JOIN tbl_questionaire q ON q.id = a.questionID WHERE a.userID = $userID AND a.requestID = $id")->result();
+		}
+		if($type == 'NEW'){
+			return $this->db->query("SELECT u.first_name,u.last_name,ur.* FROM tbl_user u INNER JOIN tbl_user_requests ur ON ur.userID = u.id WHERE ur.status='New' ORDER BY u.created_date DESC")->result();
+		}
+		if($type == 'ONGOING'){
+			return $this->db->query("SELECT u.first_name,u.last_name,ur.* FROM tbl_user u INNER JOIN tbl_user_requests ur ON ur.userID = u.id WHERE ur.status='Ongoing' AND shopper_id = $userID ORDER BY u.created_date DESC")->result();
+		}
+		if($type == 'COMPLETED'){
+			return $this->db->query("SELECT u.first_name,u.last_name,ur.* FROM tbl_user u INNER JOIN tbl_user_requests ur ON ur.userID = u.id WHERE ur.status='Completed' AND shopper_id = $userID ORDER BY u.created_date DESC")->result();
+		}
+		if($type == 'USER_REQUESTS'){
+			return $this->db->query("SELECT *,(SELECT CONCAT(first_name,' ',last_name) FROM tbl_user WHERE id = ur.shopper_id) AS shopperName  FROM tbl_user_requests ur WHERE ur.userID = $userID ORDER BY ur.created_date DESC")->result();
+		}
+		if($type == 'PRODUCTS'){
+			return $this->db->query("SELECT p.id,p.name,p.price,p.image,p.product_link,c.name as categoryName,urp.status,urp.id AS urpID FROM tbl_product p INNER JOIN tbl_category c ON c.id = p.category INNER JOIN tbl_user_request_products urp ON urp.product_id = p.id WHERE urp.request_id = $id ORDER BY urp.date_time DESC")->result();
+		}
+		if($type == 'SEARCH'){
+			$str = "SELECT CONCAT(u.first_name,' ',u.last_name) AS userName,(SELECT CONCAT(first_name,' ',last_name) FROM tbl_user WHERE id = ur.shopper_id) AS shopperName,ur.*  FROM tbl_user_requests ur INNER JOIN tbl_user u ON u.id = ur.userID WHERE ur.status != '' ";
+			
+			if($key != '' && $key != null)
+				$str.=" AND (u.first_name LIKE '%$key%' OR u.last_name LIKE '%$key%' OR u.created_date LIKE '%$key%') ";
+			
+			if($shopperID)
+				$str.=" AND ur.shopper_id = $shopperID ";
+			
+			if($status)
+				$str.=" AND ur.status = '$status' ";
+			
+			$str .= " ORDER BY ur.created_date DESC limit 50";
+			$qry = $this->db->query($str)->result();
+			$requests = array();$i=0;
+			foreach($qry as $q){
+				$requests[$i]['user'] = $q->userName;
+				$requests[$i]['shopper'] = $q->shopperName ? $q->shopperName : '--';
+				$requests[$i]['date_time'] = date('d M,y h:i A',strtotime($q->created_date));
+				$requests[$i]['status'] = $q->status;
+				$requests[$i]['id'] = $q->id;
+				$i++;
+			}
+			return $requests;
+		}
+	}
+	function ins_upd_user_requests(){
+		$retvalue['status']= false;$retvalue['message']= 'Please try again later';
+		
+		$type=$this->input->post('type');
+		$id=(int)$this->input->post('id');
+		$shopperID=(int)$this->input->post('shopperID');
+		$productID=(int)$this->input->post('productID');
+		$urpID=(int)$this->input->post('urpID');
+		
+		if($type == 'CONFIRM'){
+			$this->db->query("UPDATE tbl_user_requests SET shopper_id = $shopperID, status='Ongoing' WHERE id = $id");
+			$retvalue['status'] = true;
+			$retvalue['message'] = 'Request accepted successfully';
+		}
+		
+		if($type == 'ASSIGN'){
+			$this->db->query("UPDATE tbl_user_requests SET shopper_id = $shopperID, status='Ongoing' WHERE id = $id");
+			$retvalue['status'] = true;
+			$retvalue['message'] = 'Shopper assigned successfully';
+		}
+		
+		if($type == 'COMPLETED'){
+			$this->db->query("UPDATE tbl_user_requests SET status='Completed' WHERE id = $id");
+			$retvalue['status'] = true;
+			$retvalue['message'] = 'Request completed successfully';
+		}
+		
+		if($type == 'SUGGEST'){
+			$this->db->query("INSERT INTO tbl_user_request_products (request_id, product_id, suggested_by, date_time, status) VALUES ($id, $productID, $shopperID, NOW(), 'Suggested')");
+			$retvalue['status'] = true;
+			$retvalue['message'] = 'Product suggested successfully';
+		}
+		
+		if($type == 'ACCEPT_REJECT'){
+			$status = 'Rejected';
+			$retvalue['message'] = 'Product rejected successfully';
+			if($this->input->post('status') == 'Accept'){
+				$status = 'Accepted';
+				$retvalue['message'] = 'Product accepted successfully';
+			}
+			$this->db->query("UPDATE tbl_user_request_products SET status = '$status' WHERE id = $urpID");
+			$retvalue['status'] = true;
+		}
+		
+		return $retvalue;
 	}
 	
 	function reset_password(){
@@ -334,6 +448,7 @@ class Admin_model extends CI_Model{
 		$category_id = isset($data['category_id']) ? (int)$data['category_id'] : 0;
 		$key = isset($data['key']) ? $data['key'] : '';
 		$category = isset($data['category']) ? $data['category'] : '';
+		$requestID = isset($data['requestID']) ? (int)$data['requestID'] : 0;
 		
 		if($type == 'S'){
 			return $this->db->query("SELECT * FROM tbl_product WHERE id = '$id'")->row();
@@ -344,6 +459,11 @@ class Admin_model extends CI_Model{
 		if($type == 'NS'){
 			return $this->db->query("SELECT * FROM tbl_navigation_products WHERE product_id = $id")->result();
 		}
+		
+		if($type == 'SUGGEST'){
+			return $this->db->query("SELECT p.id,p.name,p.price,p.image,p.product_link,c.name as categoryName FROM tbl_product p INNER JOIN tbl_category c ON c.id = p.category WHERE p.id NOT IN (SELECT product_id FROM tbl_user_request_products WHERE request_id = $requestID) ORDER BY id DESC LIMIT 50")->result();
+		}
+		
 		
 	}
 	
@@ -1199,7 +1319,7 @@ class Admin_model extends CI_Model{
 		if($type == "CONFIRM"){
 			$password = password_hash(mt_rand(), PASSWORD_DEFAULT);
 			$this->db->query("UPDATE tbl_shopper_requests SET status='Confirmed' WHERE id='".$id."';");
-			$this->db->query("INSERT INTO tbl_user (first_name, last_name, email, password, role, phone, gender, city, country, address, created_date, modified_date, status) select first_name, last_name, email, '$password', 'Shopper',phone,gender,city,country,address,NOW(),NOW(),'Active' from tbl_shopper_requests where id=".$id.";");
+			$this->db->query("INSERT INTO tbl_user (first_name, last_name, email, password, role, phone, gender, city, country, address, created_date, modified_date, status) select first_name, last_name, email, '$password', 'SHOPPER',phone,gender,city,country,address,NOW(),NOW(),'Active' from tbl_shopper_requests where id=".$id.";");
 			
 			//$id = $this->db->query("SELECT MAX(id) as id FROM tbl_questionaire")->row()->id;
 			$retvalue['status']= true;
@@ -1257,7 +1377,118 @@ class Admin_model extends CI_Model{
 		}
 		return $retvalue;
 	}
+	
+	
+	function get_chat($data){
+		$type = isset($data['type'])?$data['type']:'';
+		$userID = isset($data['userID'])?$data['userID']:'';
+		$sendTo = isset($data['sendTo'])?$data['sendTo']:'';
 		
+		if($type == 'USER_CHAT'){
+			
+			$retValue = array();
+			
+			$user = $this->db->query("SELECT * FROM tbl_user WHERE id='$sendTo'")->row();
+			if($user){
+				if(file_exists($user->image))
+					$user_array['image'] = base_url($user->image);
+				else
+					$user_array['image'] = base_url($this->config->item('default_image_user'));
+				
+				$user_array['name'] = $user->first_name.' '.$user->last_name;
+				$user_array['userID'] = $user->id;
+				
+				$retValue['user'] = (object) $user_array;	
+				
+				$chats = array();
+				$cqry = $this->db->query("SELECT * FROM tbl_chat WHERE ((userID='$userID' AND sendTo = '$sendTo') OR (userID='$sendTo' AND sendTo = '$userID')) AND status = 'ACTIVE' ORDER BY dateTime ASC")->result();
+				foreach($cqry as $c){
+					$c = (array) $c;
+					if(strtotime(date('y-m-d',strtotime($c['dateTime']))) != strtotime(date('y-m-d')))
+						$c['dateTime'] = date('d-m-y h:i A',strtotime($c['dateTime']));
+					else
+						$c['dateTime'] = date('h:i A',strtotime($c['dateTime']));
+						
+					$c = (object) $c;
+					array_push($chats,$c);
+				}
+				$retValue['chat'] = $chats;
+				return $retValue;
+			}
+		}
+		
+		if($type == 'ALL_CHAT'){
+			
+			$uqry = $this->db->query("SELECT u.id,u.first_name,u.last_name,u.image,(SELECT CONCAT(c.message,'~/date/~',c.dateTime) FROM tbl_chat c WHERE ((c.userID = u.userID AND c.sendTo='$userID') OR (c.userID = '$userID' AND c.sendTo = u.id)) AND c.status = 'ACTIVE' ORDER BY c.dateTime DESC LIMIT 1) AS lastMsg,(SELECT COUNT(*) FROM tbl_chat uc WHERE uc.userID = u.id AND uc.sendTo='$userID' AND uc.status = 'ACTIVE' AND uc.readMsg = 0) AS unRead FROM tbl_user u")->result();
+			
+			$users = array();
+			$i = 0;
+			foreach($uqry as $u){
+				$users[$i]['userID'] = $u->id;
+				$users[$i]['name'] = $u->first_name.' '.$u->last_name;
+				if(file_exists($u->image))
+					$users[$i]['image'] = base_url($u->image);
+				else
+					$users[$i]['image'] = base_url($this->config->item('default_image_user'));
+				$users[$i]['unread'] = $u->unRead;
+				
+				$lastMsg = '';$dateTime = '';$dateTime2 = '';
+				if($u->lastMsg){
+					$lm = explode("~/date/~",$u->lastMsg);
+					$dateTime = $this->date_formate2(end($lm));
+					$dateTime2 = end($lm);
+					$lastMsg = $lm[0];
+					
+				}
+				$users[$i]['lastMsg'] = $lastMsg;
+				$users[$i]['dateTime'] = $dateTime;
+				$users[$i]['dateTime2'] = $dateTime2;
+				$i++;
+			}
+			if(!empty($users)){
+				foreach ($users as $key => $part) {
+					$sort[$key] = strtotime($part['dateTime2']);
+				}
+				array_multisort($sort, SORT_DESC, $users);
+			}
+			//var_dump($users);exit();
+			return $users;
+		}
+		if($type=='TOTAL_COUNT'){
+			$userID = $this->session->userdata('userID');
+			return $this->db->query("SELECT COUNT(*) AS count FROM tbl_chat WHERE sendTo='$userID' AND readMsg = 0 AND status = 'ACTIVE'")->row();
+		}
+		return false;
+	}
+	
+	function ins_upd_chat(){
+		$retValue['status'] = false;$retValue['message'] = 'Error';
+		$userID = $this->input->post('userID');
+		$sendTo = $this->input->post('sendTo');
+		$message = str_replace("'","\\'",str_replace("\\","\\\\",($this->input->post('message'))));
+		$type = $this->input->post('type');
+		
+		if($type == 'INSERT'){
+			$this->db->query("INSERT INTO tbl_chat (chatID, userID, sendTo, message, dateTime, status) VALUES (UUID(), '$userID', '$sendTo', '$message', NOW(), 'ACTIVE')");
+			$retValue['status'] = true;
+			$retValue['message'] = 'Success';
+		}
+		
+		if($type == 'UPDATE_READ'){
+			$this->db->query("UPDATE tbl_chat SET readMsg = 1 WHERE userID = '$sendTo' AND sendTo='$userID'");
+			$retValue['status'] = true;
+			$retValue['message'] = 'Success';
+		}
+		
+		return $retValue;
+	}
+	function getReports($page){
+		$data['new'] = $this->db->query("SELECT COUNT(*) AS rCount FROM tbl_user_requests WHERE status = 'New'")->row()->rCount;
+		$data['ongoing'] = $this->db->query("SELECT COUNT(*) AS rCount FROM tbl_user_requests WHERE status = 'Ongoing' AND shopper_id = '".$this->session->userdata('userID')."'")->row()->rCount;
+		$data['completed'] = $this->db->query("SELECT COUNT(*) AS rCount FROM tbl_user_requests WHERE status = 'Completed' AND shopper_id = '".$this->session->userdata('userID')."'")->row()->rCount;
+		$data['users'] = $this->db->query("SELECT COUNT(*) AS rCount FROM tbl_user_requests WHERE shopper_id = '".$this->session->userdata('userID')."' GROUP BY userID")->row()->rCount;
+		return $data;
+	}
 }
 
 ?>

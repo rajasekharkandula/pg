@@ -8,12 +8,15 @@
 
 	<!-- CSS Global -->
 	<link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>assets/css/jquery-ui.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/font-awesome.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/owl.carousel.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/owl.theme.default.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/animate.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>assets/admin/lib/datatables/css/dataTables.bootstrap.min.css" rel="stylesheet">
 
 	<!-- Theme CSS -->
+	<link href="<?php echo base_url(); ?>assets/css/chat.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/style.css" rel="stylesheet">
 	
 	<!--[if lt IE 9]>

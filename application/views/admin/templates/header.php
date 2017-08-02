@@ -55,8 +55,10 @@
 			  </li>
 			  <li <?php if($page == 'REVIEW')echo 'class="active"';?>><a href="<?php echo base_url('admin/reviews'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Reviews</span></a>
 			  </li>
-			  <li <?php if($page == 'REVIEW')echo 'class="active"';?>><a href="<?php echo base_url('admin/questionaire'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Questionaire</span></a>
-			  <li <?php if($page == 'REVIEW')echo 'class="active"';?>><a href="<?php echo base_url('admin/shopper_requests'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Shopper Requests</span></a>
+			  <li <?php if($page == 'QUESTIONS')echo 'class="active"';?>><a href="<?php echo base_url('admin/questionaire'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Questionaire</span></a>
+			  <li <?php if($page == 'SHOPPER_REQUESTS')echo 'class="active"';?>><a href="<?php echo base_url('admin/shopper_requests'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Shopper Requests</span></a>
+			  </li>
+			  <li <?php if($page == 'USER_REQUESTS')echo 'class="active"';?>><a href="<?php echo base_url('admin/user_requests'); ?>"><i class="icon mdi mdi-window-restore"></i><span>User Requests</span></a>
 			  </li>
 			</ul>
 		  </div>

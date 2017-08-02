@@ -8,14 +8,13 @@ class Admin extends CI_Controller {
 		$this->load->model('home_model');
 	}
 	function access($data=array()){
-		if($this->session->userdata('role') != 'ADMIN'){
+		if($this->session->userdata('role') != $this->config->item('role_admin')){
 			redirect('home/signin');
 		}
 	}
 	
 	public function index()
-	{
-		
+	{		
 		$this->access();
 		$pageData['page'] = 'DASHBOARD';
 		$pageData['pageTitle'] = 'Dashboard';
@@ -343,7 +342,7 @@ class Admin extends CI_Controller {
 	public function shopper_requests()
 	{
 		$this->access();
-		$pageData['page'] = 'CMS';
+		$pageData['page'] = 'SHOPPER_REQUESTS';
 		$pageData['pageTitle'] = 'Pages List';
 		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
 		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
@@ -351,6 +350,42 @@ class Admin extends CI_Controller {
 		$data['shoppers'] = $this->admin_model->get_shoppers(array('type'=>'L'));
 		$this->load->view('admin/shopper_requests',$data);
 	}
+	public function user_requests()
+	{
+		$this->access();
+		$pageData['page'] = 'USER_REQUESTS';
+		$pageData['pageTitle'] = 'Pages List';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['requests'] = $this->admin_model->get_user_requests(array('type'=>'ALL'));
+		$data['shoppers'] = $this->admin_model->get_user(array('type'=>'SHOPPERS'));
+		$this->load->view('admin/user_requests',$data);
+	}
+	
+	function request_details($id=0){
+		$this->access();
+		$pageData['page'] = 'USER_REQUESTS';
+		$pageData['pageTitle'] = 'Pages List';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['request'] = $request = $this->admin_model->get_user_requests(array('type'=>'S','id'=>$id));
+		$data['products'] = $this->admin_model->get_user_requests(array('type'=>'PRODUCTS','id'=>$id));
+		$data['shoppers'] = $this->admin_model->get_user(array('type'=>'SHOPPERS'));
+		if($request){
+			//Chat
+			$chat['sendToUserID'] = $request->userID;
+			$chat['sendToImage'] = base_url($this->config->item('default_image_user'));
+			$data['chat'] = $this->load->view('chat',$chat,true);
+			
+			$this->load->view('admin/request_details',$data);
+		}else{
+			echo 'Invalid URL';
+		}
+	}
+	
+	
 	function ins_upd_page(){
 		echo json_encode($this->admin_model->ins_upd_page());
 	}
@@ -394,6 +429,16 @@ class Admin extends CI_Controller {
 			'id'=>$this->input->post('id')
 		);
 		echo json_encode($this->admin_model->get_api($data));
+	}
+	function get_user_requests(){
+		$data = array(
+			'type'=>$this->input->post('type'),
+			'id'=>$this->input->post('id'),
+			'key'=>$this->input->post('key'),
+			'shopperID'=>$this->input->post('shopper'),
+			'status'=>$this->input->post('status')
+		);
+		echo json_encode($this->admin_model->get_user_requests($data));
 	}
 	function add_products(){
 		var_dump($this->input->post('products'));

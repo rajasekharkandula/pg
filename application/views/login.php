@@ -15,7 +15,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-1"></div>
-					<div class="col-md-5 col-sm-6 text-center">
+					<div class="col-md-4 col-sm-6 text-center">
 						<form action="#" class="login_form" id="login_form">
 							<h3>Login</h3>
 							<div class="form-group">
@@ -36,10 +36,12 @@
 							</div>
 						</form>
 					</div>
-					<div class="col-md-5 col-sm-6 text-center divider">
+					<div class="col-md-3 col-sm-6 text-center divider">
 						<a href="<?php echo $fb_login_url; ?>" class="fb"><i class="fa fa-facebook"></i> Sign In with Facebook</a><br>
 						<a class="gmail" href="<?php echo base_url('home/signup'); ?>"><i class="fa fa-envelope"></i> Sign Up with Email</a><br><br>
-						Are you energetic, outgoing, dynamic individuals with excellent customer service skills, then join us and be a Assistant personal shopper.<br>
+					</div>
+					<div class="col-md-3 col-sm-6 text-center divider">
+						<p>Are you energetic, outgoing, dynamic individuals with excellent customer service skills, then join us and be a Assistant personal shopper.</p><br>
 						<a class="gmail" href="<?php echo base_url('home/shopper_signup'); ?>"><i class="fa fa-envelope"></i> Sign Up as a Shopper</a><br>
 					</div>
 				</div>

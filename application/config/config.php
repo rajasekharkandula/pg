@@ -375,6 +375,11 @@ $config['img_ext'] = array('jpg','png','jpeg');
 $config['fb_app_id'] = '239011039923860';
 $config['fb_secret_id'] = '556f3e69b7497da28c406496b3bac7f3';
 
+$config['node_server_url'] = 'http://localhost:3000';
+
+$config['role_admin'] = 'ADMIN';
+$config['role_user'] = 'USER';
+$config['role_shopper'] = 'SHOPPER';
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */

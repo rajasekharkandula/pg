@@ -15,9 +15,10 @@
 			<div class="container">
 				<div class="row">
 
-					<div class="col-md-12 ">
-						<form class="user_form" id="user_form" style="width: 80%">
-							<h3>Sign Up</h3>
+					<div class="col-md-1"></div>
+					<div class="col-md-10">
+						<form class="user_form" id="user_form">
+							<h3 class="ssh">Sign Up as a shopper</h3>
 							<div class="row mt-10">
 								<div class="col-md-6">
 								  <label class="col-md-4">First Name <span>*</span></label>
@@ -36,7 +37,7 @@
 								<div class="col-md-6">
 									<label class="col-md-4">Gender <span>*</span></label>
 									<div class="col-md-8">
-										<select class="select2" name="gender" id="gender" >
+										<select class="form-control"  name="gender" id="gender" >
 											<option value="Male" selected>Male</option>
 											<option value="Female">Female</option>
 										</select>
@@ -77,8 +78,7 @@
 									<input type="text" class="form-control" name="country" value="">
 								  </div>
 								</div>
-							</div>
-					<br>
+							</div><br>
 
 							<div class="form-group mt-10 text-center">
 								<button type="button" id="submit_btn">Sign Up</button>
