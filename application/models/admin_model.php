@@ -382,38 +382,44 @@ class Admin_model extends CI_Model{
 		
 		
 		if($type == 'INSERT_API_PRODUCTS'){
-			
+			$error=0;
 			$products = json_decode($this->input->post('products'));
 			foreach($products as $p){
 				$product = json_decode($p[4]);
-				$name = str_replace("'","\\'",str_replace("\\","\\\\",($product->name)));
-				$api_product_id = $product->id;
-				$price = $product->price;
-				$image = $product->image;
-				$product_link = $product->url;
-				$min_age = $p[2];
-				$max_age = $p[3];
-				$category = $p[0];
-				$navigation = (array)$p[1];
-				
-				$product = $this->db->query("SELECT * FROM tbl_product WHERE api_product_id = '$api_product_id'")->row();
 				if($product){
-					$id = $product->id;
-					$this->db->query("UPDATE tbl_product SET name = '$name', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', category = '$category', apiID = '$apiID',modified_by = $userID, modified_date = NOW(), status = 'Active' WHERE id = $id ");
+					$name = str_replace("'","\\'",str_replace("\\","\\\\",($product->name)));
+					$api_product_id = $product->id;
+					$price = $product->price;
+					$image = $product->image;
+					$product_link = $product->url;
+					$min_age = $p[2];
+					$max_age = $p[3];
+					$category = $p[0];
+					$navigation = (array)$p[1];
+					
+					$product = $this->db->query("SELECT * FROM tbl_product WHERE api_product_id = '$api_product_id'")->row();
+					if($product){
+						$id = $product->id;
+						$this->db->query("UPDATE tbl_product SET name = '$name', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', category = '$category', apiID = '$apiID',modified_by = $userID, modified_date = NOW(), status = 'Active' WHERE id = $id ");
+					}else{
+						$this->db->query("INSERT INTO tbl_product (api_product_id,name, price, image, product_link, min_age, max_age, category, apiID, source, created_by, modified_by, created_date,modified_date,status) VALUES ('$api_product_id','$name', '$price', '$image', '$product_link', '$min_age', '$max_age', '$category', '$apiID', '$source', $userID, $userID, NOW(), NOW(),'Active'); ");
+						$id = $this->db->query("SELECT MAX(id) AS id FROM tbl_product")->row()->id;
+					}
+					$this->db->query("DELETE FROM tbl_navigation_products WHERE product_id = $id");
+					foreach($navigation as $n){
+						$this->db->query("INSERT INTO tbl_navigation_products(navigation_id,product_id) VALUES($n,$id)");
+					}
 				}else{
-					$this->db->query("INSERT INTO tbl_product (api_product_id,name, price, image, product_link, min_age, max_age, category, apiID, source, created_by, modified_by, created_date,modified_date,status) VALUES ('$api_product_id','$name', '$price', '$image', '$product_link', '$min_age', '$max_age', '$category', '$apiID', '$source', $userID, $userID, NOW(), NOW(),'Active'); ");
-					$id = $this->db->query("SELECT MAX(id) AS id FROM tbl_product")->row()->id;
+					$error++;
 				}
-				$this->db->query("DELETE FROM tbl_navigation_products WHERE product_id = $id");
-				foreach($navigation as $n){
-					$this->db->query("INSERT INTO tbl_navigation_products(navigation_id,product_id) VALUES($n,$id)");
-				}
-				
 			}
-			$retvalue['status']= true;
-			$retvalue['message']= 'Product saved successfully';
-		}
-		
+			if($error == 0){
+				$retvalue['status']= true;
+				$retvalue['message']= 'Product saved successfully';
+			}else{
+				$retvalue['message']= 'Product is not saved successfully';
+			}
+		}		
 		
 		return $retvalue;
 	}
@@ -1112,9 +1118,9 @@ class Admin_model extends CI_Model{
 							//Names
 							$keys = explode("/",$name_depth);
 							if(is_array($r))
-								$product['name'] = $this->get_array_value($r,$keys);
+								$product['name'] = str_replace("'","",str_replace('"','',($this->get_array_value($r,$keys))));
 							else
-								$product['name'] = $r;
+								$product['name'] = str_replace("'","",str_replace('"','',($r)));
 							
 							//Image
 							$keys = explode("/",$image_depth);
@@ -1317,7 +1323,8 @@ class Admin_model extends CI_Model{
 		//$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		
 		if($type == "CONFIRM"){
-			$password = password_hash(mt_rand(), PASSWORD_DEFAULT);
+			//$password = password_hash(mt_rand(), PASSWORD_DEFAULT);
+			$password = password_hash('password', PASSWORD_DEFAULT);
 			$this->db->query("UPDATE tbl_shopper_requests SET status='Confirmed' WHERE id='".$id."';");
 			$this->db->query("INSERT INTO tbl_user (first_name, last_name, email, password, role, phone, gender, city, country, address, created_date, modified_date, status) select first_name, last_name, email, '$password', 'SHOPPER',phone,gender,city,country,address,NOW(),NOW(),'Active' from tbl_shopper_requests where id=".$id.";");
 			

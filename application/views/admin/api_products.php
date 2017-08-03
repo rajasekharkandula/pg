@@ -170,7 +170,7 @@
 		}
 		//alert(error);
 		if(error == 0){
-			$("#submit_btn").attr("disabled",true);
+			//$("#submit_btn").attr("disabled",true);
 			$("#submit_btn").html("Please waite...");
 			var formData = new FormData($("#product_form")[0]);
 			formData.append('type','INSERT_API_PRODUCTS');
