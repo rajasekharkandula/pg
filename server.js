@@ -16,6 +16,7 @@ server.listen(port, function () {
 
 
 io.on('connection', function (socket) {
+	//console.log('Connected: %s sockets connected', users.length);
 	
 	//Connection 
 	socket.on( 'join', function( data ) {

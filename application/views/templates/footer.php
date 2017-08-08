@@ -28,9 +28,19 @@
 <script src="<?php echo base_url(); ?>assets/js/scripts.js"></script>
 
 <script>
+	var myUserID = '<?php echo $this->session->userdata('userID'); ?>';
+	var myImage = '<?php echo $this->session->userdata('image'); ?>';
+	var myName = '<?php echo $this->session->userdata('name'); ?>';
+		
 	var socket = io.connect('<?php echo $this->config->item('node_server_url'); ?>');
-	socket.on('new_message', function (data) {
-		$.notify({ message: 'ok' },{type: 'success'});
+	$(document).ready(function(){
+		socket.emit('join', { name:myName, userID:myUserID});		
+		
+		socket.on('new_message', function (data) {
+			if(!$("#chat_tab").hasClass("active")){
+				$.notify({ message: data.sendToName+':'+data.message },{type: 'success'});
+			}		
+		});
 	});
 </script>
 

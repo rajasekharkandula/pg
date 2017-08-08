@@ -40,12 +40,17 @@
 <script src="<?php echo $this->config->item('node_server_url').'/socket.io/socket.io.js'; ?>"></script>
 
 <script>
+	var myUserID = '<?php echo $this->session->userdata('userID'); ?>';
+	var myImage = '<?php if(file_exists($this->session->userdata('image')))echo base_url($this->session->userdata('image')); else echo base_url($this->config->item('default_image_user')); ?>';
+	var myName = '<?php echo $this->session->userdata('name'); ?>';
+		
 	var socket = io.connect('<?php echo $this->config->item('node_server_url'); ?>');
-	socket.on('client_new_request', function (data) {
-		$.notify({ message: data.message },{type: 'success'});
-	});
-	socket.on('new_message', function (data) {
-		//if(data.userID == <?php echo $this->session->userdata('userID'); ?>)
-			$.notify({ message: 'ok' },{type: 'success'});
+	$(document).ready(function(){
+		socket.emit('join', { name:myName, userID:myUserID});		
+		socket.on('new_message', function (data) {
+			if(!$("#chat_tab").hasClass("active")){
+				$.notify({ message: data.sendToName+':'+data.message },{type: 'success'});
+			}		
+		});
 	});
 </script>

@@ -12,6 +12,9 @@
 	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 	
+	<link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>assets/css/jquery-ui.min.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>assets/css/font-awesome.min.css" rel="stylesheet">
 	
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/assets/admin/lib/datetimepicker/css/bootstrap-datetimepicker.min.css"/>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/assets/admin/lib/select2/css/select2.min.css"/>
@@ -21,7 +24,6 @@
 	
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/assets/admin/lib/jquery.vectormap/jquery-jvectormap-1.2.2.css"/>
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/assets/admin/lib/jqvmap/jqvmap.min.css"/>
-	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/assets/admin/lib/datetimepicker/css/bootstrap-datetimepicker.min.css"/>
 	<link href="<?php echo base_url(); ?>assets/css/chat.css" rel="stylesheet">
 	<link rel="stylesheet" href="<?php echo base_url(); ?>/assets/admin/css/style.css" type="text/css"/>
 	<link rel="stylesheet" href="<?php echo base_url(); ?>/assets/admin/css/custom.css" type="text/css"/>

@@ -378,6 +378,7 @@ class Admin extends CI_Controller {
 			//Chat
 			$chat['sendToUserID'] = $request->userID;
 			$chat['sendToImage'] = base_url($this->config->item('default_image_user'));
+			$chat['sendToName'] = $request->first_name.' '.$request->last_name;
 			$data['chat'] = $this->load->view('chat',$chat,true);
 			
 			$this->load->view('admin/request_details',$data);

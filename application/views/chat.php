@@ -1,14 +1,9 @@
 <script type="text/javascript">
 		  
-	var myUserID = '<?php echo $this->session->userdata('userID'); ?>';
-	var myImage = '<?php echo $this->session->userdata('image'); ?>';
-	var myName = '<?php echo $this->session->userdata('name'); ?>';
-	var sendToUserID = '<?php echo $sendToUserID; ?>',sendToImage = '<?php echo $sendToImage; ?>';
-	
-	var socket = io.connect('<?php echo $this->config->item('node_server_url'); ?>');
+	var sendToUserID = '<?php echo $sendToUserID; ?>',sendToImage = '<?php echo $sendToImage; ?>',sendToName = '<?php echo $sendToName; ?>';
 	
 	$(document).ready(function(){		
-		socket.emit('join', { name:myName, userID:myUserID});
+		
 		socket.on('connected', function (data) {				
 			//Online Status
 			if(data.indexOf(sendToUserID) != -1){
@@ -55,7 +50,7 @@
 				dataType:'JSON'
 			}).success(function(data){
 				if(data.status){
-					socket.emit('new_message', {message:val,sendTo:sendToUserID,userID:myUserID});
+					socket.emit('new_message', {message:val,sendTo:sendToUserID,userID:myUserID,sendToName:sendToName});
 					$("#messages").append(message_template(myUserID,val,currentTime(),0));
 					$("#messages").animate({ scrollTop: $(document).height()*30 }, "slow");
 					$("#message_input").val('');
