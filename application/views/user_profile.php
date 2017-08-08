@@ -13,7 +13,7 @@
         
 		<section class="profile">
 			<div class="container">
-				<h2><?php echo $user->first_name.' '.$user->last_name; ?> Profile</h2>
+				<h2 class="page-tittle"><?php echo $user->first_name.' '.$user->last_name; ?> Profile</h2>
 				
 				<h4>Liked Gifts</h4>
 				<div class="row plist">
@@ -207,7 +207,7 @@
 				
 				if(error == 0){
 					$("#submit_btn").attr("disabled",true);
-					$("#submit_btn").html("Please wait...");
+					$("#submit_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 					var formData = new FormData($("#profile_form")[0]);
 					$.ajax({
 						url:'<?php echo base_url('home/ins_upd_profile');?>',

@@ -172,7 +172,7 @@
 		var price_depth = $("#price_depth").val();
 		if(error == 0){
 			$("#submit_btn").attr("disabled",true);
-			$("#submit_btn").html("Please wait...");
+			$("#submit_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 			$.ajax({
 				url:'<?php echo base_url('admin/validate_url');?>',
 				type:'POST',

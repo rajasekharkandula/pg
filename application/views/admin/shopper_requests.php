@@ -72,12 +72,12 @@
 		  </div>
 			  <div class="modal-body">
 				<div class="text-center">
-				  <div class="text-danger"><span class="modal-main-icon mdi mdi-close-circle-o"></span></div>
+				  <div class="text-success"><span class="modal-main-icon mdi mdi-close-circle-o"></span></div>
 				  <h3>Confirm!</h3>
 				  <p>Confirm Shopper?>
 				  <div class="xs-mt-50">
 					<button type="button" data-dismiss="modal" class="btn btn-space btn-default">Cancel</button>
-					<button type="button" class="btn btn-space btn-danger" id="confirm_btn">Proceed</button>
+					<button type="button" class="btn btn-space btn-success" id="confirm_btn">Proceed</button>
 				  </div>
 				</div>
 			  </div>

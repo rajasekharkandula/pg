@@ -13,7 +13,7 @@
         
 		<section class="profile mbh">
 			<div class="container">
-				<h2>Request Details</h2>
+				<h2 class="page-tittle">Request Details</h2>
 				<div class="rd">
 					<div class="row">
 						<div class="col-md-7">
@@ -32,6 +32,7 @@
 						</div>
 					</div>
 				</div>
+				<div class="box">
 				<ul class="nav nav-tabs">
 				  <li class="active"><a data-toggle="tab" href="#suggested_tab">Suggested</a></li>
 				  <li><a data-toggle="tab" href="#accepted_tab">Accepted</a></li>
@@ -126,7 +127,7 @@
 					</div>
 				  </div>
 				</div>
-				
+				</div>
 			</div>			
 		</section>
 		

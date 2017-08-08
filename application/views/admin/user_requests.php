@@ -54,6 +54,7 @@
 				  <table class="table table-striped table-hover table-fw-widget">
 					<thead>
 						<tr>
+							<th>Request ID</th>
 							<th>User</th>
 							<th>Shopper</th>
 							<th>Date Time</th>
@@ -64,6 +65,7 @@
                     <tbody id="user_requests">
                       <?php $i=1;foreach($requests as $r){ ?>
 					  <tr>
+                        <td><?php echo $r->id; ?></td>
                         <td><?php echo $r->userName; ?></td>
                         <td><?php if($r->shopperName)echo $r->shopperName;else echo '--'; ?></td>
                         <td><?php echo date('d M,y h:i A',strtotime($r->created_date)); ?></td>

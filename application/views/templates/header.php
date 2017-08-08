@@ -1,4 +1,4 @@
-
+<div id="preloader"><div class="img"></div></div>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -61,7 +61,7 @@
 						
 									<?php foreach($data['notifications'] as $n){ ?>
 									<li>
-										<img src="<?php echo base_url($n->image); ?>">
+										<img src="<?php if(file_exists($n->image))echo base_url($n->image);else echo base_url($this->config->item('default_image_user')); ?>">
 										<div class="content">
 											<div><?php echo $n->subject; ?></div>
 											<div class="time"><i class="fa fa-clock-o"></i> <?php echo date('d M,y h:i A', strtotime($n->created_date)); ?></div>
@@ -74,15 +74,17 @@
 								</ul>
 							</li>
 							<li>
-								<img src="<?php echo $this->session->userdata('image'); ?>">
+								<a href="#" data-toggle="dropdown">
+								<img src="<?php if(file_exists($this->session->userdata('image')))echo $this->session->userdata('image');else echo base_url($this->config->item('default_image_user'));  ?>">
 								<div>Profile</div>
-								<ul class="dropdown-list">
+								</a>
+								<ul class="dropdown-menu ud">
 									<li><div class="name"><?php echo $this->session->userdata('name'); ?></div></li>
-									<li><a href="<?php echo base_url();?>home/profiles"><i class="fa fa-users"></i> Custom Profiles</a></li>
-									<li><a href="<?php echo base_url();?>home/likes"><i class="fa fa-gift"></i> Liked Gifts</a></li>
-									<li><a href="<?php echo base_url();?>home/requests"><i class="fa fa-gift"></i> Requests</a></li>
-									<li><a href="<?php echo base_url();?>home/reset_password"><i class="fa fa-key"></i> Reset Pasword</a></li>
-									<li><a href="<?php echo base_url();?>home/profile"><i class="fa fa-cog"></i> Settings</a></li>
+									<li><a href="<?php echo base_url();?>home/profiles"><i class="fa fa-user-circle-o"></i> Custom Profiles</a></li>
+									<li><a href="<?php echo base_url();?>home/likes"><i class="fa fa-thumbs-o-up"></i> Liked Gifts</a></li>
+									<li><a href="<?php echo base_url();?>home/requests"><i class="fa fa-cubes"></i> Requests</a></li>
+									<li><a href="<?php echo base_url();?>home/reset_password"><i class="fa fa-unlock-alt"></i> Reset Pasword</a></li>
+									<li><a href="<?php echo base_url();?>home/profile"><i class="fa fa-cogs"></i> Settings</a></li>
 									<li><a href="<?php echo base_url();?>home/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
 								</ul>
 							</li>

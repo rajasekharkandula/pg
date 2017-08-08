@@ -11,45 +11,47 @@
 		<?php echo $header;?>
 		<!-- HEADER -->
         
-		<section class="profile">
+		<section class="profile mbh">
 			<div class="container">
-				<h2>Profile</h2>
+				<h2 class="page-tittle">Profile</h2>
+				<div class="row">
+				<div class="col-md-6">
 				<div class="box">
 					<form id="user_form">
 					
-					<div class="row mb-10">
+					<div class="row mb-10 mt-10">
 						<label class="col-md-3">First Name <span>*</span></label>
-						<div class="col-md-6">	
+						<div class="col-md-8">	
 							<input type="text" req="true" class="form-control" name="first_name" id="first_name" placeholder="Enter first name..." value="<?php echo $user->first_name; ?>">
 						</div>
 					</div>
 					<div class="row mb-10">
 						<label class="col-md-3">Last Name <span>*</span></label>
-						<div class="col-md-6">	
+						<div class="col-md-8">	
 							<input type="text" req="true" class="form-control" name="last_name" id="last_name" placeholder="Enter last name..." value="<?php echo $user->last_name; ?>">
 						</div>
 					</div>
 					<div class="row mb-10">
 						<label class="col-md-3">Email <span>*</span></label>
-						<div class="col-md-6">	
+						<div class="col-md-8">	
 							<input type="text" req="true" class="form-control" name="email" id="email" placeholder="Enter email..." value="<?php echo $user->email; ?>">
 						</div>
 					</div>
 					<div class="row mb-20">
 						<label class="col-md-3">Phone <span>*</span></label>
-						<div class="col-md-6">	
+						<div class="col-md-8">	
 							<input type="text" req="true" class="form-control" name="phone" id="phone" placeholder="Enter phone..." value="<?php echo $user->phone; ?>">
 						</div>
 					</div>
 					<div class="row mb-20">
 						<label class="col-md-3">Private </label>
-						<div class="col-md-6">	
+						<div class="col-md-8">	
 							<input type="checkbox" name="private" id="private" value="1" style="margin-top: 8px;" <?php if($user->private)echo 'checked'; ?> >
 						</div>
 					</div>
 					<div class="row mb-10">
 						<label class="col-md-3">Profile Pic </label>
-						<div class="col-md-6">	
+						<div class="col-md-8">	
 							<input type="file" name="image" id="image" onchange="return Upload('image',400,400)">
 							<input type="hidden" name="uploaded_img" name="image" value="<?php echo $user->image; ?>">
 							<?php if(@file_get_contents($user->image) !== false){ ?>
@@ -57,12 +59,15 @@
 							<?php } ?>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-7 text-center">	
-							<button type="button" id="save_btn">Save</button>
+					<hr>
+					<div class="row mb-10">
+						<div class="col-md-12 text-center">	
+							<button type="button" class="btn-lg" id="save_btn"><i class="fa fa-floppy-o"></i> Save</button>
 						</div>
 					</div>
 					</form>
+				</div>
+				</div>
 				</div>
 			</div>			
 		</section>
@@ -88,7 +93,7 @@
 				}
 				if(error == 0){
 					$("#save_btn").attr("disabled",true);
-					$("#save_btn").html("Please wait...");
+					$("#save_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 					var formData = new FormData($("#user_form")[0]);
 					$.ajax({
 						url:'<?php echo base_url('home/update_user');?>',

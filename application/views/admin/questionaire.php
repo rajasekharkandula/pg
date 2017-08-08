@@ -28,7 +28,8 @@
                       <tr>
                         <th>S.No.</th>
                         <th>Question</th>
-                        
+                        <th>Type</th>
+                        <th>Mandatory</th>						
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -37,7 +38,8 @@
 					  <tr>
                         <td><?php echo $i; ?></td>
                         <td><?php echo $q->question; ?></td>
-                        
+                        <td><?php echo $q->qtype; ?></td>
+                        <td><?php if($q->mandatory ==1)echo 'Mandatory';else echo 'Optional'; ?></td>                        
                         <td>
 							<a href="<?php echo base_url('admin/questionaire_config/'.$q->id); ?>" class="btn btn-primary"><i class="mdi mdi-edit"></i></a>
 							<button class="btn btn-danger remove" data-id="<?php echo $q->id; ?>"><i class="mdi mdi-delete"></i></button>

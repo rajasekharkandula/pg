@@ -13,7 +13,7 @@
         
 		<section>
 			<div class="container">
-				<h2><?php if(isset($section->name))echo $section->name;else echo 'Products'; ?> </h2>
+				<h2 class="page-tittle"><?php if(isset($section->name))echo $section->name;else echo 'Products'; ?> </h2>
 			<?php if(count($products) > 0){ ?>
 				<div class="row plist">
 					<?php foreach($products as $p){ ?>

@@ -115,6 +115,15 @@ class Home extends CI_Controller{
 		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
 		$this->load->view('register',$data);
 	}
+	function shopper(){
+		$this->access();
+		if($this->session->userdata('logged_in') == true)redirect('home');
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		$this->load->view('shopper_signup_landing',$data);
+	}
 	function shopper_signup(){
 		$this->access();
 		if($this->session->userdata('logged_in') == true)redirect('home');
@@ -123,6 +132,14 @@ class Home extends CI_Controller{
 		$data['header'] = $this->load->view('templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
 		$this->load->view('shopper_signup',$data);
+	}
+	function shopping_assistant(){
+		$this->access();
+		$pageData['data'] = $this->home_model->getHeader();
+		$data['head'] = $this->load->view('templates/head',$pageData,true);
+		$data['header'] = $this->load->view('templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		$this->load->view('shopping_assistant',$data);
 	}
 	function ins_upd_shopper_request(){
 		echo json_encode($this->home_model->ins_upd_shopper_request());

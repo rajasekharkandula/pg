@@ -337,6 +337,7 @@ class Admin extends CI_Controller {
 		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
 		$data['question'] = $this->admin_model->get_questions(array('type'=>'S','id'=>$id));
+		$data['options'] = $this->admin_model->get_questions(array('type'=>'O','id'=>$id));
 		$this->load->view('admin/questionaire_config',$data);
 	}
 	public function shopper_requests()

@@ -14,7 +14,7 @@
 		<section class="profile">
 			<div class="container">
 				<?php if($user){ ?>
-				<h2>Reset Password</h2>
+				<h2 class="page-tittle">Reset Password</h2>
 				<div class="box">
 					<form id="user_form">
 					<div class="row mb-10">
@@ -69,7 +69,7 @@
 				
 				if(error == 0){
 					$("#save_btn").attr("disabled",true);
-					$("#save_btn").html("Please wait...");
+					$("#save_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 					$.ajax({
 						url:'<?php echo base_url('home/password_change');?>',
 						type:'POST',

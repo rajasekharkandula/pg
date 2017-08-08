@@ -13,7 +13,7 @@
         
 		<section>
 			<div class="container">
-				<h2><?php echo $page->name; ?></h2>
+				<h2 class="page-tittle"><?php echo $page->name; ?></h2>
 			
 				<div class="page">
 					<?php echo $page->content; ?>
@@ -87,7 +87,7 @@
 				
 				if(error == 0){
 					$("#submit_btn").attr("disabled",true);
-					$("#submit_btn").html("Please wait...");
+					$("#submit_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 					var formData = new FormData($("#gift_form")[0]);
 					$.ajax({
 						url:'<?php echo base_url('home/ins_upd_profile');?>',

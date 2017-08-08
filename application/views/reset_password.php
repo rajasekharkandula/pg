@@ -11,30 +11,34 @@
 		<?php echo $header;?>
 		<!-- HEADER -->
         
-		<section class="profile">
+		<section class="profile mbh">
 			<div class="container">
-				<h2>Reset Password</h2>
+				<h2 class="page-tittle">Reset Password</h2>
+				<div class="row">
+				<div class="col-md-6">
 				<div class="box">
 					<form id="user_form">
-					<div class="row mb-10">
-						<label class="col-md-3 col-sm-3">Password <span>*</span></label>
-						<div class="col-md-6 col-sm-6">	
+					<div class="row mb-10 mt-10">
+						<label class="col-md-4 col-sm-4">Password <span>*</span></label>
+						<div class="col-md-7 col-sm-6">	
 							<input type="password" class="form-control" name="password" id="password" placeholder="Enter password...">
 						</div>
 					</div>
 					<div class="row mb-10">
-						<label class="col-md-3 col-sm-3">Confirm Password <span>*</span></label>
-						<div class="col-md-6 col-sm-6">	
+						<label class="col-md-4 col-sm-3">Confirm Password <span>*</span></label>
+						<div class="col-md-7 col-sm-6">	
 							<input type="password" class="form-control" name="cpassword" id="cpassword" placeholder="Enter confirm password...">
 						</div>
 					</div>
-					
-					<div class="row">
-						<div class="col-md-8 col-sm-9 text-center">	
-							<button type="button" id="save_btn">Change Password</button>
+					<hr>
+					<div class="row mb-10">
+						<div class="col-md-12 text-center">	
+							<button type="button" class="btn-lg" id="save_btn"><i class="fa fa-arrow-circle-right"></i> Change Password</button>
 						</div>
 					</div>
 					</form>
+				</div>
+				</div>
 				</div>
 			</div>			
 		</section>
@@ -65,7 +69,7 @@
 				
 				if(error == 0){
 					$("#save_btn").attr("disabled",true);
-					$("#save_btn").html("Please wait...");
+					$("#save_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 					$.ajax({
 						url:'<?php echo base_url('home/change_password');?>',
 						type:'POST',

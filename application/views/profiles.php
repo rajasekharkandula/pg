@@ -11,9 +11,9 @@
 		<?php echo $header;?>
 		<!-- HEADER -->
         
-		<section class="profile">
+		<section class="profile mbh">
 			<div class="container">
-				<h2>Profiles <button class="pull-right" id="create_btn">Create Profile</button></h2>
+				<h2 class="page-tittle">Profiles <button class="pull-right" id="create_btn"><i class="fa fa-plus"></i> Create Profile</button></h2>
 				
 				<?php foreach($profiles as $pr){ ?>
 				<div class="profile-info">
@@ -37,7 +37,7 @@
 				
 				<div class="row plist">
 						
-					<?php foreach($products as $p){ if($p->profile_id == $pr->id){ ?>
+					<?php $i=0;foreach($products as $p){ if($p->profile_id == $pr->id){ ?>
 					<div class="col-md-3 col-sm-4 col-xs-6">
 						<div class="product">
 							<?php if($p->source != 'User'){ ?>
@@ -55,9 +55,12 @@
 							</a>
 						</div>
 					</div>
-					<?php } } ?>
+					<?php $i++;} } ?>
 					
 				</div>
+				
+				<?php if($i==0)echo '<p>No products</p>'; ?>
+				
 				<?php } ?>
 			</div>			
 		</section>
@@ -107,8 +110,8 @@
 								<option value="Other">Other</option>
 							</datalist>
 						  </div>
-						  <button type="button" id="submit_btn">Submit</button>
-						  <button type="button" data-dismiss="modal">Cancel</button>
+						  <button type="button" id="submit_btn"><i class="fa fa-floppy-o"></i> Submit</button>
+						  <button type="button" data-dismiss="modal"><i class="fa fa-ban"></i> Cancel</button>
 						  </form>
 						</div>
 					</div>
@@ -198,7 +201,7 @@
 				
 				if(error == 0){
 					$("#submit_btn").attr("disabled",true);
-					$("#submit_btn").html("Please wait...");
+					$("#submit_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 					var formData = new FormData($("#profile_form")[0]);
 					$.ajax({
 						url:'<?php echo base_url('home/ins_upd_profile');?>',

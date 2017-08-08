@@ -13,7 +13,7 @@
         
 		<section>
 			<div class="container">
-				<h2><?php if(isset($navigation->name))echo $navigation->name;else echo 'Products'; ?> 
+				<h2 class="page-tittle"><?php if(isset($navigation->name))echo $navigation->name;else echo 'Products'; ?> 
 				<button class="pull-right visible-xs" id="m-filter">Filters <i class="fa fa-angle-down"></i></button>
 				</h2>
 				<div class="row">

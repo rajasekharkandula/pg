@@ -13,7 +13,7 @@
         
 		<section>
 			<div class="container">
-				<h2>Users</h2>
+				<h2 class="page-tittle">Users</h2>
 				<div class="search-labels">
 					<?php if($key != NULL){ ?>
 						<a href="<?php echo base_url('home/users'); ?>">Search key(<?php echo $key; ?>) <i class="fa fa-times"></i></a>

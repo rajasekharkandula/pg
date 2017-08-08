@@ -11,40 +11,42 @@
 		<?php echo $header;?>
 		<!-- HEADER -->
         
-		<section class="login">
+		<section class="mbh">
 			<div class="container">
-				<div class="row">
-					<div class="col-md-1"></div>
-					<div class="col-md-4 col-sm-6 text-center">
-						<form action="#" class="login_form" id="login_form">
-							<h3>Login</h3>
-							<div class="form-group">
-								<label>Email</label>
-								<input type="text" id="email" class="form-control" placeholder="Enter email...">
-							</div>
-							<div class="form-group">
-								<label>Password</label>
-								<input type="password" id="password" class="form-control" placeholder="Enter password...">
-							</div>
-							<div class="form-group">
-								<button type="button" id="login_btn">Login</button>
-								<p class="forgot_link" id="forgot_link">Forgot Password ?</p>
-								<div id="forgot_div" class="hide">
-									<input type="text" id="femail" class="form-control mb-5" placeholder="Enter email...">
-									<button type="submit" id="submit_btn">Submit</button>
+				<div class="login">
+					<div class="row">
+						<div class="col-md-1"></div>
+						<div class="col-md-4 col-sm-6 text-center">
+							<form action="#" class="login_form" id="login_form">
+								<h3>Login</h3>
+								<div class="form-group">
+									<label>Email</label>
+									<input type="text" id="email" class="form-control" placeholder="Enter email...">
 								</div>
-							</div>
-						</form>
+								<div class="form-group">
+									<label>Password</label>
+									<input type="password" id="password" class="form-control" placeholder="Enter password...">
+								</div>
+								<div class="form-group">
+									<button type="button" id="login_btn"><i class="fa fa-sign-in"></i> Login</button>
+									<p class="forgot_link" id="forgot_link">Forgot Password ?</p>
+									<div id="forgot_div" class="hide">
+										<input type="text" id="femail" class="form-control mb-5" placeholder="Enter email...">
+										<button type="submit" id="submit_btn">Submit</button>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="col-md-3 col-sm-6 text-center divider">
+							<a href="<?php echo $fb_login_url; ?>" class="fb"><i class="fa fa-facebook"></i> Sign In with Facebook</a><br>
+							<a class="gmail" href="<?php echo base_url('home/signup'); ?>"><i class="fa fa-envelope"></i> Sign Up with Email</a><br><br>
+						</div>
+						<div class="col-md-3 col-sm-6 text-center divider">
+							<p>Are you energetic, outgoing, dynamic individuals with excellent customer service skills, then join us and be a Assistant personal shopper.</p><br>
+							<a class="gmail" href="<?php echo base_url('home/shopper'); ?>"><i class="fa fa-user-o"></i> Sign Up as a Shopper</a><br>
+						</div>
 					</div>
-					<div class="col-md-3 col-sm-6 text-center divider">
-						<a href="<?php echo $fb_login_url; ?>" class="fb"><i class="fa fa-facebook"></i> Sign In with Facebook</a><br>
-						<a class="gmail" href="<?php echo base_url('home/signup'); ?>"><i class="fa fa-envelope"></i> Sign Up with Email</a><br><br>
-					</div>
-					<div class="col-md-3 col-sm-6 text-center divider">
-						<p>Are you energetic, outgoing, dynamic individuals with excellent customer service skills, then join us and be a Assistant personal shopper.</p><br>
-						<a class="gmail" href="<?php echo base_url('home/shopper_signup'); ?>"><i class="fa fa-envelope"></i> Sign Up as a Shopper</a><br>
-					</div>
-				</div>
+				</div>                        
 			</div>                        
 		</section>
 		
@@ -69,7 +71,7 @@
 				}
 				if(error == 0){
 					$("#submit_btn").attr("disabled",true);
-					$("#submit_btn").html("Please wait...");
+					$("#submit_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 					$.ajax({
 						url:'<?php echo base_url('home/forgot_password');?>',
 						type:'POST',
@@ -98,7 +100,7 @@
 				}
 				if(error == 0){
 					$("#login_btn").attr("disabled",true);
-					$("#login_btn").html("Please wait...");
+					$("#login_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 					$.ajax({
 						url:'<?php echo base_url('home/login');?>',
 						type:'POST',

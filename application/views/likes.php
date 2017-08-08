@@ -11,9 +11,9 @@
 		<?php echo $header;?>
 		<!-- HEADER -->
         
-		<section class="profile">
+		<section class="profile mbh">
 			<div class="container">
-				<h2>Liked Gifts <button class="pull-right" id="create_btn">Add Gift</button></h2>
+				<h2 class="page-tittle">Liked Gifts <button class="pull-right" id="create_btn"><i class="fa fa-plus"></i> Add Gift</button></h2>
 				<div class="row plist">
 						
 					<?php foreach($products as $p){ ?>
@@ -84,8 +84,8 @@
 								<input type="file" name="image" id="gimage">
 							</div>
 						 
-							<button type="button" id="submit_btn">Submit</button>
-							<button type="button" data-dismiss="modal">Cancel</button>
+							<button type="button" id="submit_btn"><i class="fa fa-floppy-o"></i> Submit</button>
+							<button type="button" data-dismiss="modal"><i class="fa fa-ban"></i> Cancel</button>
 						</form>
 						</div>
 					</div>
@@ -120,7 +120,7 @@
 				
 				if(error == 0){
 					$("#submit_btn").attr("disabled",true);
-					$("#submit_btn").html("Please wait...");
+					$("#submit_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 					var formData = new FormData($("#gift_form")[0]);
 					formData.append('type','INSERT');
 					formData.append('source','User');

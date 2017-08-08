@@ -5,7 +5,7 @@
 	<?php echo $head; ?>
 	<!-- HEAD -->
 	
-    <body>
+    <body style="background-color:#fff;">
         
 		<!-- HEADER -->
 		<?php echo $header;?>
@@ -62,9 +62,9 @@
 			</div>
 		</section>
 		
-		<?php foreach($sections as $s){ ?>
+		<?php $i=1;foreach($sections as $s){ ?>
 		<?php if(count($s['products']) > 0){ ?>
-		<section class="padding-30">
+		<section class="padding-50 <?php if($i%2 == 0)echo ' bgg';?>">
 			<div class="container">
 				<h2 class="title"><?php echo $s['name']; ?> </h2>
 				<div class="home_sections hlist">
@@ -90,9 +90,9 @@
 			</div>
 		</section>
 		<?php } ?>
-		<?php } ?>
+		<?php $i++;} ?>
 		<?php if(count($reviews) > 0){ ?>
-		<section class="padding-30">
+		<section class="padding-50 <?php if($i%2 == 1)echo ' bgg';?>">
 			<div class="container">
 				<h2 class="title">Reviews</h2>
 				<div class="reviews">
@@ -112,7 +112,7 @@
 		</section>
 		<?php } ?>
 		<?php if(count($posts) > 0){ ?>
-		<section class="padding-30">
+		<section class="padding-50 <?php if($i%2 == 0)echo ' bgg';?>">
 			<div class="container">
 				<h2 class="title">Our Recent Posts</h2>
 				<div class="row">

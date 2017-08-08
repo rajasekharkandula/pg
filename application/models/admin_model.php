@@ -7,8 +7,7 @@ class Admin_model extends CI_Model{
 	
 	
 	public function __construct(){
-		parent::__construct();
-		
+		//$this->load->model("home_model");
 	}
 	
 	public function get_report($data){		
@@ -74,7 +73,19 @@ class Admin_model extends CI_Model{
 			return $this->db->query("SELECT CONCAT(u.first_name,' ',u.last_name) AS userName,(SELECT CONCAT(first_name,' ',last_name) FROM tbl_user WHERE id = ur.shopper_id) AS shopperName,ur.*  FROM tbl_user_requests ur INNER JOIN tbl_user u ON u.id = ur.userID  ORDER BY ur.created_date DESC")->result();
 		}
 		if($type == 'ANSWERS'){
-			return $this->db->query("SELECT q.question,a.answer FROM painlessgift.tbl_user_answers a INNER JOIN tbl_questionaire q ON q.id = a.questionID WHERE a.userID = $userID AND a.requestID = $id")->result();
+			$qry = $this->db->query("SELECT q.id as qid,q.question,a.answer,q.qtype FROM tbl_user_answers a INNER JOIN tbl_questionaire q ON q.id = a.questionID WHERE a.userID = $userID AND a.requestID = $id")->result();
+			$qqry = $this->db->query("SELECT * FROM tbl_question_options")->result();
+			foreach($qry as $q){
+				if($q->qtype == 'Multiple Choice' || $q->qtype == 'Single Choice'){
+					$answer = '';
+					$answers = (array)json_decode($q->answer,true);
+					foreach($qqry as $o){
+						if($o->qid == $q->qid && in_array($o->id,$answers))$answer.=$o->name.',';						
+					}
+					$q->answer = substr($answer,0,-1);
+				}
+			} 
+			return $qry;
 		}
 		if($type == 'NEW'){
 			return $this->db->query("SELECT u.first_name,u.last_name,ur.* FROM tbl_user u INNER JOIN tbl_user_requests ur ON ur.userID = u.id WHERE ur.status='New' ORDER BY u.created_date DESC")->result();
@@ -136,6 +147,24 @@ class Admin_model extends CI_Model{
 			$this->db->query("UPDATE tbl_user_requests SET shopper_id = $shopperID, status='Ongoing' WHERE id = $id");
 			$retvalue['status'] = true;
 			$retvalue['message'] = 'Shopper assigned successfully';
+		}
+		
+		if($type == 'CONFIRM' || $type == 'ASSIGN'){
+			$user = $this->db->query("SELECT u.* FROM tbl_user u INNER JOIN tbl_user_requests ur ON ur.userID = u.id WHERE ur.id = $id")->row();
+			if($user){
+				$to = $user->email;
+				$subject = "A shopper has been assigned to your request.";
+				$message="Hi ".$user->first_name.' '.$user->last_name.",<br><br>";
+				$message.="Thank you for showing interest in shopping assistent. Below are details,<br><br>";
+				
+				$shopper = $this->db->query("SELECT * FROM tbl_user WHERE id = $shopperID")->row();
+				
+				$message.="Shopper Name:<b>".$shopper->first_name.' '.$shopper->last_name."</b><br>";
+				$message.="Request ID:<b>".$id."</b><br><br>";
+				
+				$message.="Thanks,<br>Painlessgift Team."; 
+				$this->home_model->send_email($to,$subject,$message);
+			}	
 		}
 		
 		if($type == 'COMPLETED'){
@@ -1324,13 +1353,39 @@ class Admin_model extends CI_Model{
 		
 		if($type == "CONFIRM"){
 			//$password = password_hash(mt_rand(), PASSWORD_DEFAULT);
-			$password = password_hash('password', PASSWORD_DEFAULT);
-			$this->db->query("UPDATE tbl_shopper_requests SET status='Confirmed' WHERE id='".$id."';");
-			$this->db->query("INSERT INTO tbl_user (first_name, last_name, email, password, role, phone, gender, city, country, address, created_date, modified_date, status) select first_name, last_name, email, '$password', 'SHOPPER',phone,gender,city,country,address,NOW(),NOW(),'Active' from tbl_shopper_requests where id=".$id.";");
 			
-			//$id = $this->db->query("SELECT MAX(id) as id FROM tbl_questionaire")->row()->id;
-			$retvalue['status']= true;
-			$retvalue['message']= 'Shopper approval: CONFIRMED.';
+			$check = $this->db->query("SELECT * FROM tbl_user u INNER JOIN tbl_shopper_requests sr ON sr.email = u.email WHERE sr.id = $id")->row();
+			if(!$check){
+				$pwd = mt_rand();
+				$password = password_hash($pwd, PASSWORD_DEFAULT);
+				$this->db->query("UPDATE tbl_shopper_requests SET status='Confirmed' WHERE id='".$id."';");
+				$this->db->query("INSERT INTO tbl_user (first_name, last_name, email, password, role, phone, gender, city, country, address, created_date, modified_date, status) select first_name, last_name, email, '$password', 'SHOPPER',phone,gender,city,country,address,NOW(),NOW(),'Active' from tbl_shopper_requests where id=".$id.";");
+				
+				$user = $this->db->query("SELECT * FROM tbl_user u INNER JOIN tbl_shopper_requests sr ON sr.email = u.email WHERE sr.id = $id")->row();
+				if($user){
+					$auth_id = $this->db->query("SELECT UUID() AS auth_id")->row()->auth_id;
+					$this->db->query("UPDATE tbl_user SET auth_id = '$auth_id',modified_date = NOW() WHERE id = ".$user->id);
+					
+					//Sending Notification
+					$to = $user->email;
+					$subject = 'Shopper registration successful';
+					$url = base_url('home/password_reset/'.$auth_id);
+					$message="Hi ".$user->first_name.' '.$user->last_name.",<br><br>";
+					$message.="Thank you for registering with us.Below are login details,<br><br>";
+					$message.="Username:<b>".$user->email."</b><br>";
+					$message.="Password:<b>".$pwd."</b><br><br>";
+					$message.="To reset your password, click on the link below (or copy and paste the URL into your browser):<br><a href=".$url.">".$url."</a><br><br>";
+					$message.="Thanks,<br>Painlessgift Team."; 
+					$this->home_model->send_email($to,$subject,$message);					
+					
+					$retvalue['status']= true;
+					$retvalue['message']= 'Shopper approval: CONFIRMED.';
+				}else{
+					$retvalue['message']= 'Shopper approval: Failed.';
+				}
+			}else{
+				$retvalue['message']= 'Shopper approval: Already exists.';
+			}
 		}
 		
 		if($type == "DENY"){
@@ -1352,6 +1407,9 @@ class Admin_model extends CI_Model{
 		if($type == 'L'){
 			return $this->db->query("SELECT * FROM tbl_questionaire ORDER BY id DESC")->result();
 		}
+		if($type == 'O'){
+			return $this->db->query("SELECT * FROM tbl_question_options WHERE qid = $id")->result();
+		}
 		
 	}
 	function ins_upd_questions(){
@@ -1360,11 +1418,13 @@ class Admin_model extends CI_Model{
 		$type=$this->input->post('type');
 		$id=(int)$this->input->post('id');
 		$question=(string)$this->input->post('question');
+		$mandatory=(int)$this->input->post('mandatory');
+		$qtype=(string)$this->input->post('qtype');
 
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		
 		if($type == "INSERT"){
-			$this->db->query("INSERT INTO tbl_questionaire (question, created_date, status) VALUES ('$question',NOW(), '$status')");
+			$this->db->query("INSERT INTO tbl_questionaire (question, mandatory, qtype, created_date, status) VALUES ('$question', $mandatory, '$qtype' ,NOW(), '$status')");
 			
 			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_questionaire")->row()->id;
 			$retvalue['status']= true;
@@ -1372,9 +1432,22 @@ class Admin_model extends CI_Model{
 		}
 		
 		if($type == "UPDATE"){
-			$this->db->query("UPDATE tbl_questionaire SET question = '$question', status = '$status' WHERE id = $id ");
+			$this->db->query("UPDATE tbl_questionaire SET question = '$question', mandatory = $mandatory, qtype = '$qtype', status = '$status' WHERE id = $id ");
 			$retvalue['status']= true;
 			$retvalue['message']= 'Question updated successfully';
+		}
+		
+		if($type == "UPDATE" || $type == "INSERT"){
+			$this->db->query("UPDATE tbl_question_options SET status = 'R' WHERE qid = $id ");
+			$options = (array)json_decode($this->input->post('options'));
+			foreach($options as $o){
+				$check = $this->db->query("SELECT * FROM tbl_question_options WHERE id = $o[0]")->row();
+				if($check)
+					$this->db->query("UPDATE tbl_question_options SET status = 'A',name = '$o[1]' WHERE id = $o[0]");
+				else
+					$this->db->query("INSERT INTO tbl_question_options(qid,name,status) VALUE($id,'$o[1]','A')");
+			}
+			$this->db->query("DELETE FROM tbl_question_options WHERE status = 'R' AND qid = $id");
 		}
 		
 		if($type == "DELETE"){
@@ -1493,7 +1566,8 @@ class Admin_model extends CI_Model{
 		$data['new'] = $this->db->query("SELECT COUNT(*) AS rCount FROM tbl_user_requests WHERE status = 'New'")->row()->rCount;
 		$data['ongoing'] = $this->db->query("SELECT COUNT(*) AS rCount FROM tbl_user_requests WHERE status = 'Ongoing' AND shopper_id = '".$this->session->userdata('userID')."'")->row()->rCount;
 		$data['completed'] = $this->db->query("SELECT COUNT(*) AS rCount FROM tbl_user_requests WHERE status = 'Completed' AND shopper_id = '".$this->session->userdata('userID')."'")->row()->rCount;
-		$data['users'] = $this->db->query("SELECT COUNT(*) AS rCount FROM tbl_user_requests WHERE shopper_id = '".$this->session->userdata('userID')."' GROUP BY userID")->row()->rCount;
+		$rqry = $this->db->query("SELECT COUNT(*) AS rCount FROM tbl_user_requests WHERE shopper_id = '".$this->session->userdata('userID')."' GROUP BY userID")->row();
+		if($rqry)$data['users'] = $rqry->rCount;else $data['users'] =0 ;
 		return $data;
 	}
 }

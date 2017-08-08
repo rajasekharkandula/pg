@@ -81,7 +81,7 @@
 				}
 				if(error == 0){
 					$("#register_btn").attr("disabled",true);
-					$("#register_btn").html("Please wait...");
+					$("#register_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 					$.ajax({
 						url:'<?php echo base_url('home/register');?>',
 						type:'POST',

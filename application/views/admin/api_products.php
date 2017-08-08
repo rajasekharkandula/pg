@@ -96,7 +96,7 @@
 		  }
 		  if(error == 0){
 			$("#fetch_btn").attr("disbaled",true);
-			$("#fetch_btn").html("Please wait...");
+			$("#fetch_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 			$.ajax({
 				url:'<?php echo base_url('admin/get_product_from_api');?>',
 				type:'POST',
@@ -170,8 +170,8 @@
 		}
 		//alert(error);
 		if(error == 0){
-			//$("#submit_btn").attr("disabled",true);
-			$("#submit_btn").html("Please waite...");
+			$("#submit_btn").attr("disabled",true);
+			$("#submit_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 			var formData = new FormData($("#product_form")[0]);
 			formData.append('type','INSERT_API_PRODUCTS');
 			formData.append('products',JSON.stringify(products));

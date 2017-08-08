@@ -33,7 +33,8 @@ class Home_model extends CI_Model{
 	}
 	function getHeader(){
 		$data['navigations'] = $this->db->query("select *,(SELECT COUNT(*) FROM tbl_navigation WHERE parent_id = n.id) AS childs from tbl_navigation n ORDER BY n.sortin_order")->result();
-		$data['questions'] = $this->db->query("select * from tbl_questionaire")->result();
+		$data['questions'] = $this->db->query("select *,(SELECT COUNT(*) FROM tbl_question_options WHERE qid = q.id) AS oCount from tbl_questionaire q")->result();
+		$data['options'] = $this->db->query("select * from tbl_question_options")->result();
 		$data['notifications'] = $this->db->query("SELECT * FROM tbl_notification WHERE (user_id = $this->user_id OR (type = 'S_GLOBAL' && '".$this->session->userdata('role')."' = '".$this->config->item('role_shopper')."')) ORDER BY created_date DESC LIMIT 5")->result();
 		return $data;
 	}
@@ -176,7 +177,7 @@ class Home_model extends CI_Model{
 		}else{
 			$image = $this->input->post('uploaded_img');
 		}
-		if(getimagesize($image) === false)
+		if(@getimagesize($image) === false)
 			$image = base_url($this->config->item('default_image_user'));
 		
 		$row = $this->db->query("SELECT * FROM tbl_user WHERE email='$email' AND id != $userID")->row();
@@ -338,7 +339,7 @@ class Home_model extends CI_Model{
 		}else{
 			$image = $this->input->post('uploaded_img');
 		}
-		if(getimagesize($image) === false)
+		if(@getimagesize($image) === false)
 			$image = base_url($this->config->item('default_image'));
 		
 		if($type == 'INSERT'){
@@ -748,16 +749,28 @@ class Home_model extends CI_Model{
 	}
 	function ins_upd_user_answers(){
 		$answers = (array)$this->input->post('answers');
+		$title = (string)$this->input->post('title');
 		$userID = $this->session->userdata('userID');
 		
-		$this->db->query("INSERT INTO tbl_user_requests(userID,created_date,updated_date,status) VALUES($userID,NOW(),NOW(),'New')");
+		$this->db->query("INSERT INTO tbl_user_requests(title, userID, created_date, updated_date, status) VALUES('$title', $userID,NOW(),NOW(),'New')");
 		$id = $this->db->query("SELECT MAX(id) AS id FROM tbl_user_requests")->row()->id;
 		foreach($answers as $a){
-			$this->db->query("INSERT INTO tbl_user_answers(userID,questionID,answer,requestID) VALUES($userID,".$a['0'].",'".$a['1']."',$id)");
+			if(is_array($a[1]))$a[1] = json_encode($a[1]);
+			$this->db->query("INSERT INTO tbl_user_answers(userID,questionID,answer,requestID) VALUES($userID,".$a[0].",'".$a[1]."',$id)");
 		}
 		
 		$content = $this->session->userdata('name').' has been submitted new request.';
 		$this->db->query("INSERT INTO tbl_notification (user_id, subject, content, image, type, created_date, created_by, status) VALUES ($userID, '$content', '$content', '".$this->session->userdata('image')."', 'S_GLOBAL', NOW(), $userID, 'Active')");
+		
+		$user = $this->db->query("SELECT * FROM tbl_user WHERE id = $userID")->row();
+		if($user){
+			$to = $user->email;
+			$subject = "Request has been submitted successfully";
+			$message="Hi ".$user->first_name.' '.$user->last_name.",<br><br>";
+			$message.="Your shopping assist request has been submitted successsfully. Our shopping assistent will contact you soon.<br><br>";
+			$message.="Thanks,<br>Painlessgift Team."; 
+			$this->send_email($to,$subject,$message);
+		}		
 		
 		$retvalue['message'] = $content;
 		$retvalue['status'] = true;
