@@ -269,6 +269,7 @@ class Home extends CI_Controller{
 			//Chat
 			$chat['sendToUserID'] = $request->shopper_id;
 			$chat['sendToImage'] = base_url($this->config->item('default_image_user'));
+			$chat['sendToName'] = $request->shopperName;
 			$data['chat'] = $this->load->view('chat',$chat,true);
 			
 			$this->load->view('request_details',$data);
