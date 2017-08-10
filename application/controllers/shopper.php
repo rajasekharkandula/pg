@@ -17,11 +17,12 @@ class Shopper extends CI_Controller {
 	{		
 		$this->access();
 		$pageData['page'] = 'DASHBOARD';
-		$pageData['pageTitle'] = 'Dashboard';
-		$data['reports'] = $pageData['data'] = $this->admin_model->getReports('SHOPPER');
+		$pageData['pageTitle'] = 'Dashboard';		
+		$pageData['data'] = $this->admin_model->getHeader('SHOPPER');
 		$data['head'] = $this->load->view('shopper/templates/head',$pageData,true);
 		$data['header'] = $this->load->view('shopper/templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('shopper/templates/footer',$pageData,true);		
+		$data['reports'] = $this->admin_model->getReports('SHOPPER');
 		$this->load->view('shopper/index',$data);
 	}
 	
