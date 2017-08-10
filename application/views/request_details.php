@@ -33,7 +33,7 @@
 					</div>
 				</div>
 				<div class="box">
-				<ul class="nav nav-tabs">
+				<ul class="nav nav-tabs responsive-tabs">
 				  <li class="active"><a data-toggle="tab" href="#suggested_tab">Suggested</a></li>
 				  <li><a data-toggle="tab" href="#accepted_tab">Accepted</a></li>
 				  <li><a data-toggle="tab" href="#rejected_tab">Rejected</a></li>
@@ -55,8 +55,8 @@
 								<div class="content">
 									<div class="title"><?php echo $p->name; ?></div>
 									<div class="price bb"><?php echo $this->config->item('currency'); ?><?php echo $p->price; ?></div>
-									<button class="btn btn-sm btn-success accept" data-id="<?php echo $p->urpID; ?>" data-type="Accept">Accept</button>
-									<button class="btn btn-sm btn-danger reject" data-id="<?php echo $p->urpID; ?>"  data-type="Reject">Reject</button>
+									<button class="btn btn-sm btn-success accept" data-id="<?php echo $p->urpID; ?>" data-type="Accept"><i class="fa fa-check"></i> <span class="hidden-xs">Accept</span></button>
+									<button class="btn btn-sm btn-danger reject" data-id="<?php echo $p->urpID; ?>"  data-type="Reject"><i class="fa fa-times"></i> <span class="hidden-xs">Reject</span></button>
 								</div>
 							</a>							
 						</div>
@@ -64,7 +64,7 @@
 					<?php } } ?>				
 					</div>
 				  </div>
-				  <div id="accepted_tab" class="tab-pane fade">
+				  <div id="accepted_tab" class="tab-pane fade in">
 					<div class="row plist mt-10">						
 					<?php foreach($products as $p){ if($p->status == 'Accepted'){ ?>
 					<div class="col-md-3 col-sm-4 col-xs-6">
@@ -86,7 +86,7 @@
 					<?php } } ?>				
 					</div>
 				  </div>
-				  <div id="rejected_tab" class="tab-pane fade">
+				  <div id="rejected_tab" class="tab-pane fade in">
 					<div class="row plist mt-10">						
 					<?php foreach($products as $p){ if($p->status == 'Rejected'){ ?>
 					<div class="col-md-3 col-sm-4 col-xs-6">
@@ -108,7 +108,7 @@
 					<?php } } ?>				
 					</div>
 				  </div>
-				  <div id="chat_tab" class="tab-pane fade">
+				  <div id="chat_tab" class="tab-pane fade in">
 					<div class="chat_window" id="chat_window">
 						<div class="top_menu">
 							<img class="pic" src="<?php echo base_url($this->config->item('default_image_user')); ?>">
@@ -148,7 +148,7 @@
 				$.ajax({
 					url:'<?php echo base_url('shopper/ins_upd_user_requests');?>',
 					type:'POST',
-					data:{'urpID':urpID,'type':'ACCEPT_REJECT','status':status},
+					data:{'id':<?php echo $request->id; ?>,'urpID':urpID,'type':'ACCEPT_REJECT','status':status},
 					dataType:'JSON'
 				}).success(function(data){
 					if(data.status){

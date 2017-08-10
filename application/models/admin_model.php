@@ -8,6 +8,13 @@ class Admin_model extends CI_Model{
 	
 	public function __construct(){
 		//$this->load->model("home_model");
+		$this->user_id = (int)$this->session->userdata("userID");
+	}
+	
+	function getHeader($page){
+		$data['notifications'] = $this->db->query("SELECT * FROM tbl_notification WHERE (user_id = $this->user_id  OR (type = 'S_GLOBAL' && '".$this->session->userdata('role')."' = '".$this->config->item('role_shopper')."')) ORDER BY created_date DESC LIMIT 5")->result();
+		$data['reports'] = $this->getReports($page);
+		return $data;
 	}
 	
 	public function get_report($data){		
@@ -163,7 +170,10 @@ class Admin_model extends CI_Model{
 				$message.="Request ID:<b>".$id."</b><br><br>";
 				
 				$message.="Thanks,<br>Painlessgift Team."; 
-				$this->home_model->send_email($to,$subject,$message);
+				$this->home_model->send_email($to,$subject,$message);				
+				
+				$content = $shopper->first_name.' '.$shopper->last_name.' assigned to your request.';
+				$this->db->query("INSERT INTO tbl_notification (user_id, subject, content, image, type, created_date, created_by, status) VALUES ($user->id, '$content', '$content', '".$this->session->userdata('image')."', 'INDIVIDUAL', NOW(), ".$this->session->userdata('userID').", 'Active')");
 			}	
 		}
 		
@@ -182,11 +192,23 @@ class Admin_model extends CI_Model{
 		if($type == 'ACCEPT_REJECT'){
 			$status = 'Rejected';
 			$retvalue['message'] = 'Product rejected successfully';
+			$message = 'rejected';
 			if($this->input->post('status') == 'Accept'){
 				$status = 'Accepted';
+				$message = 'accepted';
 				$retvalue['message'] = 'Product accepted successfully';
 			}
 			$this->db->query("UPDATE tbl_user_request_products SET status = '$status' WHERE id = $urpID");
+			
+			$user = $this->db->query("SELECT u.*,ur.shopper_id FROM tbl_user u INNER JOIN tbl_user_requests ur ON ur.userID = u.id WHERE ur.id = $id")->row();
+			if($user){				
+				$shopper = $this->db->query("SELECT * FROM tbl_user WHERE id = $user->shopper_id")->row();				
+				if($shopper){
+					$content = $user->first_name.' '.$user->last_name.' '.$message.' your product.';
+					$this->db->query("INSERT INTO tbl_notification (user_id, subject, content, image, type, created_date, created_by, status) VALUES ($shopper->id, '$content', '$content', '$shopper->image', 'INDIVIDUAL', NOW(), $user->id, 'Active')");
+				}
+			}	
+			
 			$retvalue['status'] = true;
 		}
 		

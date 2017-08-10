@@ -18,7 +18,7 @@ class Shopper extends CI_Controller {
 		$this->access();
 		$pageData['page'] = 'DASHBOARD';
 		$pageData['pageTitle'] = 'Dashboard';
-		$data['reports'] = $pageData['reports'] = $this->admin_model->getReports('SHOPPER');
+		$data['reports'] = $pageData['data'] = $this->admin_model->getReports('SHOPPER');
 		$data['head'] = $this->load->view('shopper/templates/head',$pageData,true);
 		$data['header'] = $this->load->view('shopper/templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('shopper/templates/footer',$pageData,true);		
@@ -30,7 +30,7 @@ class Shopper extends CI_Controller {
 		$this->access();
 		$pageData['page'] = 'NEW';
 		$pageData['pageTitle'] = 'New Requests';
-		$pageData['reports'] = $this->admin_model->getReports('SHOPPER');
+		$pageData['data'] = $this->admin_model->getHeader('SHOPPER');
 		$data['head'] = $this->load->view('shopper/templates/head',$pageData,true);
 		$data['header'] = $this->load->view('shopper/templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('shopper/templates/footer',$pageData,true);
@@ -44,7 +44,7 @@ class Shopper extends CI_Controller {
 		$this->access();
 		$pageData['page'] = 'ONGOING';
 		$pageData['pageTitle'] = 'Ongoing Requests';
-		$pageData['reports'] = $this->admin_model->getReports('SHOPPER');
+		$pageData['data'] = $this->admin_model->getHeader('SHOPPER');
 		$data['head'] = $this->load->view('shopper/templates/head',$pageData,true);
 		$data['header'] = $this->load->view('shopper/templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('shopper/templates/footer',$pageData,true);
@@ -57,7 +57,7 @@ class Shopper extends CI_Controller {
 		$this->access();
 		$pageData['page'] = 'COMPLETED';
 		$pageData['pageTitle'] = 'Completed Requests';
-		$pageData['reports'] = $this->admin_model->getReports('SHOPPER');
+		$pageData['data'] = $this->admin_model->getHeader('SHOPPER');
 		$data['head'] = $this->load->view('shopper/templates/head',$pageData,true);
 		$data['header'] = $this->load->view('shopper/templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('shopper/templates/footer',$pageData,true);
@@ -69,7 +69,7 @@ class Shopper extends CI_Controller {
 		$this->access();
 		$pageData['page'] = 'REQUEST';
 		$pageData['pageTitle'] = 'Completed Requests';
-		$pageData['reports'] = $this->admin_model->getReports('SHOPPER');
+		$pageData['data'] = $this->admin_model->getHeader('SHOPPER');
 		$data['head'] = $this->load->view('shopper/templates/head',$pageData,true);
 		$data['header'] = $this->load->view('shopper/templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('shopper/templates/footer',$pageData,true);

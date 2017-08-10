@@ -15,6 +15,7 @@
 	<link href="<?php echo base_url(); ?>assets/css/animate.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/admin/lib/datatables/css/dataTables.bootstrap.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/admin/lib/select2/css/select2.min.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>assets/css/bootstrap-responsive-tabs.css" rel="stylesheet">
 
 	<!-- Theme CSS -->
 	<link href="<?php echo base_url(); ?>assets/css/chat.css" rel="stylesheet">

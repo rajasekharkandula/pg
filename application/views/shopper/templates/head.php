@@ -15,6 +15,7 @@
 	<link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/jquery-ui.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/font-awesome.min.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>assets/css/bootstrap-responsive-tabs.css" rel="stylesheet">
 	
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/assets/admin/lib/datetimepicker/css/bootstrap-datetimepicker.min.css"/>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/assets/admin/lib/select2/css/select2.min.css"/>

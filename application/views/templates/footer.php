@@ -23,6 +23,7 @@
 <script src="<?php echo base_url();?>assets/admin/lib/datatables/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo base_url();?>assets/admin/lib/datatables/js/dataTables.bootstrap.min.js"></script>
 <script src="<?php echo base_url();?>assets/admin/lib/select2/js/select2.min.js"></script>
+<script src="<?php echo base_url();?>assets/js/jquery.bootstrap-responsive-tabs.min.js"></script>
 <script src="<?php echo $this->config->item('node_server_url').'/socket.io/socket.io.js'; ?>"></script>
 <!-- JS Page Level -->
 <script src="<?php echo base_url(); ?>assets/js/scripts.js"></script>
@@ -31,7 +32,13 @@
 	var myUserID = '<?php echo $this->session->userdata('userID'); ?>';
 	var myImage = '<?php echo $this->session->userdata('image'); ?>';
 	var myName = '<?php echo $this->session->userdata('name'); ?>';
-		
+	
+	$(document).ready(function(){
+		$('.responsive-tabs').responsiveTabs({
+		  accordionOn: ['xs', 'sm'] // xs, sm, md, lg 
+		});
+	});
+	
 	var socket = io.connect('<?php echo $this->config->item('node_server_url'); ?>');
 	$(document).ready(function(){
 		socket.emit('join', { name:myName, userID:myUserID});		

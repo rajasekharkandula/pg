@@ -26,20 +26,24 @@
                   <table id="table1" class="table table-striped table-hover table-fw-widget">
 					<thead>
 						<tr>
-							<th>S.No.</th>
+							<th>Request ID</th>
 							<th>Name</th>
-							<th>Date Time</th>
+							<th class="hidden-xs">Request Title</th>
+							<th class="hidden-xs">Answers</th>
+							<th class="hidden-xs">Date Time</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
                     <tbody>
                       <?php $i=1;foreach($requests as $r){ ?>
 					  <tr>
-                        <td><?php echo $i; ?></td>
+                        <td><?php echo $r->id; ?></td>
                         <td><?php echo $r->first_name." ".$r->last_name; ?></td>
-                        <td><?php echo date('d M,y h:i A',strtotime($r->created_date)); ?></td>
-                        <td style="width:200px;">
-							<a href="<?php echo base_url('shopper/request_details/'.$r->id); ?>" class="btn btn-primary" title="Accept Request" data-id="<?php echo $r->id; ?>">	<span class="mdi mdi-check"></span> View</a> 
+                        <td  class="hidden-xs"><?php echo $r->title; ?></td>
+                        <td class="hidden-xs"><a href="#" class="view" data-id="<?php echo $r->id; ?>"  data-userid="<?php echo $r->userID; ?>">View</a></td>
+                        <td class="hidden-xs"><?php echo date('d M,y h:i A',strtotime($r->created_date)); ?></td>
+                        <td>
+							<a href="<?php echo base_url('shopper/request_details/'.$r->id); ?>" class="btn btn-primary" title="Accept Request" data-id="<?php echo $r->id; ?>">	<span class="mdi mdi-eye"></span> <span class="hidden-xs">View</span></a> 
 						</td>
                       </tr>
                       <?php $i++; } ?>

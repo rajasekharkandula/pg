@@ -998,6 +998,7 @@ section h2.title{
     right: 0px;
     left: 40px;
 	overflow:scroll;
+	margin-left: 45px;
 }
 .m-inner .m-user{
 	text-align:center;
@@ -1378,6 +1379,9 @@ background-color:#f7f7f7;
 		padding-top:10px;
 		/* width: 330px; */
 	}
+	.login .divider>p{
+		margin-top:0px;
+	}
 	.puser{
 		width:150px;
 	}
@@ -1511,12 +1515,14 @@ background-color:#f7f7f7;
 		margin-bottom:10px;
 	}
 	.container>h2{
-		margin: 10px 0px;
-		font-size: 24px;
+		margin: 15px 0px;
+		font-size: 16px;
+		font-weight: bold;
 	}
 	.container>h2>button{
 		padding: 5px 10px 7px;
 		height: auto;
+		margin-top: -5px;
 	}
 	.plist .col-xs-6:nth-child(odd){
 		padding-right:5px;
@@ -1568,7 +1574,7 @@ background-color:#f7f7f7;
 	.login .divider {
 		border-top: 1px solid #DDDDDD;
 		border-left:0px;
-		height: 123px;
+		height: auto;
 		padding-left: 0px;
 		padding-top: 20px;
 		margin: 15px 21px;
@@ -1619,6 +1625,24 @@ background-color:#f7f7f7;
 	}
 	.hiw .bx{
 		margin-bottom:10px;
+	}
+	.dataTables_length{
+		display:none;
+	}
+	.bottom_wrapper{
+		padding: 10px 7px 5px;
+	}
+	.bottom_wrapper .message_input_wrapper{
+		width: calc(100% - 80px);
+	}
+	.bottom_wrapper .send_message{
+		width: 70px;
+	}
+	.chat_window{
+		width:100%;
+	}
+	.shopper-slide .caption p{
+		margin: 15px 5px;
 	}
 }
 

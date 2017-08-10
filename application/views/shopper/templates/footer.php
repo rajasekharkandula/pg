@@ -37,6 +37,7 @@
 <script src="<?php echo base_url(); ?>/assets/admin/lib/bootstrap-markdown/js/bootstrap-markdown.js" type="text/javascript"></script>
 <script src="<?php echo base_url(); ?>/assets/admin/lib/markdown-js/markdown.js" type="text/javascript"></script>
 <script src="<?php echo base_url();?>assets/js/fileupload.js"></script>
+<script src="<?php echo base_url();?>assets/js/jquery.bootstrap-responsive-tabs.min.js"></script>
 <script src="<?php echo $this->config->item('node_server_url').'/socket.io/socket.io.js'; ?>"></script>
 
 <script>
@@ -44,6 +45,13 @@
 	var myImage = '<?php if(file_exists($this->session->userdata('image')))echo base_url($this->session->userdata('image')); else echo base_url($this->config->item('default_image_user')); ?>';
 	var myName = '<?php echo $this->session->userdata('name'); ?>';
 		
+	$(document).ready(function(){
+		$('.responsive-tabs').responsiveTabs({
+		  accordionOn: ['xs', 'sm'] // xs, sm, md, lg 
+		});
+	});
+		
+	
 	var socket = io.connect('<?php echo $this->config->item('node_server_url'); ?>');
 	$(document).ready(function(){
 		socket.emit('join', { name:myName, userID:myUserID});		
@@ -52,5 +60,7 @@
 				$.notify({ message: data.sendToName+':'+data.message },{type: 'success'});
 			}		
 		});
+		
+		
 	});
 </script>

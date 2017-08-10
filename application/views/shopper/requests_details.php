@@ -39,7 +39,7 @@
 					</div>
 				</div>
 				<div class="tab-container">
-                  <ul class="nav nav-tabs">
+                  <ul class="nav nav-tabs responsive-tabs">
 					<?php if($request->status == 'Ongoing'){ ?>
                     <li class="active"><a href="#add_tab" data-toggle="tab" aria-expanded="true">Add product</a></li>
 					<?php } ?>
@@ -55,18 +55,27 @@
 							<thead>
 								<tr>
 									<th>Product Name</th>
-									<th style="width:100px;">Price</th>
-									<th style="width:100px;">Category</th>
-									<th style="width:200px;">Actions</th>
+									<th style="width:100px;" class="hidden-xs">Price</th>
+									<th style="width:100px;" class="hidden-xs">Category</th>
+									<th style="width:200px;" class="hidden-xs">Actions</th>
 								</tr>
 							</thead>
 							<tbody>
 							  <?php foreach($products_list as $p){ ?>
 							  <tr>
-								<td><a href="<?php echo $p->product_link; ?>" target="_blank"><img src="<?php echo $p->image; ?>"><div class="name"><?php echo $p->name; ?></div></a></td>
-								<td><?php echo $this->config->item('currency').' '.$p->price; ?></td>
-								<td><?php echo $p->categoryName; ?></td>
-								<td>
+								<td>									
+									<img src="<?php echo $p->image; ?>">
+									<div class="name">
+										<a href="<?php echo $p->product_link; ?>" target="_blank">
+										<?php echo substr($p->name,0,65);if(strlen($p->name) > 65)echo '...'; ?>
+										</a>
+										<b class="visible-xs">Price : <?php echo $this->config->item('currency').' '.$p->price; ?></b>
+										<button class="btn btn-sm btn-success suggest visible-xs" data-id="<?php echo $p->id; ?>">Suggest</button>
+									</div>					
+								</td>
+								<td class="hidden-xs"><?php echo $this->config->item('currency').' '.$p->price; ?></td>
+								<td class="hidden-xs"><?php echo $p->categoryName; ?></td>
+								<td  class="hidden-xs">
 									<button class="btn btn-sm btn-success suggest" data-id="<?php echo $p->id; ?>">Suggest</button>
 								</td>
 							  </tr>
@@ -81,18 +90,27 @@
 							<thead>
 								<tr>
 									<th>Product Name</th>
-									<th style="width:100px;">Price</th>
-									<th style="width:100px;">Category</th>
-									<th style="width:100px;">Status</th>
+									<th style="width:100px;" class="hidden-xs">Price</th>
+									<th style="width:100px;" class="hidden-xs">Category</th>
+									<th style="width:200px;" class="hidden-xs">Status</th>
 								</tr>
 							</thead>
 							<tbody>
 							  <?php foreach($products as $p){ if($p->status == 'Suggested'){ ?>
 							  <tr>
-								<td><a href="<?php echo $p->product_link; ?>" target="_blank"><img src="<?php echo $p->image; ?>"><div class="name"><?php echo $p->name; ?></div></a></td>
-								<td><?php echo $this->config->item('currency').' '.$p->price; ?></td>
-								<td><?php echo $p->categoryName; ?></td>
-								<td><span class="label label-warning"><?php echo $p->status; ?></span></td>
+								<td>
+									<img src="<?php echo $p->image; ?>">
+									<div class="name">
+										<a href="<?php echo $p->product_link; ?>" target="_blank">
+										<?php echo substr($p->name,0,65);if(strlen($p->name) > 65)echo '...'; ?>
+										</a>
+										<b class="visible-xs">Price : <?php echo $this->config->item('currency').' '.$p->price; ?></b>
+										<span class="label label-warning"><?php echo $p->status; ?></span>
+									</div>	
+								</td>
+								<td class="hidden-xs"><?php echo $this->config->item('currency').' '.$p->price; ?></td>
+								<td class="hidden-xs"><?php echo $p->categoryName; ?></td>
+								<td class="hidden-xs"><span class="label label-warning"><?php echo $p->status; ?></span></td>
 								</tr>
 							  <?php } } ?>
 							</tbody>
@@ -103,19 +121,27 @@
 							<thead>
 								<tr>
 									<th>Product Name</th>
-									<th style="width:100px;">Price</th>
-									<th style="width:100px;">Category</th>
-									<th style="width:100px;">Status</th>
+									<th style="width:100px;" class="hidden-xs">Price</th>
+									<th style="width:100px;" class="hidden-xs">Category</th>
+									<th style="width:200px;" class="hidden-xs">Status</th>
 								</tr>
 							</thead>
 							<tbody>
 							  <?php foreach($products as $p){ if($p->status == 'Accepted'){ ?>
 							  <tr>
-								<td><a href="<?php echo $p->product_link; ?>" target="_blank"><img src="<?php echo $p->image; ?>"><div class="name"><?php echo $p->name; ?></div></a></td>
-								<td><?php echo $this->config->item('currency').' '.$p->price; ?></td>
-								<td><?php echo $p->categoryName; ?></td>
-								<td><span class="label label-success"><?php echo $p->status; ?></span></td>
-								
+								<td>
+									<img src="<?php echo $p->image; ?>">
+									<div class="name">
+										<a href="<?php echo $p->product_link; ?>" target="_blank">
+										<?php echo substr($p->name,0,65);if(strlen($p->name) > 65)echo '...'; ?>
+										</a>
+										<b class="visible-xs">Price : <?php echo $this->config->item('currency').' '.$p->price; ?></b>
+										<span class="label label-warning"><?php echo $p->status; ?></span>
+									</div>	
+								</td>
+								<td class="hidden-xs"><?php echo $this->config->item('currency').' '.$p->price; ?></td>
+								<td class="hidden-xs"><?php echo $p->categoryName; ?></td>
+								<td class="hidden-xs"><span class="label label-success"><?php echo $p->status; ?></span></td>					
 							  </tr>
 							  <?php } } ?>
 							</tbody>
@@ -126,18 +152,27 @@
 							<thead>
 								<tr>
 									<th>Product Name</th>
-									<th style="width:100px;">Price</th>
-									<th style="width:100px;">Category</th>
-									<th style="width:100px;">Status</th>
+									<th style="width:100px;" class="hidden-xs">Price</th>
+									<th style="width:100px;" class="hidden-xs">Category</th>
+									<th style="width:200px;" class="hidden-xs">Status</th>
 								</tr>
 							</thead>
 							<tbody>
 							  <?php foreach($products as $p){ if($p->status == 'Rejected'){ ?>
 							  <tr>
-								<td><a href="<?php echo $p->product_link; ?>" target="_blank"><img src="<?php echo $p->image; ?>"><div class="name"><?php echo $p->name; ?></div></a></td>
-								<td><?php echo $this->config->item('currency').' '.$p->price; ?></td>
-								<td><?php echo $p->categoryName; ?></td>
-								<td><span class="label label-danger"><?php echo $p->status; ?></span></td>
+								<td>
+									<img src="<?php echo $p->image; ?>">
+									<div class="name">
+										<a href="<?php echo $p->product_link; ?>" target="_blank">
+										<?php echo substr($p->name,0,65);if(strlen($p->name) > 65)echo '...'; ?>
+										</a>
+										<b class="visible-xs">Price : <?php echo $this->config->item('currency').' '.$p->price; ?></b>
+										<span class="label label-warning"><?php echo $p->status; ?></span>
+									</div>	
+								</td>
+								<td class="hidden-xs"><?php echo $this->config->item('currency').' '.$p->price; ?></td>
+								<td class="hidden-xs"><?php echo $p->categoryName; ?></td>
+								<td class="hidden-xs"><span class="label label-danger"><?php echo $p->status; ?></span></td>
 							</tr>
 							  <?php } } ?>
 							</tbody>
