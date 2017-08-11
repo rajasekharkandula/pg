@@ -32,9 +32,9 @@
 				<h2 class="title">Terms and conditions</h2>
 				<div class="bx" style="text-align:justify;">
 					
-						<b>Welcome to Google!</b>
+						<b>Welcome to PainlessGift!</b>
 
-						<p>Thanks for using our products and services (“Services”). The Services are provided by Google Inc. (“Google”), located at 1600 Amphitheatre Parkway, Mountain View, CA 94043, United States.</p>
+						<p>Thanks for using our products and services (“Services”). The Services are provided by PainlessGift Inc. (PainlessGift), located at 1600 Amphitheatre Parkway, Mountain View, CA 94043, United States.</p>
 
 						<b>By using our Services, you are agreeing to these terms. Please read them carefully.</b>
 
