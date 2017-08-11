@@ -78,6 +78,12 @@
 									<input type="text" class="form-control" name="country" value="">
 								  </div>
 								</div>
+							</div>
+							<div class="row mt-10">
+								<div class="col-md-2"></div>
+								<div class="col-md-6">
+								  <input type="checkbox" id="terms" value="1"> please accept <a href="<?php echo base_url('home/shopper'); ?>" target="_blank">terms and conditions</a>.
+								</div>
 							</div><br>
 
 							<div class="form-group mt-10 text-center">
@@ -105,6 +111,10 @@
 					$(this).parent().append('<div class="text-danger">This field is required</div>');
 				}
 			});
+			if(!$("#terms").is(":checked")){
+				error++;
+				$("#terms").parent().append('<div class="text-danger">Accept terms and conditions</div>');
+			}
 			var email_regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 			if(!email_regex.test($("#email").val()) && $("#email").val() != ''){
 				error++;

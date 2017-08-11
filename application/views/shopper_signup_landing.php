@@ -29,30 +29,24 @@
 		
 		<section class="padding-30">
 			<div class="container hiw">
-				<h2 class="title">How it works</h2>
-				<div class="row">
+				<h2 class="title">Terms and conditions</h2>
+				<div class="bx" style="text-align:justify;">
 					
-					<div class="col-md-4">
-						<div class="bx">
-							<div class="step">01</div>
-							<div class="head">Fill out a style People</div>
-							<p>Share your style , size and prie preferences with your personal stylist.</p>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="bx">
-							<div class="step">02</div>
-							<div class="head">Fill out a style People</div>
-							<p>Share your style , size and prie preferences with your personal stylist.</p>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="bx">
-							<div class="step">03</div>
-							<div class="head">Fill out a style People</div>
-							<p>Share your style , size and prie preferences with your personal stylist.</p>
-						</div>
-					</div>
+						<b>Welcome to Google!</b>
+
+						<p>Thanks for using our products and services (“Services”). The Services are provided by Google Inc. (“Google”), located at 1600 Amphitheatre Parkway, Mountain View, CA 94043, United States.</p>
+
+						<b>By using our Services, you are agreeing to these terms. Please read them carefully.</b>
+
+						<p>Our Services are very diverse, so sometimes additional terms or product requirements (including age requirements) may apply. Additional terms will be available with the relevant Services, and those additional terms become part of your agreement with us if you use those Services.</p>
+
+						<b>Using our Services</b>
+
+						<p>You must follow any policies made available to you within the Services.</p>
+
+						<p>Don’t misuse our Services. For example, don’t interfere with our Services or try to access them using a method other than the interface and the instructions that we provide. You may use our Services only as permitted by law, including applicable export and re-export control laws and regulations. We may suspend or stop providing our Services to you if you do not comply with our terms or policies or if we are investigating suspected misconduct.</p>
+
+					
 					
 				</div>
 			</div>
