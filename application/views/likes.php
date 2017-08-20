@@ -13,7 +13,7 @@
         
 		<section class="profile mbh">
 			<div class="container">
-				<h2 class="page-tittle">Liked Gifts <button class="pull-right" id="create_btn"><i class="fa fa-plus"></i> Add Gift</button></h2>
+				<h2 class="page-tittle">Gifts for Me <button class="pull-right" id="create_btn"><i class="fa fa-plus"></i> Add Gift</button></h2>
 				<div class="row plist">
 						
 					<?php foreach($products as $p){ ?>

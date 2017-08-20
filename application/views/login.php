@@ -14,6 +14,10 @@
 		<section class="mbh">
 			<div class="container">
 				<div class="login">
+					<div class="head">
+						Welcome to Painless Gift
+						<p>The new way to find your next gift</p>
+					</div>
 					<div class="row">
 						<div class="col-md-1"></div>
 						<div class="col-md-4 col-sm-6 text-center">
@@ -42,7 +46,7 @@
 							<a class="gmail" href="<?php echo base_url('home/signup'); ?>"><i class="fa fa-envelope"></i> Sign Up with Email</a><br><br>
 						</div>
 						<div class="col-md-3 col-sm-6 text-center divider">
-							<p>Are you energetic, outgoing, dynamic individuals with excellent customer service skills, then join us and be a Assistant personal shopper.</p><br>
+							<p><?php if(isset($page->content))echo $page->content; ?></p><br>
 							<a class="gmail" href="<?php echo base_url('home/shopper'); ?>"><i class="fa fa-user-o"></i> Sign Up as a Shopper</a><br>
 						</div>
 					</div>

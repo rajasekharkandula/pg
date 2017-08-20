@@ -109,7 +109,7 @@ margin-top: 10px;
 }
 .sticky-sidebar{
 	position: fixed;
-    right: -113px;
+    right: -128px;
     top: 50%;
     transform: rotate(-90deg);
     background-color: #0c1acc;
@@ -437,7 +437,8 @@ section h2.title{
     margin-top: 0px;
     margin-bottom: 30px;
     color: #555;
-    font-size: 26px;
+    font-size: 24px;
+	font-weight:bold;
 }
 /* .products .col-md-3{
 	padding:0px 7px;
@@ -678,8 +679,20 @@ section h2.title{
 	margin-top:50px;
 	background-color: #fff;
     padding: 20px 0px;
-    border: 1px solid #f2f2f2;
+    border: 1px solid #dcdcdc;
 	border-radius:5px;
+}
+.login .head{
+	text-align:center;
+	background-color:#f3f3f3;
+	padding:20px;
+	margin-top:-20px;
+	font-size: 25px;
+    font-weight: bold;
+	color:#666;
+}
+.login .head p{
+	font-size: 14px;
 }
 .login .login_form{
 	display:inline-block;
@@ -1141,6 +1154,12 @@ img.preview{
 	color: #fff;
     background-color: #0c1acc;
 }
+.bx2{
+	background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #f1f1f1;
+}
 .hiw .bx{
 	text-align:center;
 	background-color:#fff;
@@ -1152,6 +1171,7 @@ img.preview{
 	font-size: 26px;
     border-bottom: 2px solid;
     display: inline-block;
+	margin-bottom:5px;
 }
 .hiw .head{
 	font-size: 16px;

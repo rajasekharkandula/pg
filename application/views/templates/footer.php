@@ -5,7 +5,7 @@
 </footer>
 
 <div class="sticky-sidebar">
-	<a href="<?php echo base_url('home/shopping_assistant'); ?>"> Personal Shopper Assistant</a>
+	<a href="<?php echo base_url('home/shopping_assistant'); ?>"> Online Personal Gift Shopping</a>
 </div>
 <!-- Profile Modal -->
 <div class="modal fade" id="gift_modal" role="dialog">

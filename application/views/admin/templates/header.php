@@ -60,6 +60,10 @@
 			  </li>
 			  <li <?php if($page == 'USER_REQUESTS')echo 'class="active"';?>><a href="<?php echo base_url('admin/user_requests'); ?>"><i class="icon mdi mdi-window-restore"></i><span>User Requests</span></a>
 			  </li>
+			  <li <?php if($page == 'SA')echo 'class="active"';?>><a href="<?php echo base_url('admin/shopping_assistant_page'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Shopping Assistant Page</span></a>
+			  </li>
+			  <li <?php if($page == 'SP')echo 'class="active"';?>><a href="<?php echo base_url('admin/shopper_page'); ?>"><i class="icon mdi mdi-window-restore"></i><span>Shopper Page</span></a>
+			  </li>
 			</ul>
 		  </div>
 		</div>

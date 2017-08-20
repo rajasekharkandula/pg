@@ -1122,6 +1122,12 @@ class Admin_model extends CI_Model{
 		if($type == 'L'){
 			return $this->db->query("SELECT * FROM tbl_page ORDER BY id DESC")->result();
 		}
+		if($type == 'SA'){
+			return $this->db->query("SELECT * FROM tbl_shopping_assistant_page WHERE page = 'SA'")->row();
+		}
+		if($type == 'SP'){
+			return $this->db->query("SELECT * FROM tbl_shopping_assistant_page WHERE page = 'SP'")->row();
+		}
 		
 	}
 	function get_products_url(){
@@ -1592,6 +1598,30 @@ class Admin_model extends CI_Model{
 		if($rqry)$data['users'] = $rqry->rCount;else $data['users'] =0 ;
 		return $data;
 	}
+	
+	function ins_upd_shopping_page(){
+		$heading = $this->input->post('heading');
+		$content = $this->input->post('content');
+		$btext = $this->input->post('btext');
+		$pheading = $this->input->post('pheading');
+		$pcontent = str_replace("'","",str_replace('"','',($this->input->post('pcontent'))));
+		$step1 = $this->input->post('step1');
+		$step2 = $this->input->post('step2');
+		$step3 = $this->input->post('step3');
+		$page = $this->input->post('page');
+		$stickytext = $this->input->post('stickytext');
+		
+		$check = $this->db->query("SELECT * FROM tbl_shopping_assistant_page WHERE page = '$page'")->row();
+		if($check){
+			$this->db->query("UPDATE tbl_shopping_assistant_page SET stickytext = '$stickytext', heading = '$heading', content = '$content', btext = '$btext', pheading = '$pheading', pcontent = '$pcontent', step1 = '$step1', step2 = '$step2', step3 = '$step3' WHERE id = $check->id");
+		}else{
+			$this->db->query("INSERT INTO tbl_shopping_assistant_page (page, stickytext, heading, content, btext, pheading, pcontent, step1, step2, step3) VALUES ('$page', '$stickytext', '$heading', '$content', '$btext', '$pheading', '$pcontent', '$step1', '$step2', '$step3')");
+		}
+		$data['status'] = true;
+		$data['message'] = 'Updated successfully';
+		return $data;
+	}
+	
 }
 
 ?>

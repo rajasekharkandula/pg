@@ -306,6 +306,30 @@ class Admin extends CI_Controller {
 		$data['page'] = $this->admin_model->get_page(array('type'=>'S','id'=>$id));
 		$this->load->view('admin/page_config',$data);
 	}
+	
+	public function shopping_assistant_page()
+	{
+		$this->access();
+		$pageData['page'] = 'SA';
+		$pageData['pageTitle'] = 'Page Configuration';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['page'] = $this->admin_model->get_page(array('type'=>'SA'));
+		$this->load->view('admin/shopping_assistant',$data);
+	}
+	public function shopper_page()
+	{
+		$this->access();
+		$pageData['page'] = 'SP';
+		$pageData['pageTitle'] = 'Page Configuration';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['page'] = $this->admin_model->get_page(array('type'=>'SP'));
+		$this->load->view('admin/shopper_page',$data);
+	}
+	
 	public function user_products()
 	{
 		$this->access();
@@ -462,5 +486,8 @@ class Admin extends CI_Controller {
 	}
 	function ins_upd_shopper(){
 		echo json_encode($this->admin_model->ins_upd_shopper());
+	}
+	function ins_upd_shopping_page(){
+		echo json_encode($this->admin_model->ins_upd_shopping_page());
 	}
 }

@@ -104,6 +104,7 @@ class Home extends CI_Controller{
 		$data['header'] = $this->load->view('templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
 		$data['fb_login_url'] = $this->facebook->getRedirectLoginHelper()->getLoginUrl(base_url('home/facebook'), array('email'));
+		$data['page'] = $this->admin_model->get_page(array('type'=>'SP'));
 		$this->load->view('login',$data);
 	}
 	function signup(){
@@ -122,6 +123,7 @@ class Home extends CI_Controller{
 		$data['head'] = $this->load->view('templates/head',$pageData,true);
 		$data['header'] = $this->load->view('templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		$data['page'] = $this->admin_model->get_page(array('type'=>'SP'));
 		$this->load->view('shopper_signup_landing',$data);
 	}
 	function shopper_signup(){
@@ -139,6 +141,7 @@ class Home extends CI_Controller{
 		$data['head'] = $this->load->view('templates/head',$pageData,true);
 		$data['header'] = $this->load->view('templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('templates/footer',$pageData,true);
+		$data['page'] = $this->admin_model->get_page(array('type'=>'SA'));
 		$this->load->view('shopping_assistant',$data);
 	}
 	function ins_upd_shopper_request(){

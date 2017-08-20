@@ -23,7 +23,7 @@
 						<div class="search">
 							<?php 
 								$search_type_value = 'product';
-								$placeholder = 'Search Gift & More...'; 
+								$placeholder = 'Search Gifts, Ideas, Users & More…. '; 
 								if(isset($search_type)){
 									if($search_type == 'user'){
 										$placeholder = 'Search User...'; 
@@ -80,9 +80,9 @@
 								</a>
 								<ul class="dropdown-menu ud">
 									<li><div class="name"><?php echo $this->session->userdata('name'); ?></div></li>
-									<li><a href="<?php echo base_url();?>home/profiles"><i class="fa fa-user-circle-o"></i> Custom Profiles</a></li>
-									<li><a href="<?php echo base_url();?>home/likes"><i class="fa fa-thumbs-o-up"></i> Liked Gifts</a></li>
-									<li><a href="<?php echo base_url();?>home/requests"><i class="fa fa-cubes"></i> Requests</a></li>
+									<li><a href="<?php echo base_url();?>home/profiles"><i class="fa fa-gift"></i> Created Profiles </a></li>
+									<li><a href="<?php echo base_url();?>home/likes"><i class="fa fa-thumbs-o-up"></i> Gifts for Me</a></li>
+									<li><a href="<?php echo base_url();?>home/requests"><i class="fa fa-cubes"></i> Personal Gift Shopping</a></li>
 									<li><a href="<?php echo base_url();?>home/reset_password"><i class="fa fa-unlock-alt"></i> Reset Pasword</a></li>
 									<li><a href="<?php echo base_url();?>home/profile"><i class="fa fa-cogs"></i> Settings</a></li>
 									<li><a href="<?php echo base_url();?>home/logout"><i class="fa fa-sign-out"></i> Logout</a></li>

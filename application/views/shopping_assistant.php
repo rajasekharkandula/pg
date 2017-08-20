@@ -16,16 +16,15 @@
 				<div class="layer">
 					<div class="container">
 						<div class="caption">
-							<h2>Personal Shopping assistant</h2>
-							<p>Are you energetic, outgoing, dynamic individuals with excellent customer service skills, then join us and be a Assistant personal shopper.</p>
-							
+							<h2><?php if(isset($page->heading))echo $page->heading; ?></h2>
+							<p><?php if(isset($page->content))echo $page->content; ?></p>
 							<?php if($this->session->userdata('logged_in')){ ?>
 							<a class="btn btn-lg" href="#" data-toggle="modal" data-target="#modal-questions">
-								<i class="fa fa-arrow-right"></i> <span>Request for assistant</span>
+								<i class="fa fa-arrow-right"></i> <span><?php if(isset($page->btext))echo $page->btext; ?></span>
 							</a>
 							<?php }else{ ?>
 							<a class="btn btn-lg" href="<?php echo base_url('home/signin');?>">
-								<i class="fa fa-sign-in"></i> <span>Sign In</span>
+								<i class="fa fa-sign-in"></i> <span><?php if(isset($page->btext))echo $page->btext; ?></span></span>
 							</a>
 							<?php } ?>
 						</div>
@@ -36,28 +35,27 @@
 		
 		<section class="padding-30">
 			<div class="container hiw">
-				<h2 class="title">How it works</h2>
+				<h2 class="title"><?php if(isset($page->pheading))echo $page->pheading; ?></span></h2>
 				<div class="row">
 					
 					<div class="col-md-4">
 						<div class="bx">
 							<div class="step">01</div>
-							<div class="head">Fill out a style People</div>
-							<p>Share your style , size and prie preferences with your personal stylist.</p>
+							<p><?php if(isset($page->step1))echo $page->step1; ?></span></p>
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="bx">
 							<div class="step">02</div>
-							<div class="head">Fill out a style People</div>
-							<p>Share your style , size and prie preferences with your personal stylist.</p>
+							<!--div class="head">Fill out a style People</div-->
+							<p><?php if(isset($page->step2))echo $page->step2; ?></span></p>
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="bx">
 							<div class="step">03</div>
-							<div class="head">Fill out a style People</div>
-							<p>Share your style , size and prie preferences with your personal stylist.</p>
+							<!--div class="head">Fill out a style People</div-->
+							<p><?php if(isset($page->step3))echo $page->step3; ?></span></p>
 						</div>
 					</div>
 					
