@@ -11,10 +11,10 @@
 		<?php echo $header;?>
 		<!-- HEADER -->
         
-		<section class="login">
+		<section class="mbh">
 			<div class="container">
+				<div class="login">
 				<div class="row">
-
 					<div class="col-md-1"></div>
 					<div class="col-md-10">
 						<form class="user_form" id="user_form">
@@ -92,6 +92,8 @@
 						</form>
 					</div>
 				</div>
+				</div>
+			</div>
 
 		</section>
 		
