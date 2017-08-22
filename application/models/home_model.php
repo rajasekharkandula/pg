@@ -37,6 +37,7 @@ class Home_model extends CI_Model{
 		$data['options'] = $this->db->query("select * from tbl_question_options")->result();
 		//$data['notifications'] = $this->db->query("SELECT * FROM tbl_notification WHERE ((user_id = $this->user_id  OR (type = 'S_GLOBAL' && '".$this->session->userdata('role')."' = '".$this->config->item('role_shopper')."')) ORDER BY created_date DESC LIMIT 5")->result();
 		$data['notifications'] = $this->db->query("SELECT * FROM tbl_notification WHERE user_id = $this->user_id AND type = 'INDIVIDUAL' ORDER BY created_date DESC LIMIT 5")->result();
+		$data['shopper_page'] = $this->admin_model->get_page(array('type'=>'SA'));
 		return $data;
 	}
 	

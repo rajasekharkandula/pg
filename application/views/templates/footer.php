@@ -3,10 +3,11 @@
 	   <div class="copyright">Copyright 2017 Painlessgift | All Rights Reserved </div>
 	</div>
 </footer>
-
+<?php if(isset($data['shopper_page']->stickytext)){ ?>
 <div class="sticky-sidebar">
-	<a href="<?php echo base_url('home/shopping_assistant'); ?>"> Online Personal Gift Shopping</a>
+	<a href="<?php echo base_url('home/shopping_assistant'); ?>"> <?php echo $data['shopper_page']->stickytext; ?></a>
 </div>
+<?php } ?>
 <!-- Profile Modal -->
 <div class="modal fade" id="gift_modal" role="dialog">
 		

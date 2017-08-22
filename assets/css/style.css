@@ -109,14 +109,16 @@ margin-top: 10px;
 }
 .sticky-sidebar{
 	position: fixed;
-    right: -128px;
+    right: -127px;
     top: 50%;
     transform: rotate(-90deg);
     background-color: #0c1acc;
     padding: 10px 20px;
     color: #fff;
     font-size: 18px;
-	z-index: 9;
+    z-index: 9;
+    width: 300px;
+    text-align: center;
 }
 .sticky-sidebar a{
 	color: #fff;
