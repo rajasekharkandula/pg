@@ -1433,7 +1433,7 @@ class Admin_model extends CI_Model{
 			return $this->db->query("SELECT * FROM tbl_questionaire WHERE id = '$id'")->row();
 		}
 		if($type == 'L'){
-			return $this->db->query("SELECT * FROM tbl_questionaire ORDER BY id DESC")->result();
+			return $this->db->query("SELECT * FROM tbl_questionaire ORDER BY sortin_order ASC")->result();
 		}
 		if($type == 'O'){
 			return $this->db->query("SELECT * FROM tbl_question_options WHERE qid = $id")->result();
@@ -1447,12 +1447,13 @@ class Admin_model extends CI_Model{
 		$id=(int)$this->input->post('id');
 		$question=(string)$this->input->post('question');
 		$mandatory=(int)$this->input->post('mandatory');
+		$sorting_order=(int)$this->input->post('sorting_order');
 		$qtype=(string)$this->input->post('qtype');
 
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		
 		if($type == "INSERT"){
-			$this->db->query("INSERT INTO tbl_questionaire (question, mandatory, qtype, created_date, status) VALUES ('$question', $mandatory, '$qtype' ,NOW(), '$status')");
+			$this->db->query("INSERT INTO tbl_questionaire (question, mandatory, sorting_order, qtype, created_date, status) VALUES ('$question', $mandatory, $sorting_order, '$qtype' ,NOW(), '$status')");
 			
 			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_questionaire")->row()->id;
 			$retvalue['status']= true;
@@ -1460,7 +1461,7 @@ class Admin_model extends CI_Model{
 		}
 		
 		if($type == "UPDATE"){
-			$this->db->query("UPDATE tbl_questionaire SET question = '$question', mandatory = $mandatory, qtype = '$qtype', status = '$status' WHERE id = $id ");
+			$this->db->query("UPDATE tbl_questionaire SET question = '$question', mandatory = $mandatory, sorting_order = $sorting_order, qtype = '$qtype', status = '$status' WHERE id = $id ");
 			$retvalue['status']= true;
 			$retvalue['message']= 'Question updated successfully';
 		}

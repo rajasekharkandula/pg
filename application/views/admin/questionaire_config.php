@@ -60,6 +60,12 @@
 							<button class="btn btn-sm" type="button" id="add_option">Add option</button>
 						</div>
 					</div>
+					<div class="form-group">
+                      <label class="col-sm-3">Display Order <span>*</span></label>
+                      <div class="col-sm-6">
+                        <input req="true" type="number" class="form-control" name="sorting_order" value="<?php if(isset($question->sorting_order))echo $question->sorting_order; ?>">
+                      </div>
+                    </div>
 					<hr>
 					<div class="col-sm-12 text-center">
                         <button class="btn btn-primary btn-lg" type="button" id="submit_btn">Submit</button>

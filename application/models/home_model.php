@@ -33,7 +33,7 @@ class Home_model extends CI_Model{
 	}
 	function getHeader(){
 		$data['navigations'] = $this->db->query("select *,(SELECT COUNT(*) FROM tbl_navigation WHERE parent_id = n.id) AS childs from tbl_navigation n ORDER BY n.sortin_order")->result();
-		$data['questions'] = $this->db->query("select *,(SELECT COUNT(*) FROM tbl_question_options WHERE qid = q.id) AS oCount from tbl_questionaire q")->result();
+		$data['questions'] = $this->db->query("select *,(SELECT COUNT(*) FROM tbl_question_options WHERE qid = q.id) AS oCount from tbl_questionaire q ORDER BY q.sorting_order ASC")->result();
 		$data['options'] = $this->db->query("select * from tbl_question_options")->result();
 		//$data['notifications'] = $this->db->query("SELECT * FROM tbl_notification WHERE ((user_id = $this->user_id  OR (type = 'S_GLOBAL' && '".$this->session->userdata('role')."' = '".$this->config->item('role_shopper')."')) ORDER BY created_date DESC LIMIT 5")->result();
 		$data['notifications'] = $this->db->query("SELECT * FROM tbl_notification WHERE user_id = $this->user_id AND type = 'INDIVIDUAL' ORDER BY created_date DESC LIMIT 5")->result();
@@ -564,7 +564,7 @@ class Home_model extends CI_Model{
 		if($age != NULL && $age !=''){
 			$query = $this->db->query("SELECT * FROM tbl_filter WHERE id = $age")->row();
 			if($query)
-				$str.=" AND ((p.min_age >= ".$query->min_value." AND p.min_age <= ".$query->max_value.") OR (p.max_age >= ".$query->min_value." AND p.max_age <= ".$query->max_value."))";
+				$str.=" AND ((".$query->min_value." BETWEEN  p.min_age AND p.max_age) OR (".$query->max_value." BETWEEN  p.min_age AND p.max_age))";
 		}
 		if($price != NULL && $price !=''){
 			$query = $this->db->query("SELECT * FROM tbl_filter WHERE id = $price")->row();
@@ -581,7 +581,7 @@ class Home_model extends CI_Model{
 		if($page <= 0)
 			$page = 1;
 		$start = (int)((int)($page-1) * $this->config->item("default_items"));		
-		$str.=" LIMIT ".$start.",".$this->config->item("default_items");
+		$str.=" ORDER BY rand() LIMIT ".$start.",".$this->config->item("default_items");
 		//echo $str;exit();
 		return $this->db->query($str)->result();
 		
