@@ -261,7 +261,7 @@ class Admin_model extends CI_Model{
 			$content .="===========================================".PHP_EOL;
 			write_file($log_path, $content, 'a');
 			
-			$products = $this->db->query("SELECT * FROM tbl_product WHERE apiID = $apiID AND modified_date < (NOW() - interval 5 minute)")->result();
+			$products = $this->db->query("SELECT * FROM tbl_product WHERE apiID = $apiID -- AND modified_date < (NOW() - interval 1 minute)")->result();
 			foreach($products as $p){
 				$url = str_replace("xxxxxx", $p->api_product_id, $api->updateUrl);
 				$result = $this->get_products_url($apiID,$url);

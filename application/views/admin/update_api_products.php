@@ -78,8 +78,8 @@
 			$('#response').load("<?php echo base_url('assets/log/product_update_'.date('Ymd').'.txt'); ?>");
 			var interval = setInterval(function(){
 				$('#response').load("<?php echo base_url('assets/log/product_update_'.date('Ymd').'.txt'); ?>");
-				//$("#response").animate({ scrollTop: $(document).height()*30 }, "slow");
-				//$("#container").scrollTop($("#response").height());
+				$("#response").animate({ scrollTop: $(document).height()*30 }, "slow");
+				$("#container").scrollTop($("#response").height());
 			},1000);
 			
 			$.ajax({
@@ -91,6 +91,7 @@
 				$("#update_btn").removeAttr("disbaled");
 				$("#update_btn").html("Update");
 				clearInterval(interval);
+				$('#response').load("<?php echo base_url('assets/log/product_update_'.date('Ymd').'.txt'); ?>");
 			});
 		  }
 	  });
