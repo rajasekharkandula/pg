@@ -75,7 +75,8 @@
 			$("#update_btn").attr("disbaled",true);
 			$("#update_btn").html('<i class="fa fa-refresh fa-spin"></i> Please wait...');
 			
-			$('#response').load("<?php echo base_url('assets/log/product_update_'.date('Ymd').'.txt'); ?>");
+			//$('#response').load("<?php echo base_url('assets/log/product_update_'.date('Ymd').'.txt'); ?>");
+			$('#response').html("Please wait....");
 			var interval = setInterval(function(){
 				$('#response').load("<?php echo base_url('assets/log/product_update_'.date('Ymd').'.txt'); ?>");
 				$("#response").animate({ scrollTop: $(document).height()*30 }, "slow");
@@ -92,6 +93,8 @@
 				$("#update_btn").html("Update");
 				clearInterval(interval);
 				$('#response').load("<?php echo base_url('assets/log/product_update_'.date('Ymd').'.txt'); ?>");
+				$("#response").animate({ scrollTop: $(document).height()*30 }, "slow");
+				$("#container").scrollTop($("#response").height());
 			});
 		  }
 	  });

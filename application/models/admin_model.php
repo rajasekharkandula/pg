@@ -244,8 +244,10 @@ class Admin_model extends CI_Model{
 		$retValue['status'] = false;
 		$retValue['message'] = 'please try again later';
 		$today = date('Ymd');
+		
 		$log_path = 'assets/log/product_update_'.$today.'.txt';
 		$retValue['log_file'] = base_url($log_path);
+		if(file_exists($log_path))rename($log_path,$log_path.mt_rand().'.txt');
 		
 		if(file_exists($log_path))
 			write_file($log_path, "\n\n\n\n", 'a');
