@@ -18,20 +18,20 @@
 					<div class="row">
 						<div class="col-md-6">Products</div>
 						<div class="col-md-6 text-right"> 
+							<a href="<?php echo base_url('admin/update_api_products'); ?>" class="btn btn-primary"><i class="mdi mdi-plus"></i> Update API Products</a>
 							<a href="<?php echo base_url('admin/api_products'); ?>" class="btn btn-primary"><i class="mdi mdi-plus"></i> Add from API</a>
 							<a href="<?php echo base_url('admin/product'); ?>" class="btn btn-primary"><i class="mdi mdi-plus"></i> Add</a>
 						</div>
 					</div>
                 </div>
                 <div class="panel-body">
-                  <table id="table1" class="table table-striped table-hover table-fw-widget">
+                  <table id="table1" class="table table-striped table-hover table-fw-widget ptable">
                     <thead>
                       <tr>
                         <th>S.No.</th>
                         <th>Name</th>
-                        <th>Image</th>
-                        <th>Price</th>
-                        <th>Source</th>
+                        <th width="90px">Price</th>
+                        <th width="100px">Source</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -39,8 +39,7 @@
                       <?php $i=1;foreach($products as $p){ ?>
 					  <tr>
                         <td><?php echo $i; ?></td>
-                        <td><?php echo $p->name; ?></td>
-                        <td><img src="<?php echo $p->image; ?>" width="40px" height="40px"></td>
+                        <td><a href="<?php echo $p->product_link; ?>" target="_blank"><img class="img" src="<?php echo $p->image; ?>" width="40px" height="40px"><div class="name"><?php echo $p->name; ?></div></a></td>
                         <td><?php echo $this->config->item('currency').$p->price; ?></td>
                         <td><?php echo $p->apiName; ?></td>
                         <td>

@@ -21,10 +21,35 @@ class Admin_model extends CI_Model{
 		$type = isset($data['type']) ? $data['type'] : '';
 		
 		if($type == 'DASHBOARD'){
+			$retvalue['users_count'] = $this->db->query("SELECT COUNT(*) AS ucount FROM tbl_user -- WHERE created_date > (NOW() - interval 1 month)")->row()->ucount;
+			$retvalue['products_count'] = $this->db->query("SELECT COUNT(*) AS pcount FROM tbl_product -- WHERE created_date > (NOW() - interval 1 month)")->row()->pcount;
+			$retvalue['api_count'] = $this->db->query("SELECT COUNT(*) AS acount FROM tbl_api -- WHERE createdDate > (NOW() - interval 1 month)")->row()->acount;
+			$retvalue['views_count'] = $this->db->query("SELECT COUNT(*) AS acount FROM tbl_product_views -- WHERE dateTime > (NOW() - interval 1 month)")->row()->acount;;
+			return (object)$retvalue;
+		}
+		
+		if($type == 'CHART_TODAY'){
+			$retvalue['users_count'] = $this->db->query("SELECT COUNT(*) AS ucount FROM tbl_user WHERE created_date > (NOW() - interval 1 day)")->row()->ucount;
+			$retvalue['products_count'] = $this->db->query("SELECT COUNT(*) AS pcount FROM tbl_product WHERE created_date > (NOW() - interval 1 day)")->row()->pcount;
+			$retvalue['views_count'] = $this->db->query("SELECT COUNT(*) AS acount FROM tbl_product_views WHERE dateTime > (NOW() - interval 1 day)")->row()->acount;;
+			return (object)$retvalue;
+		}
+		if($type == 'CHART_WEEK'){
+			$retvalue['users_count'] = $this->db->query("SELECT COUNT(*) AS ucount FROM tbl_user WHERE created_date > (NOW() - interval 7 day)")->row()->ucount;
+			$retvalue['products_count'] = $this->db->query("SELECT COUNT(*) AS pcount FROM tbl_product WHERE created_date > (NOW() - interval 7 day)")->row()->pcount;
+			$retvalue['views_count'] = $this->db->query("SELECT COUNT(*) AS acount FROM tbl_product_views WHERE dateTime > (NOW() - interval 7 day)")->row()->acount;;
+			return (object)$retvalue;
+		}
+		if($type == 'CHART_MONTH'){
 			$retvalue['users_count'] = $this->db->query("SELECT COUNT(*) AS ucount FROM tbl_user WHERE created_date > (NOW() - interval 1 month)")->row()->ucount;
 			$retvalue['products_count'] = $this->db->query("SELECT COUNT(*) AS pcount FROM tbl_product WHERE created_date > (NOW() - interval 1 month)")->row()->pcount;
-			$retvalue['api_count'] = $this->db->query("SELECT COUNT(*) AS acount FROM tbl_api WHERE createdDate > (NOW() - interval 1 month)")->row()->acount;
-			$retvalue['views_count'] = 523;
+			$retvalue['views_count'] = $this->db->query("SELECT COUNT(*) AS acount FROM tbl_product_views WHERE dateTime > (NOW() - interval 1 month)")->row()->acount;;
+			return (object)$retvalue;
+		}
+		if($type == 'CHART_YEAR'){
+			$retvalue['users_count'] = $this->db->query("SELECT COUNT(*) AS ucount FROM tbl_user WHERE created_date > (NOW() - interval 1 year)")->row()->ucount;
+			$retvalue['products_count'] = $this->db->query("SELECT COUNT(*) AS pcount FROM tbl_product WHERE created_date > (NOW() - interval 1 year)")->row()->pcount;
+			$retvalue['views_count'] = $this->db->query("SELECT COUNT(*) AS acount FROM tbl_product_views WHERE dateTime > (NOW() - interval 1 year)")->row()->acount;;
 			return (object)$retvalue;
 		}
 	}
@@ -213,6 +238,94 @@ class Admin_model extends CI_Model{
 		}
 		
 		return $retvalue;
+	}
+	
+	function updating_api_products(){
+		$retValue['status'] = false;
+		$retValue['message'] = 'please try again later';
+		$today = date('Ymd');
+		$log_path = 'assets/log/product_update_'.$today.'.txt';
+		$retValue['log_file'] = base_url($log_path);
+		
+		if(file_exists($log_path))
+			write_file($log_path, "\n\n\n\n", 'a');
+		
+		$apiID = (int)$this->input->post("apiID");
+		$api = $this->db->query("SELECT * FROM tbl_api WHERE id = $apiID")->row();
+		if($api){
+			
+			$content = "Products updating...".PHP_EOL;
+			$content .="User : ".$this->session->userdata('name').PHP_EOL;
+			$content .="User ID : ".$this->session->userdata('userID').PHP_EOL;
+			$content .="Date : ".date('d M Y h:i A').PHP_EOL;
+			$content .="===========================================".PHP_EOL;
+			write_file($log_path, $content, 'a');
+			
+			$products = $this->db->query("SELECT * FROM tbl_product WHERE apiID = $apiID AND modified_date < (NOW() - interval 5 minute)")->result();
+			foreach($products as $p){
+				$url = str_replace("xxxxxx", $p->api_product_id, $api->updateUrl);
+				$result = $this->get_products_url($apiID,$url);
+				if(isset($result['products'][0]->id)){
+					$product = $result['products'][0];
+					$id = $product->id;
+					$name = $product->name;
+					$image = $product->image;
+					$price = $product->price;
+					$url = $product->url;
+					//var_dump($products);exit();
+					$this->db->query("UPDATE tbl_product SET name='$name', price = '$price', image = '$image', product_link = '$url', modified_date = NOW() WHERE api_product_id = '$id'");
+					
+					$status ="Product ID : ".$p->id."\n";
+					
+					$changed = 'No Update';
+					if($name != $p->name || $price != $p->price || $image != $p->image){					
+						$changed = '';
+						$changed.= $name != $p->name ? 'Name,' : '';
+						$changed.= $price != $p->price ? ' Price,' : '';
+						$changed.= $image != $p->image ? ' Image,' : '';
+						$changed= substr($changed,0,-1);
+						$changed.=' updated';
+						
+						$this->sendUpdateNotificationToUser($p->id,$changed);
+						
+					}
+					$status .="Status : ".$changed."\n";
+					$status .="===========================================".PHP_EOL;
+					write_file($log_path, $status, 'a');					
+				}else{
+					$status ="No data found".PHP_EOL;
+					write_file($log_path, $status, 'a');
+				}
+			}
+			
+			if(count($products) == 0){
+				$status ="There are no products to update or all products information is up to date.".PHP_EOL;
+				write_file($log_path, $status, 'a');
+			}
+			
+		}else{
+			$retValue['message'] = 'Invalid API';
+		}
+		return $retValue;
+	}
+	
+	function sendUpdateNotificationToUser($pid,$changed){
+		$users = $this->db->query("SELECT u.*,p.id AS product_id,p.name AS product_name,p.image AS product_image, p.product_link,p.price FROM tbl_likes l INNER JOIN tbl_user u ON u.id = l.user_id INNER JOIN tbl_product p ON p.id = l.product_id WHERE product_id = $pid")->result();
+		foreach($users as $u){
+			
+			$product = array(
+				'id'=>$u->product_id,
+				'name'=>$u->product_name,
+				'image'=>$u->product_image,
+				'price'=>$u->price,
+				'link'=>$u->product_link
+			);
+			
+			$data['name'] = $u->first_name.' '.$u->last_name;
+			$data['products'][] = (object)$product;
+			$message = $this->load->view('email/product_update',$data,true);
+			$this->home_model->send_email($u->email,'Products updated',$message);
+		}
 	}
 	
 	function reset_password(){
@@ -636,6 +749,7 @@ class Admin_model extends CI_Model{
 		$productUrl=(string)$this->input->post('productUrl');
 		$categoryUrl=(string)$this->input->post('categoryUrl');
 		$testUrl=(string)$this->input->post('testURL');
+		$updateUrl=(string)$this->input->post('updateUrl');
 		$rootPath=(string)$this->input->post('rootPath');
 		$id_depth=(string)$this->input->post('id_depth');
 		$name_depth=(string)$this->input->post('name_depth');
@@ -646,7 +760,7 @@ class Admin_model extends CI_Model{
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		$count = (int)$this->input->post('count');
 		if($type == "INSERT"){
-			$this->db->query("INSERT INTO tbl_api (name, apiKey, categoryUrl, productUrl, testUrl, rootPath, id_depth, name_depth, image_depth, url_depth, price_depth, createdDate, status) VALUES ('$name', '$apiKey', '$categoryUrl', '$productUrl', '$testUrl', '$rootPath', '$id_depth', '$name_depth', '$image_depth', '$url_depth', '$price_depth', NOW(), '$status'); ");
+			$this->db->query("INSERT INTO tbl_api (name, apiKey, categoryUrl, productUrl, testUrl, updateUrl, rootPath, id_depth, name_depth, image_depth, url_depth, price_depth, createdDate, status) VALUES ('$name', '$apiKey', '$categoryUrl', '$productUrl', '$testUrl', '$updateUrl', '$rootPath', '$id_depth', '$name_depth', '$image_depth', '$url_depth', '$price_depth', NOW(), '$status'); ");
 			
 			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_api")->row()->id;
 			for($i=0;$i<$count;$i++){
@@ -659,7 +773,7 @@ class Admin_model extends CI_Model{
 		}
 		
 		if($type == "UPDATE"){
-			$this->db->query("UPDATE tbl_api SET name = '$name', apiKey = '$apiKey', categoryUrl = '$categoryUrl', productUrl = '$productUrl', testUrl = '$testUrl', rootPath = '$rootPath', id_depth = '$id_depth', name_depth = '$name_depth', image_depth = '$image_depth', url_depth = '$url_depth', price_depth = '$price_depth', status = '$status' WHERE id = $id ");
+			$this->db->query("UPDATE tbl_api SET name = '$name', apiKey = '$apiKey', categoryUrl = '$categoryUrl', productUrl = '$productUrl', testUrl = '$testUrl', updateUrl = '$updateUrl', rootPath = '$rootPath', id_depth = '$id_depth', name_depth = '$name_depth', image_depth = '$image_depth', url_depth = '$url_depth', price_depth = '$price_depth', status = '$status' WHERE id = $id ");
 			$this->db->query("DELETE FROM tbl_api_url WHERE apiID = $id");
 			for($i=0;$i<$count;$i++){
 				$name = $this->input->post('name_'.$i);
@@ -696,18 +810,16 @@ class Admin_model extends CI_Model{
 		}		
 	}
 	
-	function get_product_from_api(){
+	function get_product_from_api($url){
 		$products = array();
-		$api = $this->input->post('api');
-		$url = $this->input->post('url');
-		$result = file_get_contents($url);
+		$result = @file_get_contents($url);
 		$result = json_decode($result);
 		if(isset($result->products)){
 			if(count($result->products) > 0){
 				foreach($result->products as $p){
 					$product = array();
 					$product['id'] = $p->sku;
-					$product['name'] = $p->name;
+					$product['name'] = str_replace("'","",str_replace('"','',($p->name)));
 					$product['price'] = $p->salePrice;
 					if(@file_get_contents($p->image))
 						$product['image'] = $p->image;
@@ -1130,9 +1242,9 @@ class Admin_model extends CI_Model{
 		}
 		
 	}
-	function get_products_url(){
-		$url = $this->input->post("url");
-		$apiID = $this->input->post("apiID");
+	function get_products_url($apiID,$url){
+		//$url = $this->input->post("url");
+		//$apiID = $this->input->post("apiID");
 		$retvalue['status']=false;
 		$api = $this->db->query("SELECT * FROM tbl_api WHERE id = $apiID")->row();
 		if($api){
@@ -1433,7 +1545,7 @@ class Admin_model extends CI_Model{
 			return $this->db->query("SELECT * FROM tbl_questionaire WHERE id = '$id'")->row();
 		}
 		if($type == 'L'){
-			return $this->db->query("SELECT * FROM tbl_questionaire ORDER BY sortin_order ASC")->result();
+			return $this->db->query("SELECT * FROM tbl_questionaire ORDER BY sorting_order ASC")->result();
 		}
 		if($type == 'O'){
 			return $this->db->query("SELECT * FROM tbl_question_options WHERE qid = $id")->result();
@@ -1623,6 +1735,12 @@ class Admin_model extends CI_Model{
 		return $data;
 	}
 	
+	/* function remainder(){
+		$data['name'] = $u->first_name.' '.$u->last_name;
+		$data['products'][] = (object)$product;
+		$message = $this->load->view('email/profile_remainder',$data,true);
+		$this->home_model->send_email($u->email,'Products updated',$message);
+	} */
 }
 
 ?>

@@ -443,57 +443,47 @@ class Home extends CI_Controller{
 		echo json_encode($this->home_model->createUser($email,$password));
 	}
 	
-	function updMyAccountDet()
-	{
+	function updMyAccountDet(){
 		echo json_encode($this->home_model->updMyAccountDet());
 	}
-	function updatePassword()
-	{
+	function updatePassword(){
 		echo json_encode($this->home_model->updatePassword());
 	}
-	function insGiftDet()
-	{
+	function insGiftDet(){
 		echo json_encode($this->home_model->insGiftDet());
 	}
-	function insProfile()
-	{
+	function insProfile(){
 		echo json_encode($this->home_model->insProfile());
 	}
-	function updateProfile()
-	{
+	function updateProfile(){
 		echo json_encode($this->home_model->updateProfile());
 	}
-	function editProfile($id="")
-	{
+	function editProfile($id=""){
 		echo json_encode($this->home_model->editProfile($id));
 	}
-	function removeProfile()
-	{
+	function removeProfile(){
 		echo json_encode($this->home_model->removeProfile());
 	}
-	function getGiftDet()
-	{
+	function getGiftDet(){
 		echo json_encode($this->home_model->getGiftDet());
 	}
-	function insCustomProfileProducts()
-	{
+	function insCustomProfileProducts(){
 		echo json_encode($this->home_model->insCustomProfileProducts());
 	}
-	function removeProfileProduct()
-	{
+	function removeProfileProduct(){
 		echo json_encode($this->home_model->removeProfileProduct());
 	}
-	function insertLikedProducts()
-	{
+	function insertLikedProducts(){
 		echo json_encode($this->home_model->insertLikedProducts());
 	}
-	function searchProducts()
-	{
+	function searchProducts(){
 		echo json_encode($this->home_model->searchProducts());
 	}
-	function ins_upd_user_answers()
-	{
+	function ins_upd_user_answers(){
 		echo json_encode($this->home_model->ins_upd_user_answers());
+	}	
+	function ins_upd_product_views(){
+		echo json_encode($this->home_model->ins_upd_product_views());
 	}	
 	
 	function get_chat(){

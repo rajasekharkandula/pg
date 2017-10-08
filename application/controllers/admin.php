@@ -22,9 +22,25 @@ class Admin extends CI_Controller {
 		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
 		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
 		$data['reports'] = $this->admin_model->get_report(array('type'=>'DASHBOARD'));
+		$data['chart'] = $this->admin_model->get_report(array('type'=>'CHART_TODAY'));
 		$data['users'] = $this->admin_model->get_user(array('type'=>'DL'));
 		$data['products'] = $this->admin_model->get_product(array('type'=>'DL'));
+		//var_dump($data['chart']);exit();
 		$this->load->view('admin/index',$data);
+	}
+	function get_report(){
+		$type = $this->input->post('type');
+		if($type == 'TODAY')
+			$data = $this->admin_model->get_report(array('type'=>'CHART_TODAY'));
+		if($type == 'WEEK')
+			$data = $this->admin_model->get_report(array('type'=>'CHART_WEEK'));
+		if($type == 'MONTH')
+			$data = $this->admin_model->get_report(array('type'=>'CHART_MONTH'));
+		if($type == 'YEAR')
+			$data = $this->admin_model->get_report(array('type'=>'CHART_YEAR'));
+		
+		echo json_encode($data);
+		
 	}
 	public function categories()
 	{
@@ -80,6 +96,21 @@ class Admin extends CI_Controller {
 		$data['selectedNavigation'] = $selectedNavigation;
 		//var_dump($data['selectedNavigation']);exit();
 		$this->load->view('admin/product',$data);
+	}
+	public function update_api_products()
+	{
+		$this->access();
+		$pageData['page'] = 'CATALOG';
+		$pageData['pageTitle'] = 'Products';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$data['api'] = $this->admin_model->get_api(array('type'=>'L'));
+		//var_dump($data['products']);exit();
+		$this->load->view('admin/update_api_products',$data);
+	}
+	function updating_api_products(){
+		echo json_encode($this->admin_model->updating_api_products());
 	}
 	public function api_products()
 	{
@@ -443,7 +474,9 @@ class Admin extends CI_Controller {
 		echo json_encode($this->admin_model->ins_upd_product());
 	}
 	function get_product_from_api(){
-		$data['products'] = $this->admin_model->get_products_url();
+		$apiID = (int)$this->input->post('apiID');
+		$url = $this->input->post('url');
+		$data['products'] = $this->admin_model->get_products_url($apiID,$url);
 		$data['categories'] = $this->admin_model->get_category(array('type'=>'L'));
 		$data['navigations'] = $this->admin_model->get_navigation(array('type'=>'NL'));
 		//var_dump($data['products']);exit();

@@ -245,7 +245,7 @@ class Home_model extends CI_Model{
 			return $this->db->query("SELECT pr.profile_id,pd.*,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$sessionUserID' AND product_id = pd.id) AS liked FROM tbl_custom_profiles_products pr INNER JOIN tbl_custom_profiles p ON p.id = pr.profile_id INNER JOIN tbl_product pd ON pd.id = pr.product_id WHERE p.user_id=$userID")->result();
 		}
 		if($type == 'USERS'){
-			$str = "SELECT DISTINCT u.id,CONCAT(u.first_name,' ',u.last_name) as name,u.image FROM tbl_user u INNER JOIN tbl_custom_profiles p ON p.user_id AND u.id WHERE role = 'USER' AND private = 0 ";
+			$str = "SELECT DISTINCT u.id,IF(u.first_name = 'NULL' OR IFNULL(first_name,'') = '','No Name',CONCAT(u.first_name,' ',u.last_name)) as name,u.image FROM tbl_user u INNER JOIN tbl_custom_profiles p ON p.user_id AND u.id WHERE role = 'USER' AND private = 0 AND u.first_name != 'NULL' AND IFNULL(first_name,'') != '' ";
 			if($key != NULL && $key != '')
 				$str.=" AND (u.first_name LIKE '%$key%' OR u.last_name LIKE '%$key%') ";
 			$str.=" ";
@@ -769,7 +769,7 @@ class Home_model extends CI_Model{
 			$to = $user->email;
 			$subject = "Request has been submitted successfully";
 			$message="Hi ".$user->first_name.' '.$user->last_name.",<br><br>";
-			$message.="Your shopping assist request has been submitted successsfully. Our shopping assistent will contact you soon.<br><br>";
+			$message.="Your request for shopping assistance has been submitted successsfully. Our shopping assistent will contact you soon.<br><br>";
 			$message.="Thanks,<br>Painlessgift Team."; 
 			$this->send_email($to,$subject,$message);
 		}		
@@ -777,6 +777,13 @@ class Home_model extends CI_Model{
 		$retvalue['message'] = $content;
 		$retvalue['status'] = true;
 		return $retvalue;
+	}
+	function ins_upd_product_views(){
+		$id = $this->input->post('id');
+		$userID = $this->session->userdata("userID");
+		$ip = $this->input->ip_address();
+		$this->db->query("INSERT INTO tbl_product_views (ip, dateTime, userID, productID) VALUES ('$ip', NOW(), '$userID', '$id'); ");
+		return true;
 	}
 }
 

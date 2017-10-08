@@ -229,6 +229,16 @@ img.avatar{
 span.label{
 	background-color: #04c;
 }
+.ptable .name{
+	width:calc(100% - 50px);
+	float:left;
+}
+.ptable .img{
+	width:40px;
+	max-height:50px;
+	float:left;
+	margin-right:10px;
+}
 @media (max-width: 767px){
 	.be-top-header .be-right-navbar {
 		display:inline-black !important;

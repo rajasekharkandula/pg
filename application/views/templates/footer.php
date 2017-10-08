@@ -74,7 +74,8 @@
 	});
 </script>
 <script>
-	$(".like").on("click",function(){
+	$(".like").on("click",function(e){
+		e.preventDefault();
 		var obj = $(this);
 		var id = obj.data("id");
 		<?php if($this->session->userdata('logged_in') == true){ ?>
@@ -94,7 +95,8 @@
 		window.location = '<?php echo base_url('home/signin'); ?>';
 		<?php } ?>
 	});
-	$(".gift").on("click",function(){
+	$(".gift").on("click",function(e){
+		e.preventDefault();
 		var obj = $(this);
 		var id = obj.data("id");
 		<?php if($this->session->userdata('logged_in') == true){ ?>
@@ -110,6 +112,21 @@
 		<?php }else{ ?>
 		window.location = '<?php echo base_url('home/signin'); ?>';
 		<?php } ?>
+	});
+	$(".plink").on("click",function(e){
+		//e.preventDefault();
+		var obj = $(this);
+		var id = obj.data("id");
+		var url = obj.attr("href");
+		var target = obj.attr("target");
+		if(obj.attr("disabled") != true){
+			obj.attr("disabled",true);
+			$.ajax({
+				url:'<?php echo base_url('home/ins_upd_product_views');?>',
+				type:'POST',
+				data:{'id':id}
+			})
+		}
 	});
 	$(document).on("click",".cp li",function(){
 		var obj = $(this);

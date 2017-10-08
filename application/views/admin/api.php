@@ -95,12 +95,18 @@
 						<?php $i++; } ?>
                     </div>
 					<div class="form-group">
-                      <label class="col-sm-3">&nbsp;</label>
+                      <div class="col-sm-3">&nbsp;</div>
                       <div class="col-sm-6">
                        <button class="btn btn-primary btn-sm" type="button" id="add_url"><i class="mdi mdi-plus"></i> Add URL</button>
                       </div>
                     </div>
 					
+					<div class="form-group">
+                      <label class="col-sm-3">Update URL <span>*</span></label>
+                      <div class="col-sm-9">
+                        <input req="true" type="text" class="form-control" id="updateUrl" name="updateUrl" value="<?php if(isset($api->updateUrl))echo $api->updateUrl; ?>">
+                      </div>
+					</div>
 					
 					<div class="col-sm-12 text-center">
                         <button class="btn btn-primary btn-lg" type="button" id="submit_btn">Submit</button>

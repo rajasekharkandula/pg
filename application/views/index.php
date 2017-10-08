@@ -73,7 +73,7 @@
 						<div class="product">
 							<button class="like" data-id="<?php echo $p->id; ?>"><?php if($p->liked > 0){?><i class="fa fa-heart"></i><?php }else{ ?><i class="fa fa-heart-o"></i><?php } ?></button>
 							<button class="gift" data-id="<?php echo $p->id; ?>"><i class="fa fa-gift"></i></button>
-							<a href="<?php echo $p->product_link; ?>">
+							<a href="<?php echo $p->product_link; ?>" class="plink" data-id="<?php echo $p->id; ?>">
 								<div class="img">
 									<img src="<?php echo $p->image; ?>">
 								</div>
