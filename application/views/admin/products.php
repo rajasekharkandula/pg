@@ -31,7 +31,8 @@
                         <th>S.No.</th>
                         <th>Name</th>
                         <th width="90px">Price</th>
-                        <th width="100px">Source</th>
+                        <th width="150px">Source</th>
+                        <th width="170px">Last Updated</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -42,6 +43,7 @@
                         <td><a href="<?php echo $p->product_link; ?>" target="_blank"><img class="img" src="<?php echo $p->image; ?>" width="40px" height="40px"><div class="name"><?php echo $p->name; ?></div></a></td>
                         <td><?php echo $this->config->item('currency').$p->price; ?></td>
                         <td><?php echo $p->apiName; ?></td>
+                        <td><?php echo date('d M Y h:i A',strtotime($p->modified_date)); ?></td>
                         <td>
 							<a href="<?php echo base_url('admin/product/'.$p->id); ?>" class="btn btn-primary"><i class="mdi mdi-edit"></i></a>
 							<button class="btn btn-danger remove" data-id="<?php echo $p->id; ?>"><i class="mdi mdi-delete"></i></button>

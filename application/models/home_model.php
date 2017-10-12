@@ -241,6 +241,9 @@ class Home_model extends CI_Model{
 		if($type == 'L'){
 			return $this->db->query("SELECT * FROM tbl_custom_profiles WHERE user_id=$userID")->result();
 		}
+		if($type == 'REMAINDER'){
+			return $this->db->query("SELECT IF(u.first_name = 'NULL' OR IFNULL(first_name,'') = '','No Name',CONCAT(u.first_name,' ',u.last_name)) as name,u.email FROM tbl_custom_profiles p INNER JOIN tbl_user u ON u.id = p.user_id WHERE p.date_for_gift <= (NOW() + interval 3 day) AND p.date_for_gift > NOW() AND p.remainder_mail != 1")->result();
+		}
 		if($type == 'PRODUCTS'){
 			return $this->db->query("SELECT pr.profile_id,pd.*,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$sessionUserID' AND product_id = pd.id) AS liked FROM tbl_custom_profiles_products pr INNER JOIN tbl_custom_profiles p ON p.id = pr.profile_id INNER JOIN tbl_product pd ON pd.id = pr.product_id WHERE p.user_id=$userID")->result();
 		}

@@ -523,4 +523,9 @@ class Admin extends CI_Controller {
 	function ins_upd_shopping_page(){
 		echo json_encode($this->admin_model->ins_upd_shopping_page());
 	}
+	
+	function remainder(){
+		$this->admin_model->remainder();
+	}
+	
 }

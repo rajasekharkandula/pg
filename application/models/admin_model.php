@@ -256,52 +256,83 @@ class Admin_model extends CI_Model{
 		$api = $this->db->query("SELECT * FROM tbl_api WHERE id = $apiID")->row();
 		if($api){
 			
-			$content = "Products updating...".PHP_EOL;
+			$content = "Products updation started...".PHP_EOL;
 			$content .="User : ".$this->session->userdata('name').PHP_EOL;
 			$content .="User ID : ".$this->session->userdata('userID').PHP_EOL;
 			$content .="Date : ".date('d M Y h:i A').PHP_EOL;
 			$content .="===========================================".PHP_EOL;
 			write_file($log_path, $content, 'a');
 			
-			$products = $this->db->query("SELECT * FROM tbl_product WHERE apiID = $apiID -- AND modified_date < (NOW() - interval 1 minute)")->result();
+			$breakCheck = 0;$temp = 0;$successCount = 0;
+			
+			$products = $this->db->query("SELECT * FROM tbl_product WHERE apiID = $apiID AND modified_date < (NOW() - interval 2 minute)")->result();
 			foreach($products as $p){
-				$url = str_replace("xxxxxx", $p->api_product_id, $api->updateUrl);
-				$result = $this->get_products_url($apiID,$url);
+				
+				if($api->aws == 1){
+					$url = $this->aws_signed_url($p->api_product_id,$api->apiKey,$api->apiKey);
+				}else{
+					$url = str_replace("xxxxxx", $p->api_product_id, $api->updateUrl);
+				}
+				$result = $this->get_products_url($apiID,$url,"UPDATE");
+				
 				if(isset($result['products'][0]->id)){
 					$product = $result['products'][0];
-					$id = $product->id;
-					$name = $product->name;
-					$image = $product->image;
-					$price = $product->price;
-					$url = $product->url;
-					//var_dump($products);exit();
-					$this->db->query("UPDATE tbl_product SET name='$name', price = '$price', image = '$image', product_link = '$url', modified_date = NOW() WHERE api_product_id = '$id'");
-					
-					$status ="Product ID : ".$p->id."\n";
-					
-					$changed = 'No Update';
-					if($name != $p->name || $price != $p->price || $image != $p->image){					
-						$changed = '';
-						$changed.= $name != $p->name ? 'Name,' : '';
-						$changed.= $price != $p->price ? ' Price,' : '';
-						$changed.= $image != $p->image ? ' Image,' : '';
-						$changed= substr($changed,0,-1);
-						$changed.=' updated';
+					if($product->id == $p->api_product_id){
+						$id = $product->id;
+						$name = $product->name;
+						$image = $product->image;
+						$price = $product->price;
+						$url = $product->url;
 						
-						$this->sendUpdateNotificationToUser($p->id,$changed);
+						$this->db->query("UPDATE tbl_product SET name='$name', price = '$price', image = '$image', product_link = '$url', modified_date = NOW() WHERE api_product_id = '$id'");
 						
+						$status ="Product ID : ".$p->id."\n";
+						
+						$changed = 'No Update';
+						if($name != $p->name || $price != $p->price || $image != $p->image){					
+							$changed = '';
+							$changed.= $name != $p->name ? 'Name,' : '';
+							$changed.= $price != $p->price ? ' Price,' : '';
+							$changed.= $image != $p->image ? ' Image,' : '';
+							$changed= substr($changed,0,-1);
+							$changed.=' updated';
+							
+							$this->sendUpdateNotificationToUser($p->id,$changed);
+							
+						}
+						$status .="Status : ".$changed."\n";
+						$status .="===========================================".PHP_EOL;
+						write_file($log_path, $status, 'a');
+					}else{
+						$status ="Product ID : ".$p->id."\n";
+						$status .="Status : Invalid Data returned by API or Invalid Update API Configuration\n";
+						$status .="===========================================".PHP_EOL;
+						write_file($log_path, $status, 'a');
 					}
-					$status .="Status : ".$changed."\n";
-					$status .="===========================================".PHP_EOL;
-					write_file($log_path, $status, 'a');					
+					$breakCheck++;
+					$successCount++;
 				}else{
-					$status ="No data found".PHP_EOL;
+					$temp = $breakCheck;
+					$status ="Product ID : ".$p->id."\n";
+					$status ="No data found or Invalid API configuration".PHP_EOL;
 					write_file($log_path, $status, 'a');
+					if($breakCheck == 4 && $successCount == 0){
+						$status ="Exit".PHP_EOL;
+						write_file($log_path, $status, 'a');
+						return $retValue;
+						break;
+					}
+					if($breakCheck == $temp)
+						$breakCheck++;
 				}
 			}
 			
 			if(count($products) == 0){
 				$status ="There are no products to update or all products information is up to date.".PHP_EOL;
+				write_file($log_path, $status, 'a');
+			}else{
+				$status = " ".PHP_EOL;
+				$status ="=================== Completed ====================.".PHP_EOL;
 				write_file($log_path, $status, 'a');
 			}
 			
@@ -309,6 +340,55 @@ class Admin_model extends CI_Model{
 			$retValue['message'] = 'Invalid API';
 		}
 		return $retValue;
+	}
+	function aws_signed_url($id,$access_key_id,$secret_key){
+				
+		/* // Your Access Key ID, as taken from the Your Account page
+		$access_key_id = "AKIAIDK6H56PPHQITT3A";
+
+		// Your Secret Key corresponding to the above ID, as taken from the Your Account page
+		$secret_key = "vMdTpzucIDZ/UTL16M/MtOXOzaNQOgJr2vLSDmK+"; */
+
+		// The region you are interested in
+		$endpoint = "webservices.amazon.com";
+
+		$uri = "/onca/xml";
+
+		$params = array(
+			"Service" => "AWSECommerceService",
+			"Operation" => "ItemLookup",
+			"AWSAccessKeyId" => $access_key_id,
+			"AssociateTag" => "painlessgift-20",
+			"ItemId" => $id,
+			"IdType" => "ASIN",
+			"ResponseGroup" => "Images,ItemAttributes,Offers"
+		);
+
+		// Set current timestamp if not set
+		if (!isset($params["Timestamp"])) {
+			$params["Timestamp"] = gmdate('Y-m-d\TH:i:s\Z');
+		}
+
+		// Sort the parameters by key
+		ksort($params);
+
+		$pairs = array();
+
+		foreach ($params as $key => $value) {
+			array_push($pairs, rawurlencode($key)."=".rawurlencode($value));
+		}
+
+		// Generate the canonical query
+		$canonical_query_string = join("&", $pairs);
+
+		// Generate the string to be signed
+		$string_to_sign = "GET\n".$endpoint."\n".$uri."\n".$canonical_query_string;
+
+		// Generate the signature required by the Product Advertising API
+		$signature = base64_encode(hash_hmac("sha256", $string_to_sign, $secret_key, true));
+
+		// Generate the signed URL
+		return $request_url = 'http://'.$endpoint.$uri.'?'.$canonical_query_string.'&Signature='.rawurlencode($signature);
 	}
 	
 	function sendUpdateNotificationToUser($pid,$changed){
@@ -750,19 +830,31 @@ class Admin_model extends CI_Model{
 		$apiKey=(string)$this->input->post('key');
 		$productUrl=(string)$this->input->post('productUrl');
 		$categoryUrl=(string)$this->input->post('categoryUrl');
-		$testUrl=(string)$this->input->post('testURL');
 		$updateUrl=(string)$this->input->post('updateUrl');
+		
+		$testUrl=(string)$this->input->post('testURL');
 		$rootPath=(string)$this->input->post('rootPath');
 		$id_depth=(string)$this->input->post('id_depth');
 		$name_depth=(string)$this->input->post('name_depth');
 		$image_depth=(string)$this->input->post('image_depth');
 		$url_depth=(string)$this->input->post('url_depth');
 		$price_depth=(string)$this->input->post('price_depth');
+		
+		$updateTestUrl=(string)$this->input->post('updateTestUrl');
+		$updateRootPath=(string)$this->input->post('updateRootPath');
+		$update_id_depth=(string)$this->input->post('update_id_depth');
+		$update_name_depth=(string)$this->input->post('update_name_depth');
+		$update_image_depth=(string)$this->input->post('update_image_depth');
+		$update_url_depth=(string)$this->input->post('update_url_depth');
+		$update_price_depth=(string)$this->input->post('update_price_depth');
+		
 		$desc=$this->input->post('desc');
+		$aws=(int)$this->input->post('aws');
+		$secret_key=(string)$this->input->post('secret_key');
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		$count = (int)$this->input->post('count');
 		if($type == "INSERT"){
-			$this->db->query("INSERT INTO tbl_api (name, apiKey, categoryUrl, productUrl, testUrl, updateUrl, rootPath, id_depth, name_depth, image_depth, url_depth, price_depth, createdDate, status) VALUES ('$name', '$apiKey', '$categoryUrl', '$productUrl', '$testUrl', '$updateUrl', '$rootPath', '$id_depth', '$name_depth', '$image_depth', '$url_depth', '$price_depth', NOW(), '$status'); ");
+			$this->db->query("INSERT INTO tbl_api (name, apiKey, categoryUrl, productUrl, updateUrl, testUrl, rootPath, id_depth, name_depth, image_depth, url_depth, price_depth, updateTestUrl, updateRootPath, update_id_depth, update_name_depth, update_image_depth, update_url_depth, update_price_depth, aws, secret_key, createdDate, status) VALUES ('$name', '$apiKey', '$categoryUrl', '$productUrl', '$updateUrl', '$testUrl', '$rootPath', '$id_depth', '$name_depth', '$image_depth', '$url_depth', '$price_depth', '$updateTestUrl', '$updateRootPath', '$update_id_depth', '$update_name_depth', '$update_image_depth', '$update_url_depth', '$update_price_depth', $aws, '$secret_key', NOW(), '$status'); ");
 			
 			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_api")->row()->id;
 			for($i=0;$i<$count;$i++){
@@ -775,7 +867,8 @@ class Admin_model extends CI_Model{
 		}
 		
 		if($type == "UPDATE"){
-			$this->db->query("UPDATE tbl_api SET name = '$name', apiKey = '$apiKey', categoryUrl = '$categoryUrl', productUrl = '$productUrl', testUrl = '$testUrl', updateUrl = '$updateUrl', rootPath = '$rootPath', id_depth = '$id_depth', name_depth = '$name_depth', image_depth = '$image_depth', url_depth = '$url_depth', price_depth = '$price_depth', status = '$status' WHERE id = $id ");
+			$this->db->query("UPDATE tbl_api SET name = '$name', apiKey = '$apiKey', categoryUrl = '$categoryUrl', productUrl = '$productUrl', updateUrl = '$updateUrl', testUrl = '$testUrl', rootPath = '$rootPath', id_depth = '$id_depth', name_depth = '$name_depth', image_depth = '$image_depth', url_depth = '$url_depth', price_depth = '$price_depth', updateTestUrl = '$updateTestUrl', updateRootPath = '$updateRootPath', update_id_depth = '$update_id_depth', update_name_depth = '$update_name_depth', update_image_depth = '$update_image_depth', update_url_depth = '$update_url_depth', update_price_depth = '$update_price_depth', aws=$aws, secret_key = '$secret_key', status = '$status' WHERE id = $id ");
+			
 			$this->db->query("DELETE FROM tbl_api_url WHERE apiID = $id");
 			for($i=0;$i<$count;$i++){
 				$name = $this->input->post('name_'.$i);
@@ -1244,18 +1337,25 @@ class Admin_model extends CI_Model{
 		}
 		
 	}
-	function get_products_url($apiID,$url){
-		//$url = $this->input->post("url");
-		//$apiID = $this->input->post("apiID");
+	function get_products_url($apiID,$url,$urlType="FETCH"){
 		$retvalue['status']=false;
 		$api = $this->db->query("SELECT * FROM tbl_api WHERE id = $apiID")->row();
 		if($api){
-			$rootPath = $api->rootPath;
-			$id_depth = $api->id_depth;
-			$name_depth = $api->name_depth;
-			$image_depth = $api->image_depth;
-			$url_depth = $api->url_depth;
-			$price_depth = $api->price_depth;
+			if($urlType == 'UPDATE'){
+				$rootPath = $api->updateRootPath;
+				$id_depth = $api->update_id_depth;
+				$name_depth = $api->update_name_depth;
+				$image_depth = $api->update_image_depth;
+				$url_depth = $api->update_url_depth;
+				$price_depth = $api->update_price_depth;
+			}else{
+				$rootPath = $api->rootPath;
+				$id_depth = $api->id_depth;
+				$name_depth = $api->name_depth;
+				$image_depth = $api->image_depth;
+				$url_depth = $api->url_depth;
+				$price_depth = $api->price_depth;
+			}
 		
 			if (filter_var($url, FILTER_VALIDATE_URL) === false) {
 			
@@ -1268,12 +1368,13 @@ class Admin_model extends CI_Model{
 		
 			$xmlresult = @simplexml_load_string($result);
 			if($xmlresult)$result = json_encode($xmlresult);
-			
 			$result = json_decode($result,true);
+			
 			if(count($result) > 0){
 				$products = array();
 				$keys = explode("/",$rootPath);
 				$result = $this->get_array_value($result,$keys);
+				
 				if($result){
 					if(is_array($result)){
 						foreach($result as $r){
@@ -1314,6 +1415,7 @@ class Admin_model extends CI_Model{
 							else
 								$product['price'] = floatval(str_replace("$","",$r));
 							
+							if($product['id'] && $product['id'] !='' && $product['name'] && $product['name'] != '' && $product['url'] && $product['url'] != '')							
 							array_push($products,(object)$product);
 						}
 						$retvalue['products'] = $products;
@@ -1334,9 +1436,7 @@ class Admin_model extends CI_Model{
 			$retvalue['message']='Invalid Api Configuration';
 			$retvalue['type']='URL';
 		}
-		
 		return $retvalue;
-		
 	}
 	
 	function get_api_response(){
@@ -1737,12 +1837,15 @@ class Admin_model extends CI_Model{
 		return $data;
 	}
 	
-	/* function remainder(){
+	function remainder(){
+		
+		$users = $this->home_model->get_profile(array('type'=>'REMAINDER'));
+		var_dump($users);exit();
 		$data['name'] = $u->first_name.' '.$u->last_name;
 		$data['products'][] = (object)$product;
 		$message = $this->load->view('email/profile_remainder',$data,true);
-		$this->home_model->send_email($u->email,'Products updated',$message);
-	} */
+		//$this->home_model->send_email($u->email,'Products updated',$message);
+	}
 }
 
 ?>
