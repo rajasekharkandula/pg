@@ -297,7 +297,7 @@ class Admin_model extends CI_Model{
 							$changed= substr($changed,0,-1);
 							$changed.=' updated';
 							
-							$this->sendUpdateNotificationToUser($p->id,$changed);
+							//$this->sendUpdateNotificationToUser($p->id,$changed);
 							
 						}
 						$status .="Status : ".$changed."\n";
