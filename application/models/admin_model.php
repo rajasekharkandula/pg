@@ -269,7 +269,7 @@ class Admin_model extends CI_Model{
 			foreach($products as $p){
 				
 				if($api->aws == 1){
-					$url = $this->aws_signed_url($p->api_product_id,$api->apiKey,$api->apiKey);
+					$url = $this->aws_signed_url($p->api_product_id,$api->apiKey,$api->secret_key);
 				}else{
 					$url = str_replace("xxxxxx", $p->api_product_id, $api->updateUrl);
 				}
@@ -344,10 +344,10 @@ class Admin_model extends CI_Model{
 	function aws_signed_url($id,$access_key_id,$secret_key){
 				
 		/* // Your Access Key ID, as taken from the Your Account page
-		$access_key_id = "AKIAIDK6H56PPHQITT3A";
+		$access_key_id = "";
 
 		// Your Secret Key corresponding to the above ID, as taken from the Your Account page
-		$secret_key = "vMdTpzucIDZ/UTL16M/MtOXOzaNQOgJr2vLSDmK+"; */
+		$secret_key = ""; */
 
 		// The region you are interested in
 		$endpoint = "webservices.amazon.com";
