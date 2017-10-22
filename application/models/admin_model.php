@@ -265,7 +265,7 @@ class Admin_model extends CI_Model{
 			
 			$breakCheck = 0;$temp = 0;$successCount = 0;
 			
-			$products = $this->db->query("SELECT * FROM tbl_product WHERE apiID = $apiID AND modified_date < (NOW() - interval 2 minute)")->result();
+			$products = $this->db->query("SELECT * FROM tbl_product WHERE apiID = $apiID AND modified_date < (NOW() - interval 30 minute)")->result();
 			foreach($products as $p){
 				
 				if($api->aws == 1){
@@ -282,11 +282,19 @@ class Admin_model extends CI_Model{
 						$name = $product->name;
 						$image = $product->image;
 						$price = $product->price;
+						$offer_price = $product->offer_price;
 						$url = $product->url;
+						
+						$temp = (float)preg_replace("/[^0-9,\.]/", "", $product->price);
+						$temp1 = (float)preg_replace("/[^0-9,\.]/", "", $product->offer_price);
+						$price = $product->price;
+						if($temp1 != 0 && $temp1 < $temp)
+							$price = $product->offer_price;
 						
 						$this->db->query("UPDATE tbl_product SET name='$name', price = '$price', image = '$image', product_link = '$url', modified_date = NOW() WHERE api_product_id = '$id'");
 						
 						$status ="Product ID : ".$p->id."\n";
+						$status .="Product Name : ".$p->name."\n";
 						
 						$changed = 'No Update';
 						if($name != $p->name || $price != $p->price || $image != $p->image){					
@@ -305,6 +313,7 @@ class Admin_model extends CI_Model{
 						write_file($log_path, $status, 'a');
 					}else{
 						$status ="Product ID : ".$p->id."\n";
+						$status .="Product Name : ".$p->name."\n";
 						$status .="Status : Invalid Data returned by API or Invalid Update API Configuration\n";
 						$status .="===========================================".PHP_EOL;
 						write_file($log_path, $status, 'a');
@@ -314,7 +323,9 @@ class Admin_model extends CI_Model{
 				}else{
 					$temp = $breakCheck;
 					$status ="Product ID : ".$p->id."\n";
-					$status ="No data found or Invalid API configuration".PHP_EOL;
+					$status .="Product Name : ".$p->name."\n";
+					$status.="No data found or Invalid API configuration".PHP_EOL;
+					$status .="===========================================".PHP_EOL;
 					write_file($log_path, $status, 'a');
 					if($breakCheck == 4 && $successCount == 0){
 						$status ="Exit".PHP_EOL;
@@ -839,6 +850,7 @@ class Admin_model extends CI_Model{
 		$image_depth=(string)$this->input->post('image_depth');
 		$url_depth=(string)$this->input->post('url_depth');
 		$price_depth=(string)$this->input->post('price_depth');
+		$offer_price_depth=(string)$this->input->post('offer_price_depth');
 		
 		$updateTestUrl=(string)$this->input->post('updateTestUrl');
 		$updateRootPath=(string)$this->input->post('updateRootPath');
@@ -847,6 +859,7 @@ class Admin_model extends CI_Model{
 		$update_image_depth=(string)$this->input->post('update_image_depth');
 		$update_url_depth=(string)$this->input->post('update_url_depth');
 		$update_price_depth=(string)$this->input->post('update_price_depth');
+		$update_offer_price_depth=(string)$this->input->post('update_offer_price_depth');
 		
 		$desc=$this->input->post('desc');
 		$aws=(int)$this->input->post('aws');
@@ -854,7 +867,7 @@ class Admin_model extends CI_Model{
 		$status=$this->input->post('status') ? $this->input->post('status') : 'Active';
 		$count = (int)$this->input->post('count');
 		if($type == "INSERT"){
-			$this->db->query("INSERT INTO tbl_api (name, apiKey, categoryUrl, productUrl, updateUrl, testUrl, rootPath, id_depth, name_depth, image_depth, url_depth, price_depth, updateTestUrl, updateRootPath, update_id_depth, update_name_depth, update_image_depth, update_url_depth, update_price_depth, aws, secret_key, createdDate, status) VALUES ('$name', '$apiKey', '$categoryUrl', '$productUrl', '$updateUrl', '$testUrl', '$rootPath', '$id_depth', '$name_depth', '$image_depth', '$url_depth', '$price_depth', '$updateTestUrl', '$updateRootPath', '$update_id_depth', '$update_name_depth', '$update_image_depth', '$update_url_depth', '$update_price_depth', $aws, '$secret_key', NOW(), '$status'); ");
+			$this->db->query("INSERT INTO tbl_api (name, apiKey, categoryUrl, productUrl, updateUrl, testUrl, rootPath, id_depth, name_depth, image_depth, url_depth, price_depth, offer_price_depth, updateTestUrl, updateRootPath, update_id_depth, update_name_depth, update_image_depth, update_url_depth, update_price_depth, update_offer_price_depth, aws, secret_key, createdDate, status) VALUES ('$name', '$apiKey', '$categoryUrl', '$productUrl', '$updateUrl', '$testUrl', '$rootPath', '$id_depth', '$name_depth', '$image_depth', '$url_depth', '$price_depth', '$offer_price_depth', '$updateTestUrl', '$updateRootPath', '$update_id_depth', '$update_name_depth', '$update_image_depth', '$update_url_depth', '$update_price_depth','$update_offer_price_depth', $aws, '$secret_key', NOW(), '$status'); ");
 			
 			$id = $this->db->query("SELECT MAX(id) as id FROM tbl_api")->row()->id;
 			for($i=0;$i<$count;$i++){
@@ -867,7 +880,7 @@ class Admin_model extends CI_Model{
 		}
 		
 		if($type == "UPDATE"){
-			$this->db->query("UPDATE tbl_api SET name = '$name', apiKey = '$apiKey', categoryUrl = '$categoryUrl', productUrl = '$productUrl', updateUrl = '$updateUrl', testUrl = '$testUrl', rootPath = '$rootPath', id_depth = '$id_depth', name_depth = '$name_depth', image_depth = '$image_depth', url_depth = '$url_depth', price_depth = '$price_depth', updateTestUrl = '$updateTestUrl', updateRootPath = '$updateRootPath', update_id_depth = '$update_id_depth', update_name_depth = '$update_name_depth', update_image_depth = '$update_image_depth', update_url_depth = '$update_url_depth', update_price_depth = '$update_price_depth', aws=$aws, secret_key = '$secret_key', status = '$status' WHERE id = $id ");
+			$this->db->query("UPDATE tbl_api SET name = '$name', apiKey = '$apiKey', categoryUrl = '$categoryUrl', productUrl = '$productUrl', updateUrl = '$updateUrl', testUrl = '$testUrl', rootPath = '$rootPath', id_depth = '$id_depth', name_depth = '$name_depth', image_depth = '$image_depth', url_depth = '$url_depth', price_depth = '$price_depth', offer_price_depth = '$offer_price_depth', updateTestUrl = '$updateTestUrl', updateRootPath = '$updateRootPath', update_id_depth = '$update_id_depth', update_name_depth = '$update_name_depth', update_image_depth = '$update_image_depth', update_url_depth = '$update_url_depth', update_price_depth = '$update_price_depth', update_offer_price_depth = '$update_offer_price_depth', aws=$aws, secret_key = '$secret_key', status = '$status' WHERE id = $id ");
 			
 			$this->db->query("DELETE FROM tbl_api_url WHERE apiID = $id");
 			for($i=0;$i<$count;$i++){
@@ -1348,6 +1361,7 @@ class Admin_model extends CI_Model{
 				$image_depth = $api->update_image_depth;
 				$url_depth = $api->update_url_depth;
 				$price_depth = $api->update_price_depth;
+				$offer_price_depth = $api->update_offer_price_depth;
 			}else{
 				$rootPath = $api->rootPath;
 				$id_depth = $api->id_depth;
@@ -1355,6 +1369,7 @@ class Admin_model extends CI_Model{
 				$image_depth = $api->image_depth;
 				$url_depth = $api->url_depth;
 				$price_depth = $api->price_depth;
+				$offer_price_depth = $api->offer_price_depth;
 			}
 		
 			if (filter_var($url, FILTER_VALIDATE_URL) === false) {
@@ -1415,6 +1430,13 @@ class Admin_model extends CI_Model{
 							else
 								$product['price'] = floatval(str_replace("$","",$r));
 							
+							//Offer Price
+							$keys = explode("/",$offer_price_depth);
+							if(is_array($r))
+								$product['offer_price'] = floatval(str_replace("$","",$this->get_array_value($r,$keys)));
+							else
+								$product['offer_price'] = floatval(str_replace("$","",$r));
+							
 							if($product['id'] && $product['id'] !='' && $product['name'] && $product['name'] != '' && $product['url'] && $product['url'] != '')							
 							array_push($products,(object)$product);
 						}
@@ -1462,6 +1484,7 @@ class Admin_model extends CI_Model{
 		$image_depth = $this->input->post("image_depth");
 		$url_depth = $this->input->post("url_depth");
 		$price_depth = $this->input->post("price_depth");
+		$offer_price_depth = $this->input->post("offer_price_depth");
 		
 		if (filter_var($url, FILTER_VALIDATE_URL) === false) {
 		
@@ -1522,7 +1545,14 @@ class Admin_model extends CI_Model{
 						if(is_array($r))
 							$product['price'] = $this->get_array_value($r,$keys) == false ? false : true;
 						else
-							$product['price'] = true;										
+							$product['price'] = true;	
+						
+						//Price
+						$keys = explode("/",$offer_price_depth);
+						if(is_array($r))
+							$product['offer_price'] = $this->get_array_value($r,$keys) == false ? false : true;
+						else
+							$product['offer_price'] = true;										
 					}
 					if($product['id'] == false || $product['name'] == false || $product['image'] == false || $product['url'] == false || $product['price'] == false){
 						$retvalue['status'] = false;

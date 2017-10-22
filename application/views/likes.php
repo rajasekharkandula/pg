@@ -27,7 +27,7 @@
 								</div>
 								<div class="content">
 									<div class="title"><?php echo $p->name; ?></div>
-									<div class="price"><?php echo $this->config->item('currency'); ?><?php echo $p->price; ?></div>
+									<div class="price"><?php if($p->price == 0)echo "N/A"; else echo $this->config->item('currency')." ".$p->price; ?></div>
 								</div>
 							</a>
 						</div>
@@ -44,7 +44,7 @@
 								</div>
 								<div class="content">
 									<div class="title"><?php echo $g->name; ?></div>
-									<div class="price"><?php echo $this->config->item('currency'); ?><?php echo $g->price; ?></div>
+									<div class="price"><?php if($g->price == 0)echo "N/A"; else echo $this->config->item('currency')." ".$g->price; ?></div>
 								</div>
 							</a>
 						</div>

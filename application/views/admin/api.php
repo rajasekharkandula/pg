@@ -61,6 +61,12 @@
                         <input req="true" type="text" class="form-control" placeholder="JSON Product Price Depth" name="price_depth" id="price_depth" value="<?php if(isset($api->price_depth))echo $api->price_depth; ?>">
                       </div>
 					</div>
+					<div class="form-group">
+                      <label class="col-sm-3">Offer Price<span>*</span></label>
+                      <div class="col-sm-9">
+                        <input req="true" type="text" class="form-control" placeholder="JSON Product Offer Price Depth" name="offer_price_depth" id="offer_price_depth" value="<?php if(isset($api->offer_price_depth))echo $api->offer_price_depth; ?>">
+                      </div>
+					</div>
 					<div class="col-md-12 text-center">
                         <button class="btn btn-primary btn-lg" type="button" id="validate_fetch_btn">Validate</button>
                     </div>
@@ -115,6 +121,12 @@
                       <label class="col-sm-3">Price<span>*</span></label>
                       <div class="col-sm-9">
                         <input req="true" type="text" class="form-control" placeholder="JSON Product Price Depth" name="update_price_depth" id="update_price_depth" value="<?php if(isset($api->update_price_depth))echo $api->update_price_depth; ?>">
+                      </div>
+					</div>
+					<div class="form-group">
+                      <label class="col-sm-3">Offer Price<span>*</span></label>
+                      <div class="col-sm-9">
+                        <input req="true" type="text" class="form-control" placeholder="JSON Product Offer Price Depth" name="update_offer_price_depth" id="update_offer_price_depth" value="<?php if(isset($api->update_offer_price_depth))echo $api->update_offer_price_depth; ?>">
                       </div>
 					</div>
 					<div class="col-md-12 text-center">
@@ -250,6 +262,7 @@
 		var image_depth = $("#image_depth").val();
 		var url_depth = $("#url_depth").val();
 		var price_depth = $("#price_depth").val();
+		var offer_price_depth = $("#offer_price_depth").val();
 		
 		if(error == 0){
 			$("#validate_fetch_btn").attr("disabled",true);
@@ -258,7 +271,7 @@
 			$.ajax({
 				url:'<?php echo base_url('admin/validate_url');?>',
 				type:'POST',
-				data:{'testURL':testURL,'rootPath':rootPath,'id_depth':id_depth,'name_depth':name_depth,'image_depth':image_depth,'url_depth':url_depth,'price_depth':price_depth},
+				data:{'testURL':testURL,'rootPath':rootPath,'id_depth':id_depth,'name_depth':name_depth,'image_depth':image_depth,'url_depth':url_depth,'price_depth':price_depth,'offer_price_depth':offer_price_depth},
 				dataType:'JSON'
 			}).success(function(data){
 				
@@ -314,6 +327,14 @@
 					$("#price_depth").parent().append('<div class="text-danger">Invalid</div>');
 				}
 				
+				if(data.product.offer_price == true){					
+					$("#offer_price_depth").addClass("has-success");
+				}else{
+					$("#offer_price_depth").addClass("has-error");
+					error++;
+					$("#offer_price_depth").parent().append('<div class="text-danger">Invalid</div>');
+				}
+				
 				$("#validate_fetch_btn").removeAttr("disabled");
 				$("#validate_fetch_btn").html("Validate");
 			});
@@ -336,6 +357,7 @@
 		var image_depth = $("#update_image_depth").val();
 		var url_depth = $("#update_url_depth").val();
 		var price_depth = $("#update_price_depth").val();
+		var offer_price_depth = $("#update_offer_price_depth").val();
 		
 		if(error == 0){
 			$("#validate_update_btn").attr("disabled",true);
@@ -344,7 +366,7 @@
 			$.ajax({
 				url:'<?php echo base_url('admin/validate_url');?>',
 				type:'POST',
-				data:{'testURL':testURL,'rootPath':rootPath,'id_depth':id_depth,'name_depth':name_depth,'image_depth':image_depth,'url_depth':url_depth,'price_depth':price_depth},
+				data:{'testURL':testURL,'rootPath':rootPath,'id_depth':id_depth,'name_depth':name_depth,'image_depth':image_depth,'url_depth':url_depth,'price_depth':price_depth,'offer_price_depth':offer_price_depth},
 				dataType:'JSON'
 			}).success(function(data){
 				
@@ -399,6 +421,14 @@
 					$("#update_price_depth").addClass("has-error");
 					error++;
 					$("#update_price_depth").parent().append('<div class="text-danger">Invalid</div>');
+				}
+				
+				if(data.product.offer_price == true){					
+					$("#update_offer_price_depth").addClass("has-success");
+				}else{
+					$("#update_offer_price_depth").addClass("has-error");
+					error++;
+					$("#update_offer_price_depth").parent().append('<div class="text-danger">Invalid</div>');
 				}
 				
 				$("#validate_update_btn").removeAttr("disabled");
