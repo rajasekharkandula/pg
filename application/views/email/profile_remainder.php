@@ -26,23 +26,12 @@
 				<tr>
 					<td style="padding: 20px 10px;"> 
 						<p>Dear <b><?php echo $name; ?></b>,</p>
-						<p>Product information has been updated for below products,</p><br>
+						<p>Below are the profile details,</p><br>
 						
-						<?php foreach($products as $p){ ?>
-						<div style="width: calc(50% - 15px);display:inline-block;margin-right: 10px;">
-							<div class="product" style="border-radius: 3px;background-color: #DDD; border: 1px solid #CCC; border-bottom-color: #CCC; display: inline-block; position: relative; width: 100%; margin-bottom: 10px; box-shadow: 1px 1px 1px #ddd;">
- 								<a href="<?php echo $p->link; ?>" target="_blank">
-									<div class="img" style="overflow: hidden; width: 100%; height: 200px; text-align: center; position: relative;"> 										
-										<img src="<?php echo $p->image; ?>" style="max-width: 90%; max-height: 90%; position: absolute; top: 50%; left: 50%; -ms-transform: translate(-50%, -50%); -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%);">
-									</div>
-									<div class="content" style=" padding: 7px 5px;text-align: center;font-size: 15px; background-color: #fff; border-top: 1px solid #ccc;">
-										<div class="title" style="color: #555;overflow: hidden; white-space: nowrap; padding: 0px 5px;text-overflow: ellipsis;font-weight: bold; font-size: 14px;"><?php echo $p->name; ?></div>
-										<div class="price" style="color: #0c1acc; font-weight: bold;">$<?php echo $p->price; ?></div>
-									</div>
-								</a>
-							</div>
-						</div>
-						<?php } ?>
+						<p>Profile Name : <b><?php echo $profile_name; ?></b></p>
+						<p>Reason : <b><?php echo $reason; ?></b></p>
+						<p>Relation : <b><?php echo $relation; ?></b></p>
+						<p>Date for gift : <b><?php echo $date_for_gift; ?></b></p>
 					
 					</td>	
 				</tr>

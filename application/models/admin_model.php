@@ -1869,12 +1869,49 @@ class Admin_model extends CI_Model{
 	
 	function remainder(){
 		
+		$log_path = 'assets/log/profile_remainder_'.date('Ymd').'.txt';
+		$content = "Started<br>";
+		$content .= "=====================<br>";
+		if(file_exists($log_path))rename($log_path,$log_path.mt_rand().'.txt');
+		write_file($log_path, $content, 'a');
+		
 		$users = $this->home_model->get_profile(array('type'=>'REMAINDER'));
-		var_dump($users);exit();
-		$data['name'] = $u->first_name.' '.$u->last_name;
-		$data['products'][] = (object)$product;
-		$message = $this->load->view('email/profile_remainder',$data,true);
-		//$this->home_model->send_email($u->email,'Products updated',$message);
+		//var_dump($users);exit();
+		if(count($users) > 0){
+			foreach($users as $u){
+				
+				$content = "Name : ".$u->name."".PHP_EOL;
+				$content .= "Email : ".$u->email."".PHP_EOL;
+				$content .= "Profile Name : ".$u->profile_name."".PHP_EOL;
+				
+				$data['name'] = $u->name;
+				$data['profile_name'] = $u->profile_name;
+				$data['reason'] = $u->reason;
+				$data['relation'] = $u->relation;
+				$data['date_for_gift'] = $u->date_for_gift;
+				$message = $this->load->view('email/profile_remainder',$data,true);
+				$status = $this->home_model->send_email($u->email,'Profile date is comming soon.',$message);
+				if($status){
+					$content .= "Status : Email sent successfully".PHP_EOL;
+					$this->db->query("UPDATE tbl_custom_profiles SET remainder_mail = 1 WHERE user_id = ".(int)$u->id);
+				}else{
+					$content .= "Status : Email Not Sent".PHP_EOL;
+				}
+				
+				$content .= "------------------------".PHP_EOL;
+				write_file($log_path, $content, 'a');
+					
+			}
+			
+			$content = "Completed".PHP_EOL;
+			write_file($log_path, $content, 'a');
+			
+		}else{
+			$content = "No users found";
+			write_file($log_path, $content, 'a');
+		}
+		
+		return base_url($log_path);
 	}
 }
 

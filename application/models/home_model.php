@@ -66,6 +66,15 @@ class Home_model extends CI_Model{
 				else
 					$url = base_url('home');
 				
+				//Saving push notification ID
+				$push_id = $this->session->userdata("push_id");
+				$email = $user->email;
+				if($push_id != '' && $push_id != null && $push_id){
+					$this->db->query("UPDATE tbl_user SET appRegistationID = '' WHERE appRegistationID = '$push_id'");
+					$this->db->query("UPDATE tbl_user SET appRegistationID = '$push_id' WHERE email = '$email'");
+				}
+				
+				
 				$retvalue['url'] = $url;
 				$retvalue['message'] = "Success";
 				$retvalue['status'] = true;
@@ -242,7 +251,7 @@ class Home_model extends CI_Model{
 			return $this->db->query("SELECT * FROM tbl_custom_profiles WHERE user_id=$userID")->result();
 		}
 		if($type == 'REMAINDER'){
-			return $this->db->query("SELECT IF(u.first_name = 'NULL' OR IFNULL(first_name,'') = '','No Name',CONCAT(u.first_name,' ',u.last_name)) as name,u.email FROM tbl_custom_profiles p INNER JOIN tbl_user u ON u.id = p.user_id WHERE p.date_for_gift <= (NOW() + interval 3 day) AND p.date_for_gift > NOW() AND p.remainder_mail != 1")->result();
+			return $this->db->query("SELECT u.id,IF(u.first_name = 'NULL' OR IFNULL(first_name,'') = '','No Name',CONCAT(u.first_name,' ',u.last_name)) as name,u.email,p.name AS profile_name,p.reason,p.relation,p.date_for_gift FROM tbl_custom_profiles p INNER JOIN tbl_user u ON u.id = p.user_id WHERE p.date_for_gift <= (NOW() + interval 3 day) AND p.date_for_gift >= NOW() AND IFNULL(p.remainder_mail,0) != 1")->result();
 		}
 		if($type == 'PRODUCTS'){
 			return $this->db->query("SELECT pr.profile_id,pd.*,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$sessionUserID' AND product_id = pd.id) AS liked FROM tbl_custom_profiles_products pr INNER JOIN tbl_custom_profiles p ON p.id = pr.profile_id INNER JOIN tbl_product pd ON pd.id = pr.product_id WHERE p.user_id=$userID")->result();

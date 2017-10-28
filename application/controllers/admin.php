@@ -524,8 +524,17 @@ class Admin extends CI_Controller {
 		echo json_encode($this->admin_model->ins_upd_shopping_page());
 	}
 	
+	function profile_remainder(){
+		$this->access();
+		$pageData['page'] = 'PROFILE_REMAINDER';
+		$pageData['pageTitle'] = 'Profile Remainder';
+		$data['head'] = $this->load->view('admin/templates/head',$pageData,true);
+		$data['header'] = $this->load->view('admin/templates/header',$pageData,true);
+		$data['footer'] = $this->load->view('admin/templates/footer',$pageData,true);
+		$this->load->view('admin/profile_remainder',$data);
+	}
 	function remainder(){
-		$this->admin_model->remainder();
+		echo json_encode($this->admin_model->remainder());
 	}
 	
 }

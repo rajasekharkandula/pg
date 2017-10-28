@@ -79,6 +79,11 @@ class Home extends CI_Controller{
 		}
 	}
 	
+	function save_push_id($id=""){
+		$this->session->set_userdata('push_id',$id);
+		redirect(base_url(),'refresh');
+	}
+	
 	function index(){
 	
 		$this->access();
