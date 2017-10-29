@@ -305,7 +305,7 @@ class Admin_model extends CI_Model{
 							$changed= substr($changed,0,-1);
 							$changed.=' updated';
 							
-							//$this->sendUpdateNotificationToUser($p->id,$changed);
+							$this->sendUpdateNotificationToUser($p->id,$changed);
 							
 						}
 						$status .="Status : ".$changed."\n";
@@ -402,7 +402,7 @@ class Admin_model extends CI_Model{
 		return $request_url = 'http://'.$endpoint.$uri.'?'.$canonical_query_string.'&Signature='.rawurlencode($signature);
 	}
 	
-	function sendUpdateNotificationToUser($pid,$changed){
+	function sendUpdateNotificationToUser($pid,$changed=""){
 		$users = $this->db->query("SELECT u.*,p.id AS product_id,p.name AS product_name,p.image AS product_image, p.product_link,p.price FROM tbl_likes l INNER JOIN tbl_user u ON u.id = l.user_id INNER JOIN tbl_product p ON p.id = l.product_id WHERE product_id = $pid")->result();
 		foreach($users as $u){
 			
@@ -419,6 +419,14 @@ class Admin_model extends CI_Model{
 			$message = $this->load->view('email/product_update',$data,true);
 			$this->home_model->send_email($u->email,'Products updated',$message);
 		}
+		
+		//Sending Push Notifications
+		$appIds = array();
+		foreach($users as $u)array_push($appIds,$u->appRegistationID);
+		if(count($appIds) > 0){
+			$this->home_model->push_notification($appIds,'Some products are updated in your profile');
+		}
+		
 	}
 	
 	function reset_password(){
@@ -617,6 +625,12 @@ class Admin_model extends CI_Model{
 		}
 		
 		if($type == 'UPDATE'){			
+			
+			$p = $this->db->query("SELECT * FROM tbl_product WHERE id = $id ")->row();
+			if($name != $p->name || $price != $p->price || $image != $p->image){					
+				$this->sendUpdateNotificationToUser($p->id);				
+			}
+			
 			$this->db->query("UPDATE tbl_product SET name = '$name', description = '$description', slug = '$slug', price = '$price', image = '$image', product_link = '$product_link', min_age = '$min_age', max_age = '$max_age', gender = '$gender', category = '$category', modified_by=$userID, modified_date = NOW(), status = '$status' WHERE id = $id ");
 			
 			if($this->input->post('navigation')){
