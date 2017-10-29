@@ -434,9 +434,15 @@ class Home extends CI_Controller{
 			echo 'Invalid URL';
 		}
 	}
-	function send_email(){
-		echo json_encode($this->home_model->send_email('k.rajasekhar23@gmail.com','Test mail','Test mail Content'));	
+	function test_email($email=""){
+		if($email == "")$email = 'k.rajasekhar23@gmail.com';
+		echo json_encode($this->home_model->send_email($email,'Test mail','Test mail Content'));	
 	}
+	function test_push($regID=""){
+		if($regID == "")$regID = "cR4oVhcjSd8:APA91bFEX9wNBQjynAskLR2HAZvc8PCPEnwqGSkn6h2TbeMPnVEklcpotjDxwhAedcscSozRH2cB3_Mj9Kmc72lc9p8c2pfhVNHQu0z9ZstISO0w6VhxZcElIGroKGPVnUsxFuw4k-3o";
+		echo json_encode($this->home_model->push_notification($regID,'Test Message'));	
+	}
+	
 	function forgot_password(){
 		echo json_encode($this->home_model->forgot_password());	
 	}

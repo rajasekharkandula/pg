@@ -802,7 +802,7 @@ class Home_model extends CI_Model{
 		#API access key from Google API's Console
 		define( 'API_ACCESS_KEY', $this->config->item('fcm_key'));
 		
-		//$registrationIds = "cBPpDOkfjOQ:APA91bEK0l1LgFm2VHPZEJ56sjJ2c_dgYAx6PKvuDzIN0eAswziABjh5Aj3_N-Z3FPtQzb1rBxIej0DB4_J3Prli1yeTgKRgGPb0JvBPzMqipMswqNRwNcWjD24G0znZJT9twiOAW-46";
+		//$registrationIds = "cR4oVhcjSd8:APA91bFEX9wNBQjynAskLR2HAZvc8PCPEnwqGSkn6h2TbeMPnVEklcpotjDxwhAedcscSozRH2cB3_Mj9Kmc72lc9p8c2pfhVNHQu0z9ZstISO0w6VhxZcElIGroKGPVnUsxFuw4k-3o";
 		
 		#prep the bundle
 		$msg = array(
@@ -831,8 +831,8 @@ class Home_model extends CI_Model{
 		curl_close( $ch );
 
 		#Echo Result Of FireBase Server
-		echo $result;exit();
-		//return $result;
+		//echo $result;exit();
+		return $result;
 	}
 	
 }
