@@ -1903,6 +1903,13 @@ class Admin_model extends CI_Model{
 					
 			}
 			
+			//Sending Push Notifications
+			$appIds = array();
+			foreach($users as $u)array_push($appIds,$u->appRegistationID);
+			if(count($appIds) > 0){
+				$this->home_model->push_notification($appIds,'Your profile date is coming soon');
+			}
+			
 			$content = "Completed".PHP_EOL;
 			write_file($log_path, $content, 'a');
 			

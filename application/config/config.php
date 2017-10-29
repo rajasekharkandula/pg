@@ -375,6 +375,8 @@ $config['img_ext'] = array('jpg','png','jpeg');
 $config['fb_app_id'] = '239011039923860';
 $config['fb_secret_id'] = '556f3e69b7497da28c406496b3bac7f3';
 
+$config['fcm_key'] = 'AAAAdee6DPc:APA91bEcyiRRuF7H489PVbmL72SsxRP8p6m_LYBq0eM39G3U5cIttH0ObbzvIIDyO7OBuLVcrXz86nmqal1Z965vvrzIkWCQfnw-LsEMKQvU8raTW4VNwK7s_STZfoDi80Q1XYPVvFwn';
+
 $config['node_server_url'] = 'http://ec2-54-213-160-39.us-west-2.compute.amazonaws.com:3000';
 
 $config['role_admin'] = 'ADMIN';

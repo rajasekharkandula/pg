@@ -251,7 +251,7 @@ class Home_model extends CI_Model{
 			return $this->db->query("SELECT * FROM tbl_custom_profiles WHERE user_id=$userID")->result();
 		}
 		if($type == 'REMAINDER'){
-			return $this->db->query("SELECT u.id,IF(u.first_name = 'NULL' OR IFNULL(first_name,'') = '','No Name',CONCAT(u.first_name,' ',u.last_name)) as name,u.email,p.name AS profile_name,p.reason,p.relation,p.date_for_gift FROM tbl_custom_profiles p INNER JOIN tbl_user u ON u.id = p.user_id WHERE p.date_for_gift <= (NOW() + interval 3 day) AND p.date_for_gift >= NOW() AND IFNULL(p.remainder_mail,0) != 1")->result();
+			return $this->db->query("SELECT u.id,IF(u.first_name = 'NULL' OR IFNULL(first_name,'') = '','No Name',CONCAT(u.first_name,' ',u.last_name)) as name,u.email,u.appRegistationID, p.name AS profile_name,p.reason,p.relation,p.date_for_gift FROM tbl_custom_profiles p INNER JOIN tbl_user u ON u.id = p.user_id WHERE p.date_for_gift <= (NOW() + interval 3 day) AND p.date_for_gift >= NOW() AND IFNULL(p.remainder_mail,0) != 1")->result();
 		}
 		if($type == 'PRODUCTS'){
 			return $this->db->query("SELECT pr.profile_id,pd.*,(SELECT COUNT(*) FROM tbl_likes WHERE user_id = '$sessionUserID' AND product_id = pd.id) AS liked FROM tbl_custom_profiles_products pr INNER JOIN tbl_custom_profiles p ON p.id = pr.profile_id INNER JOIN tbl_product pd ON pd.id = pr.product_id WHERE p.user_id=$userID")->result();
@@ -442,16 +442,6 @@ class Home_model extends CI_Model{
 			$retvalue['message'] = 'Email does not exist';
 		}
 		return $retvalue;
-	}
-	public function send_email($to,$subject,$message){
-		$this->load->library('email');
-		$this->email->from($this->config->item('admin_email'),'Painlessgift');
-		$this->email->to($to);
-		$this->email->subject($subject);
-		$this->email->message($message);
-		$status = $this->email->send();
-		//echo $this->email->print_debugger();exit();
-		return $status;
 	}
 	
 	function getSlides()
@@ -797,6 +787,54 @@ class Home_model extends CI_Model{
 		$this->db->query("INSERT INTO tbl_product_views (ip, dateTime, userID, productID) VALUES ('$ip', NOW(), '$userID', '$id'); ");
 		return true;
 	}
+	
+	public function send_email($to,$subject,$message){
+		$this->load->library('email');
+		$this->email->from($this->config->item('admin_email'),'Painlessgift');
+		$this->email->to($to);
+		$this->email->subject($subject);
+		$this->email->message($message);
+		$status = $this->email->send();
+		//echo $this->email->print_debugger();exit();
+		return $status;
+	}
+	function push_notification($registrationIds,$message){
+		#API access key from Google API's Console
+		define( 'API_ACCESS_KEY', $this->config->item('fcm_key'));
+		
+		//$registrationIds = "cBPpDOkfjOQ:APA91bEK0l1LgFm2VHPZEJ56sjJ2c_dgYAx6PKvuDzIN0eAswziABjh5Aj3_N-Z3FPtQzb1rBxIej0DB4_J3Prli1yeTgKRgGPb0JvBPzMqipMswqNRwNcWjD24G0znZJT9twiOAW-46";
+		
+		#prep the bundle
+		$msg = array(
+			'body' 	=> $message,
+			'title'	=> 'Painlessgift','icon' => base_url('assets/images/app_icon.png'),'sound' => 'default'
+			);
+		$fields = array(
+			'registration_ids' => (array)$registrationIds,
+			'notification'	=> $msg
+		);
+		
+		$headers = array(
+			'Authorization: key=' . API_ACCESS_KEY,
+			'Content-Type: application/json'
+		);
+		
+		#Send Reponse To FireBase Server	
+		$ch = curl_init();
+		curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send' );
+		curl_setopt( $ch,CURLOPT_POST, true );
+		curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
+		curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+		curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
+		curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
+		$result = curl_exec($ch );
+		curl_close( $ch );
+
+		#Echo Result Of FireBase Server
+		//echo $result;exit();
+		return $result;
+	}
+	
 }
 
 ?>
