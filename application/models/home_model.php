@@ -831,8 +831,8 @@ class Home_model extends CI_Model{
 		curl_close( $ch );
 
 		#Echo Result Of FireBase Server
-		//echo $result;exit();
-		return $result;
+		echo $result;exit();
+		//return $result;
 	}
 	
 }
