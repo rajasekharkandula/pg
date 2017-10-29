@@ -20,7 +20,7 @@ $('.owl-carousel').owlCarousel({
 	navText : ["<i class='fa fa-angle-left'></i>","<i class='fa fa-angle-right'></i>"]
 })
 $('.home_sections').owlCarousel({
-    loop:true,
+    //loop:true,
     nav:true,
 	dots:false,
 	items:4,
@@ -43,7 +43,7 @@ $('.home_sections').owlCarousel({
 	}
 });
 $('.reviews').owlCarousel({
-    loop:true,
+    //loop:true,
     nav:true,
 	dots:false,
 	items:2,
