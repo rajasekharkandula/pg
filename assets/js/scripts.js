@@ -9,7 +9,7 @@ $(window).load(function(){
 
 var owl = $('.owl-carousel').owlCarousel({
     loop: owl.children().length > 1,
-    nav: owl.children().length > 1
+    nav: owl.children().length > 1,
 	dots:false,
 	items:1,
 	autoplay:true,
@@ -21,7 +21,7 @@ var owl = $('.owl-carousel').owlCarousel({
 })
 var owl = $('.home_sections').owlCarousel({
     loop: owl.children().length > 1,
-    nav: owl.children().length > 1
+    nav: owl.children().length > 1,
 	dots:false,
 	items:4,
 	margin:20,
@@ -44,7 +44,7 @@ var owl = $('.home_sections').owlCarousel({
 });
 var owl = $('.reviews').owlCarousel({
     loop: owl.children().length > 1,
-    nav: owl.children().length > 1
+    nav: owl.children().length > 1,
 	dots:false,
 	items:2,
 	margin:20,
