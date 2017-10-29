@@ -8,7 +8,7 @@ $(window).load(function(){
 });
 
 var owl = $('.owl-carousel').owlCarousel({
-    loop: owl.children().length > 1
+    loop: owl.children().length > 1,
     nav: owl.children().length > 1
 	dots:false,
 	items:1,
@@ -20,7 +20,7 @@ var owl = $('.owl-carousel').owlCarousel({
 	navText : ["<i class='fa fa-angle-left'></i>","<i class='fa fa-angle-right'></i>"]
 })
 var owl = $('.home_sections').owlCarousel({
-    loop: owl.children().length > 1
+    loop: owl.children().length > 1,
     nav: owl.children().length > 1
 	dots:false,
 	items:4,
@@ -43,7 +43,7 @@ var owl = $('.home_sections').owlCarousel({
 	}
 });
 var owl = $('.reviews').owlCarousel({
-    loop: owl.children().length > 1
+    loop: owl.children().length > 1,
     nav: owl.children().length > 1
 	dots:false,
 	items:2,
