@@ -49,6 +49,12 @@
 							<input type="checkbox" name="private" id="private" value="1" style="margin-top: 8px;" <?php if($user->private)echo 'checked'; ?> >
 						</div>
 					</div>
+					<div class="row mb-20">
+						<label class="col-md-3">Push Notifications </label>
+						<div class="col-md-8">	
+							<input type="checkbox" name="push_enabled" id="push_enabled" value="1" style="margin-top: 8px;" <?php if($user->push_enabled)echo 'checked'; ?> >
+						</div>
+					</div>
 					<div class="row mb-10">
 						<label class="col-md-3">Profile Pic </label>
 						<div class="col-md-8">	

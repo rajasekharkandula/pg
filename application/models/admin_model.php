@@ -422,7 +422,7 @@ class Admin_model extends CI_Model{
 		
 		//Sending Push Notifications
 		$appIds = array();
-		foreach($users as $u)array_push($appIds,$u->appRegistationID);
+		foreach($users as $u)if($u->push_enabled == 1)array_push($appIds,$u->appRegistationID);
 		if(count($appIds) > 0){
 			$this->home_model->push_notification($appIds,'Some products are updated in your profile');
 		}
@@ -1919,7 +1919,7 @@ class Admin_model extends CI_Model{
 			
 			//Sending Push Notifications
 			$appIds = array();
-			foreach($users as $u)array_push($appIds,$u->appRegistationID);
+			foreach($users as $u)if($u->push_enabled == 1)array_push($appIds,$u->appRegistationID);
 			if(count($appIds) > 0){
 				$this->home_model->push_notification($appIds,'Your profile date is coming soon');
 			}
