@@ -7,9 +7,9 @@ $(window).load(function(){
 	
 });
 
-$('.owl-carousel').owlCarousel({
-    loop:true,
-    nav:true,
+var owl = $('.owl-carousel').owlCarousel({
+    loop: owl.children().length > 1
+    nav: owl.children().length > 1
 	dots:false,
 	items:1,
 	autoplay:true,
@@ -19,9 +19,9 @@ $('.owl-carousel').owlCarousel({
 	autoplayHoverPause: true,
 	navText : ["<i class='fa fa-angle-left'></i>","<i class='fa fa-angle-right'></i>"]
 })
-$('.home_sections').owlCarousel({
-    //loop:true,
-    nav:true,
+var owl = $('.home_sections').owlCarousel({
+    loop: owl.children().length > 1
+    nav: owl.children().length > 1
 	dots:false,
 	items:4,
 	margin:20,
@@ -42,9 +42,9 @@ $('.home_sections').owlCarousel({
 		}
 	}
 });
-$('.reviews').owlCarousel({
-    //loop:true,
-    nav:true,
+var owl = $('.reviews').owlCarousel({
+    loop: owl.children().length > 1
+    nav: owl.children().length > 1
 	dots:false,
 	items:2,
 	margin:20,
