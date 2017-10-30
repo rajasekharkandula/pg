@@ -831,7 +831,11 @@ class Home_model extends CI_Model{
 		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
 		$result = curl_exec($ch);				
 		if ($result === FALSE) {
-		die('Curl failed: ' . curl_error($ch));
+			die('Curl failed: ' . curl_error($ch));
+		}
+		if(curl_error($ch))
+		{
+			echo 'error:' . curl_error($ch);
 		}
 		curl_close($ch);
 
