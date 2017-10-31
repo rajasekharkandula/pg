@@ -822,7 +822,7 @@ class Home_model extends CI_Model{
 		
 		#Send Reponse To FireBase Server	
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'https://gcm-http.googleapis.com/gcm/send');
+		curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -831,11 +831,7 @@ class Home_model extends CI_Model{
 		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
 		$result = curl_exec($ch);				
 		if ($result === FALSE) {
-			die('Curl failed: ' . curl_error($ch));
-		}
-		if(curl_error($ch))
-		{
-			echo 'error:' . curl_error($ch);
+		die('Curl failed: ' . curl_error($ch));
 		}
 		curl_close($ch);
 
