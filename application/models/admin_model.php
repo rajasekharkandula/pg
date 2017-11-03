@@ -185,7 +185,7 @@ class Admin_model extends CI_Model{
 			$user = $this->db->query("SELECT u.* FROM tbl_user u INNER JOIN tbl_user_requests ur ON ur.userID = u.id WHERE ur.id = $id")->row();
 			if($user){
 				$to = $user->email;
-				$subject = "A shopper has been assigned to your request.";
+				$subject = "A Personal Shopper(PS) Assistant has been assigned for your request.";
 				$message="Hi ".$user->first_name.' '.$user->last_name.",<br><br>";
 				$message.="Thank you for showing interest in shopping assistent. Below are details,<br><br>";
 				
@@ -199,6 +199,14 @@ class Admin_model extends CI_Model{
 				
 				$content = $shopper->first_name.' '.$shopper->last_name.' assigned to your request.';
 				$this->db->query("INSERT INTO tbl_notification (user_id, subject, content, image, type, created_date, created_by, status) VALUES ($user->id, '$content', '$content', '".$this->session->userdata('image')."', 'INDIVIDUAL', NOW(), ".$this->session->userdata('userID').", 'Active')");
+				
+				//Sending Push Notifications
+				$appIds = array();
+				if($user->push_enabled == 1)array_push($appIds,$user->appRegistationID);
+				if(count($appIds) > 0){
+					$this->home_model->push_notification($appIds,'A Personal Shopper(PS) Assistant has been assigned for your request');
+				}
+				
 			}	
 		}
 		
@@ -210,6 +218,15 @@ class Admin_model extends CI_Model{
 		
 		if($type == 'SUGGEST'){
 			$this->db->query("INSERT INTO tbl_user_request_products (request_id, product_id, suggested_by, date_time, status) VALUES ($id, $productID, $shopperID, NOW(), 'Suggested')");
+			
+			$users = $this->db->query("SELECT * FROM tbl_user WHERE id = (SELECT userID FROM tbl_user_requests WHERE id = $id LIMIT 1)");
+			//Sending Push Notifications
+			$appIds = array();
+			foreach($users as $u)if($u->push_enabled == 1)array_push($appIds,$u->appRegistationID);
+			if(count($appIds) > 0){
+				$this->home_model->push_notification($appIds,'Your Personal Shopper has suggested a product');
+			}
+			
 			$retvalue['status'] = true;
 			$retvalue['message'] = 'Product suggested successfully';
 		}
@@ -1921,7 +1938,7 @@ class Admin_model extends CI_Model{
 			$appIds = array();
 			foreach($users as $u)if($u->push_enabled == 1)array_push($appIds,$u->appRegistationID);
 			if(count($appIds) > 0){
-				$this->home_model->push_notification($appIds,'Your profile date is coming soon');
+				$this->home_model->push_notification($appIds,'One of your event listed in your profile is coming up soon');
 			}
 			
 			$content = "Completed".PHP_EOL;

@@ -508,5 +508,21 @@ class Home extends CI_Controller{
 	function ins_upd_chat(){
 		echo json_encode($this->admin_model->ins_upd_chat());
 	}
+	function send_chat_push(){
+		$sendToUserID = $this->input->post('sendTo');
+		$myUserID = $this->input->post('userID');
+		$user = $this->home_model->get_user(array('type'=>'S','userID'=>$sendToUserID));
+		if($user){
+			if($user->push_enabled == 1){
+				$regID = $user->appRegistationID;
+				echo json_encode($this->home_model->push_notification($regID,'New message'));
+			}else{
+				echo 'Push Not Enabled';
+			}
+		}else{
+			echo 'User not found';
+		}
+	}
+	
 }
 ?>

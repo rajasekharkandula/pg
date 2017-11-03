@@ -55,8 +55,17 @@
 					$("#messages").animate({ scrollTop: $(document).height()*30 }, "slow");
 					$("#message_input").val('');
 					$("#send").removeAttr('disabled');
+					if(!$('#online_status').hasClass('online')){
+						$.ajax({
+							url:'<?php echo base_url('home/send_chat_push');?>',
+							type:'POST',
+							data:{'userID':myUserID,'sendTo':sendToUserID,'message':val,'type':'INSERT'}
+						})
+					}
+					
 				}
-			});
+			});			
+			
 		}else{
 			$("#message_input").val('');
 		}
